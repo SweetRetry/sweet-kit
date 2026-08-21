@@ -1,0 +1,38 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreWorkspaces": ["packages/ui"],
+  "workspaces": {
+    "apps/web": {
+      "entry": ["app/**/*.{ts,tsx}", "lib/**/*.ts"],
+      "project": ["**/*.{ts,tsx}"]
+    },
+    "apps/server": {
+      "entry": ["src/auth.ts"],
+      "project": ["src/**/*.ts"]
+    },
+    "apps/cli": {
+      "project": ["src/**/*.ts"]
+    },
+    "packages/auth": {
+      "project": ["src/**/*.ts"]
+    },
+    "packages/request": {
+      "project": ["src/**/*.{ts,tsx}"]
+    },
+    "packages/database": {
+      "project": ["src/**/*.ts"]
+    },
+    "packages/logger": {
+      "project": ["src/**/*.ts"]
+    },
+    "packages/observability": {
+      "project": ["src/**/*.ts"]
+    },
+    "packages/typescript-config": {
+      "entry": [],
+      "project": ["*.json"]
+    }
+  },
+  "ignoreDependencies": ["@types/*", "@tailwindcss/postcss", "pino-pretty"],
+  "ignoreUnresolved": ["next"]
+}

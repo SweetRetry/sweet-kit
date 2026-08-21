@@ -1,0 +1,29 @@
+{
+  "name": "sweet-kit",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "cli": "pnpm --filter cli sweet",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "check": "biome check --write .",
+    "typecheck": "turbo typecheck",
+    "db:generate": "pnpm --filter server auth:generate && pnpm --filter @workspace/database db:generate",
+    "db:migrate": "pnpm --filter @workspace/database db:migrate",
+    "knip": "knip"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.9",
+    "@workspace/typescript-config": "workspace:*",
+    "knip": "^6.0.5",
+    "turbo": "^2.8.20",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@11.22.0",
+  "engines": {
+    "node": ">=24"
+  }
+}

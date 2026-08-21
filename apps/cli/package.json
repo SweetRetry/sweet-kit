@@ -1,0 +1,30 @@
+{
+  "name": "cli",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "sweet": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "sweet": "tsx src/index.ts",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@workspace/auth": "workspace:*",
+    "@workspace/observability": "workspace:*",
+    "@workspace/request": "workspace:*",
+    "better-auth": "^1.7.1",
+    "commander": "^15.0.0",
+    "open": "^11.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@workspace/typescript-config": "workspace:*",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3"
+  }
+}

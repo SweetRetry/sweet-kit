@@ -1,0 +1,35 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "auth:generate": "auth generate --config src/auth.ts --output ../../packages/database/src/schema.ts --yes",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.1",
+    "@hono/otel": "^1.1.2",
+    "@hono/zod-openapi": "^1.6.1",
+    "@scalar/hono-api-reference": "^0.11.16",
+    "@workspace/auth": "workspace:*",
+    "@workspace/database": "workspace:*",
+    "@workspace/logger": "workspace:*",
+    "@workspace/observability": "workspace:*",
+    "hono": "^4.13.3",
+    "hono-pino": "^0.10.3",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@workspace/typescript-config": "workspace:*",
+    "auth": "^1.7.1",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3"
+  }
+}

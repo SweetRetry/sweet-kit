@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1787322283550,
+      "tag": "0000_cloudy_tiger_shark",
+      "breakpoints": true
+    }
+  ]
+}
