@@ -2,6 +2,10 @@
 
 Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件。
 
+## 仓库知识与自动化边界
+
+新增项目资料时按内容路由：长期架构取舍写入 `adr/`，强制工程约束写入 `rules/`，系统与使用知识写入 `docs/`，Local Loop、构建、database seed 或 Agent 自定义工具写入 `scripts/`。
+
 ## 架构约定
 
 - `apps/*` 是应用入口和 composition root。
@@ -10,10 +14,11 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 - 应用通过 package 的公开 exports 访问切面，不跨 package 导入内部文件。
 - 新增抽象前先用完整纵切验证当前需求。
 - 优先使用维护活跃、经过生产验证的第三方成熟库；自行实现前先检查现有依赖的文档、类型定义和扩展能力。
-- 修改 tracing、日志关联、错误 `traceId` 或 Agent trace 查询时，先读 `adr/0003-opentelemetry-observability.md`，保持 signal 边界、redaction 和 runtime 隔离。
+- 修改 tracing、日志关联、错误 `traceId` 或 Agent trace 查询时，先读 `adr/0002-opentelemetry-observability.md`，保持 signal 边界、redaction 和 runtime 隔离。
+- 修改 CLI auth、token 或 device authorization 时，先读 `adr/0004-cli-authentication-boundary.md`，保持第一方 session credential 的信任边界。
 - 修改 server route、auth 或 database schema 时，使用 `createServerFixture` 运行真实 migration 的 Hono 集成测试；完成代码修改后以 `pnpm verify` 为唯一全量验证入口。
-- 修改 job enqueue、task handler 或 worker lifecycle 时，先读 `adr/0005-postgresql-and-graphile-worker.md`，保持 transaction、at-least-once 与 process 边界。
-- 新增或修改环境变量时，先读 `adr/0006-runtime-environment-boundaries.md`，放入 `packages/env` 对应 runtime export。
+- 修改 job enqueue、task handler 或 worker lifecycle 时，先读 `adr/0003-postgresql-and-graphile-worker.md`，保持 transaction、at-least-once 与 process 边界。
+- 新增或修改环境变量时，先读 `adr/0001-architecture-runtime-boundaries.md`，放入 `packages/env` 对应 runtime export。
 
 ## 技术选型
 

@@ -23,6 +23,7 @@
     "@workspace/env": "workspace:*",
     "@workspace/logger": "workspace:*",
     "@workspace/observability": "workspace:*",
+    "@workspace/request": "workspace:*",
     "ai": "^7.0.70",
     "hono": "^4.13.3",
     "hono-pino": "^0.10.3",

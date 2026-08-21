@@ -4,6 +4,13 @@ import { Scalar } from "@scalar/hono-api-reference"
 import type { Auth } from "@workspace/auth/server"
 import type { Logger } from "@workspace/logger"
 import { getActiveTraceId } from "@workspace/observability"
+import {
+  type ApiErrorBody,
+  ErrorCode,
+  type ErrorCode as ErrorCodeValue,
+  getErrorStatus,
+} from "@workspace/request/contract"
+import type { Context } from "hono"
 import { cors } from "hono/cors"
 import { requestId } from "hono/request-id"
 import { type Env as HonoPinoEnv, pinoLogger } from "hono-pino"
@@ -25,11 +32,22 @@ const UserSchema = z
 
 const ErrorSchema = z
   .object({
-    code: z.string(),
+    code: z.enum(ErrorCode),
     message: z.string(),
     traceId: z.string().length(32).optional(),
   })
   .openapi("Error")
+
+function errorResponse<C extends ErrorCodeValue>(c: Context, code: C, message: string) {
+  const status = getErrorStatus(code)
+  const traceId = getActiveTraceId()
+  const body: ApiErrorBody<C> = {
+    code,
+    message,
+    ...(code === ErrorCode.INTERNAL_SERVER_ERROR && traceId ? { traceId } : {}),
+  }
+  return c.json(body, status)
+}
 
 const internalErrorResponse = {
   content: { "application/json": { schema: ErrorSchema } },
@@ -131,7 +149,7 @@ export function createServerApp(options: CreateServerAppOptions) {
     const session = await options.auth.api.getSession({ headers: c.req.raw.headers })
 
     if (!session) {
-      return c.json({ code: "UNAUTHORIZED", message: "Authentication required" }, 401)
+      return errorResponse(c, ErrorCode.UNAUTHORIZED, "Authentication required")
     }
 
     return c.json(
@@ -161,18 +179,8 @@ export function createServerApp(options: CreateServerAppOptions) {
   )
 
   app.onError((error, c) => {
-    const traceId = getActiveTraceId()
     c.get("logger").error({ err: error }, "request.failed")
-    if (traceId) c.header("x-trace-id", traceId)
-
-    return c.json(
-      {
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Internal Server Error",
-        ...(traceId ? { traceId } : {}),
-      },
-      500
-    )
+    return errorResponse(c, ErrorCode.INTERNAL_SERVER_ERROR, "Internal Server Error")
   })
 
   return app

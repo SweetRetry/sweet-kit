@@ -8,6 +8,7 @@
     "dev": "turbo dev",
     "cli": "pnpm --filter cli sweet",
     "worker": "pnpm --filter worker dev",
+    "adr:reorder": "node scripts/adr-reorder.js",
     "infra:up": "docker compose up -d --wait postgres",
     "infra:down": "docker compose down",
     "lint": "biome check .",
@@ -16,7 +17,7 @@
     "check": "biome check --write .",
     "typecheck": "turbo typecheck",
     "test": "turbo build --filter=server... && vitest run",
-    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm knip && pnpm peers check",
+    "verify": "pnpm lint && pnpm adr:reorder --check && pnpm typecheck && pnpm test && pnpm build && pnpm knip && pnpm peers check",
     "db:generate": "pnpm --filter server auth:generate && pnpm --filter @workspace/database db:generate",
     "db:migrate": "pnpm --filter @workspace/database db:migrate",
     "knip": "knip"

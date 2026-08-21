@@ -6,6 +6,7 @@ import { deviceCode } from "@workspace/database/schema"
 import { createTaskList, enqueueSystemPing } from "@workspace/jobs"
 import { createLogger } from "@workspace/logger"
 import { type Observability, startObservability } from "@workspace/observability"
+import { ErrorCode } from "@workspace/request/contract"
 import { sql } from "drizzle-orm"
 import { runOnce } from "graphile-worker"
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest"
@@ -66,7 +67,7 @@ describe("Hono server", () => {
     expect(response.status).toBe(500)
     expect(response.headers.get("x-trace-id")).toBe(errorTraceId)
     await expect(response.json()).resolves.toEqual({
-      code: "INTERNAL_SERVER_ERROR",
+      code: ErrorCode.INTERNAL_SERVER_ERROR,
       message: "Internal Server Error",
       traceId: errorTraceId,
     })
@@ -75,7 +76,12 @@ describe("Hono server", () => {
   it("发布包含 Bearer auth 的 OpenAPI 3.1 文档", async () => {
     const response = await fixture.app.request("/openapi.json")
     const document = (await response.json()) as {
-      components?: { securitySchemes?: Record<string, unknown> }
+      components?: {
+        schemas?: {
+          Error?: { properties?: { code?: { enum?: string[] } } }
+        }
+        securitySchemes?: Record<string, unknown>
+      }
       openapi: string
       paths: Record<string, unknown>
     }
@@ -85,14 +91,18 @@ describe("Hono server", () => {
     expect(document.paths).toHaveProperty("/api/health")
     expect(document.paths).toHaveProperty("/api/me")
     expect(document.components?.securitySchemes).toHaveProperty("bearerAuth")
+    expect(document.components?.schemas?.Error?.properties?.code?.enum).toEqual(
+      Object.values(ErrorCode)
+    )
   })
 
   it("拒绝未认证的当前用户请求", async () => {
     const response = await fixture.app.request("/api/me")
 
     expect(response.status).toBe(401)
+    expect(response.headers.get("x-trace-id")).toMatch(/^[0-9a-f]{32}$/)
     await expect(response.json()).resolves.toEqual({
-      code: "UNAUTHORIZED",
+      code: ErrorCode.UNAUTHORIZED,
       message: "Authentication required",
     })
   })

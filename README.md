@@ -16,7 +16,16 @@
 - Env：按 runtime 隔离的 Zod 环境变量配置
 - Test：Vitest、Hono `app.request()`、Testcontainers PostgreSQL
 
-技术决策记录在 [`adr/`](./adr/)，`rules/` 预留后续规则文档。
+## 仓库知识与自动化
+
+| 目录 | 关注点 | 内容 |
+| --- | --- | --- |
+| [`adr/`](./adr/) | Why | 长期架构决策、背景、取舍与风险 |
+| [`rules/`](./rules/) | How | 编码规范、架构边界和 Agent 必须遵守的约束 |
+| [`docs/`](./docs/) | What | 系统说明、开发指南、API、业务与运维知识 |
+| [`scripts/`](./scripts/) | Tools | Local Loop、构建、database seed 与 Agent 自定义工具 |
+
+根目录 `AGENTS.md` 是 Agent 规则入口；专项规则由它引用 `rules/` 中的文档。
 
 ## 开始
 
