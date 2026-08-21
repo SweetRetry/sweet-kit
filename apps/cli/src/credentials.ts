@@ -1,14 +1,12 @@
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises"
-import { homedir } from "node:os"
 import path from "node:path"
+import { cliEnv } from "@workspace/env/cli"
 
 interface Credentials {
   accessToken: string
 }
 
-const configRoot =
-  process.env.SWEET_KIT_CONFIG_DIR ??
-  path.join(process.env.XDG_CONFIG_HOME ?? path.join(homedir(), ".config"), "sweet-kit")
+const configRoot = cliEnv.configDir
 const credentialsPath = path.join(configRoot, "credentials.json")
 
 export async function readAccessToken(): Promise<string | null> {

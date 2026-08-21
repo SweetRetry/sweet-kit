@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@workspace/auth": "workspace:*",
+    "@workspace/env": "workspace:*",
     "@workspace/observability": "workspace:*",
     "@workspace/request": "workspace:*",
     "better-auth": "^1.7.1",

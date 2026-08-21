@@ -1,13 +1,15 @@
-import BetterSqlite3 from "better-sqlite3"
-import { drizzle } from "drizzle-orm/better-sqlite3"
+import { drizzle } from "drizzle-orm/node-postgres"
+import { Pool } from "pg"
 
 import * as schema from "./schema.js"
 
-export function createDatabase(filename: string) {
-  const sqlite = new BetterSqlite3(filename)
-  sqlite.pragma("journal_mode = WAL")
-
-  return drizzle(sqlite, { schema })
+export function createDatabase(connectionString: string) {
+  const pool = new Pool({ connectionString })
+  return drizzle(pool, { schema })
 }
 
 export type Database = ReturnType<typeof createDatabase>
+
+export async function closeDatabase(database: Database): Promise<void> {
+  await database.$client.end()
+}

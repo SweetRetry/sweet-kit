@@ -1,0 +1,27 @@
+{
+  "name": "worker",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@workspace/env": "workspace:*",
+    "@workspace/jobs": "workspace:*",
+    "@workspace/logger": "workspace:*",
+    "@workspace/observability": "workspace:*",
+    "graphile-worker": "^0.17.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@workspace/typescript-config": "workspace:*",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3"
+  }
+}

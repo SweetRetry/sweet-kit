@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
+    "@workspace/env": "workspace:*",
     "@workspace/request": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.7.1",

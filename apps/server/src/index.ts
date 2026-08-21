@@ -1,26 +1,27 @@
+import { serverEnv } from "@workspace/env/server"
 import { startObservability } from "@workspace/observability"
-
-import { env } from "./env.js"
 
 const observability = startObservability({
   serviceName: "sweet-kit-server",
-  ...(env.agentTraceFile ? { localTraceFile: env.agentTraceFile } : {}),
+  ...(serverEnv.agentTraceFile ? { localTraceFile: serverEnv.agentTraceFile } : {}),
 })
 
-const [{ serve }, { app, logger }] = await Promise.all([
+const [{ serve }, { app, logger }, { db }, { closeDatabase }] = await Promise.all([
   import("@hono/node-server"),
   import("./app.js"),
+  import("./auth.js"),
+  import("@workspace/database/client"),
 ])
 
 const server = serve({
   fetch: app.fetch,
-  port: env.port,
+  port: serverEnv.port,
 })
 
 logger.info(
   {
-    port: env.port,
-    url: env.serverUrl,
+    port: serverEnv.port,
+    url: serverEnv.serverUrl,
     ...(observability.localTraceFile ? { agentTraceFile: observability.localTraceFile } : {}),
   },
   "server.started"
@@ -36,6 +37,7 @@ async function shutdown(signal: NodeJS.Signals) {
   await new Promise<void>((resolve, reject) => {
     server.close((error) => (error ? reject(error) : resolve()))
   })
+  await closeDatabase(db)
   await observability.shutdown()
 }
 

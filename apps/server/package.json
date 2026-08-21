@@ -7,29 +7,36 @@
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "auth:generate": "auth generate --config src/auth.ts --output ../../packages/database/src/schema.ts --yes",
+    "auth:generate": "pnpm --filter @workspace/env build && pnpm --filter @workspace/database build && auth generate --config src/auth.ts --output ../../packages/database/src/schema.ts --yes && pnpm exec biome check --write ../../packages/database/src/schema.ts",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.44",
     "@hono/node-server": "^2.1.1",
     "@hono/otel": "^1.1.2",
     "@hono/zod-openapi": "^1.6.1",
     "@scalar/hono-api-reference": "^0.11.16",
     "@workspace/auth": "workspace:*",
     "@workspace/database": "workspace:*",
+    "@workspace/env": "workspace:*",
     "@workspace/logger": "workspace:*",
     "@workspace/observability": "workspace:*",
+    "ai": "^7.0.70",
     "hono": "^4.13.3",
     "hono-pino": "^0.10.3",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
+    "@workspace/jobs": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "auth": "^1.7.1",
+    "drizzle-orm": "^0.45.2",
+    "graphile-worker": "^0.17.3",
     "tsx": "^4.23.12",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
   }
 }

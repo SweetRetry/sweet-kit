@@ -1,4 +1,5 @@
 import path from "node:path"
+import { cliEnv } from "@workspace/env/cli"
 import { type AgentSpanRecord, readAgentTrace } from "@workspace/observability/agent-traces"
 
 export interface TraceCommandOptions {
@@ -66,12 +67,7 @@ function formatTree(spans: AgentSpanRecord[]): string {
 }
 
 export async function showTrace(traceId: string, options: TraceCommandOptions) {
-  const initialCwd = process.env.INIT_CWD ?? process.cwd()
-  const filePath = path.resolve(
-    options.file ??
-      process.env.SWEET_KIT_TRACE_FILE ??
-      path.join(initialCwd, "apps/server/data/traces.jsonl")
-  )
+  const filePath = path.resolve(options.file ?? cliEnv.traceFile)
   const spans = await readAgentTrace(filePath, traceId)
 
   if (spans.length === 0) {

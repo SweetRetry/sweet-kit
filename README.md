@@ -8,10 +8,13 @@
 - Request：ky、TanStack Query
 - Server：Hono、OpenAPI 3.1、Scalar
 - Auth：Better Auth、device authorization、Bearer session
-- Database：Drizzle ORM、SQLite、better-sqlite3
+- Database：PostgreSQL、Drizzle ORM、node-postgres
+- Jobs：Graphile Worker、transactional enqueue、独立 worker process
 - Logging：Pino、hono-pino、request ID、敏感字段 redaction
 - Observability：OpenTelemetry、trace/log correlation、Agent trace lookup
 - CLI：Commander
+- Env：按 runtime 隔离的 Zod 环境变量配置
+- Test：Vitest、Hono `app.request()`、Testcontainers PostgreSQL
 
 技术决策记录在 [`adr/`](./adr/)，`rules/` 预留后续规则文档。
 
@@ -19,6 +22,7 @@
 
 ```bash
 pnpm install
+pnpm infra:up
 pnpm db:migrate
 pnpm dev
 ```
@@ -29,6 +33,8 @@ pnpm dev
 - Hono：<http://localhost:3001>
 - Scalar：<http://localhost:3001/docs>
 - OpenAPI：<http://localhost:3001/openapi.json>
+
+`pnpm dev` 同时启动 Web、Hono server 和 Graphile Worker；PostgreSQL 由 `compose.yaml` 提供。
 
 生产环境变量参考 [`.env.example`](./.env.example)。本地开发可以直接使用内置 localhost 配置；生产环境必须提供高熵 `BETTER_AUTH_SECRET`。
 
@@ -73,19 +79,20 @@ pnpm cli trace <traceId> [--json]
 
 ## Database
 
-Better Auth schema 由 Better Auth CLI 生成，SQL migration 由 Drizzle Kit 管理：
+业务表和 Better Auth 表由 Drizzle migration 管理。Graphile Worker 在独立的 `graphile_worker` schema 中维护自身对象：
 
 ```bash
 pnpm db:generate
 pnpm db:migrate
 ```
 
+业务状态与 job 需要原子写入时，在同一个 Drizzle transaction 中执行 `packages/jobs` 提供的 enqueue SQL。
+
 ## 检查
 
 ```bash
-pnpm lint
-pnpm typecheck
-pnpm build
-pnpm knip
-pnpm peers check
+pnpm test
+pnpm verify
 ```
+
+server 集成测试使用 Testcontainers 启动临时 PostgreSQL，执行正式 Drizzle 与 Graphile Worker migration，并通过 Hono `app.request()` 覆盖 OpenAPI、middleware、Better Auth Bearer session、device authorization 和 job execution。`pnpm verify` 依次执行 lint、typecheck、test、build、Knip 和 peer dependency 检查。

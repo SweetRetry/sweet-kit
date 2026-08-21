@@ -2,10 +2,12 @@ packages:
   - "apps/*"
   - "packages/*"
 allowBuilds:
-  better-sqlite3: true
+  better-sqlite3: false
+  cpu-features: false
   esbuild: true
   protobufjs: true
   sharp: false
+  ssh2: false
 minimumReleaseAgeExclude:
   - '@scalar/client-side-rendering@0.3.9'
   - '@scalar/helpers@0.11.1'

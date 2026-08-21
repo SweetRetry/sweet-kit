@@ -1,16 +1,22 @@
 {
   "name": "sweet-kit",
   "version": "0.0.1",
+  "type": "module",
   "private": true,
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
     "cli": "pnpm --filter cli sweet",
+    "worker": "pnpm --filter worker dev",
+    "infra:up": "docker compose up -d --wait postgres",
+    "infra:down": "docker compose down",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "check": "biome check --write .",
     "typecheck": "turbo typecheck",
+    "test": "turbo build --filter=server... && vitest run",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm knip && pnpm peers check",
     "db:generate": "pnpm --filter server auth:generate && pnpm --filter @workspace/database db:generate",
     "db:migrate": "pnpm --filter @workspace/database db:migrate",
     "knip": "knip"
@@ -20,7 +26,8 @@
     "@workspace/typescript-config": "workspace:*",
     "knip": "^6.0.5",
     "turbo": "^2.8.20",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
   },
   "packageManager": "pnpm@11.22.0",
   "engines": {

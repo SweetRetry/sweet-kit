@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { CLI_CLIENT_ID } from "@workspace/auth/constants"
+import { cliEnv } from "@workspace/env/cli"
 import { createRequestClient } from "@workspace/request/http"
 import { createAuthClient } from "better-auth/client"
 import { deviceAuthorizationClient } from "better-auth/client/plugins"
@@ -10,7 +11,7 @@ import open from "open"
 import { clearAccessToken, readAccessToken, writeAccessToken } from "./credentials.js"
 import { showTrace, type TraceCommandOptions } from "./trace.js"
 
-const serverUrl = process.env.SWEET_KIT_SERVER_URL ?? "http://localhost:3001"
+const serverUrl = cliEnv.serverUrl
 const deviceGrant = "urn:ietf:params:oauth:grant-type:device_code" as const
 
 const authClient = createAuthClient({

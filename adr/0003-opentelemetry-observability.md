@@ -19,7 +19,7 @@ OTLP 规范定义 telemetry 的编码、传输和 Export API，不定义跨 back
 - CLI 使用 `sweet trace <traceId>` 输出 span tree，使用 `--json` 输出适合 Coding Agent 消费的完整结构化 projection。
 - 生产不启用本地文件 adapter，使用标准 `OTEL_SERVICE_NAME`、`OTEL_TRACES_EXPORTER`、`OTEL_EXPORTER_OTLP_*` 和 sampling 环境变量配置 OTLP backend。
 - Trace 是诊断信号，不承担业务状态、权限、幂等、恢复或审计不变量。sampling 或 export 失败不得改变业务请求结果。
-- 当前基线只采集 Hono Node.js server traces。OpenTelemetry JS browser instrumentation 仍为 experimental；在明确客户端 tracing 的数据治理、CORS、采样和收益后再单独决策。Next.js server runtime 后续使用其 `instrumentation.ts` 入口接入，不与 Hono NodeSDK bootstrap 共用 runtime-specific 初始化代码。
+- 当前基线采集 Hono Node.js server span 与 Graphile Worker job span；enqueue payload 传播 W3C Trace Context，使异步 task 日志可以关联 producer trace。OpenTelemetry JS browser instrumentation 仍为 experimental；在明确客户端 tracing 的数据治理、CORS、采样和收益后再单独决策。Next.js server runtime 后续使用其 `instrumentation.ts` 入口接入，不与其他 Node.js process 共用 runtime-specific 初始化代码。
 
 ## 环境约定
 

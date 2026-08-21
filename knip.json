@@ -1,5 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreBinaries": ["peers"],
   "ignoreWorkspaces": ["packages/ui"],
   "workspaces": {
     "apps/web": {
@@ -7,13 +8,20 @@
       "project": ["**/*.{ts,tsx}"]
     },
     "apps/server": {
-      "entry": ["src/auth.ts"],
-      "project": ["src/**/*.ts"]
+      "entry": ["src/auth.ts", "src/ai.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts"],
+      "ignoreDependencies": ["ai"]
     },
     "apps/cli": {
       "project": ["src/**/*.ts"]
     },
+    "apps/worker": {
+      "project": ["src/**/*.ts"]
+    },
     "packages/auth": {
+      "project": ["src/**/*.ts"]
+    },
+    "packages/env": {
       "project": ["src/**/*.ts"]
     },
     "packages/request": {
@@ -25,6 +33,9 @@
     "packages/logger": {
       "project": ["src/**/*.ts"]
     },
+    "packages/jobs": {
+      "project": ["src/**/*.ts"]
+    },
     "packages/observability": {
       "project": ["src/**/*.ts"]
     },
@@ -33,6 +44,6 @@
       "project": ["*.json"]
     }
   },
-  "ignoreDependencies": ["@types/*", "@tailwindcss/postcss", "pino-pretty"],
+  "ignoreDependencies": ["@tailwindcss/postcss", "pino-pretty"],
   "ignoreUnresolved": ["next"]
 }

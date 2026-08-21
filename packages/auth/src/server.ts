@@ -19,7 +19,7 @@ export function createAuth(options: AuthOptions) {
     appName: "Sweet Kit",
     baseURL: options.baseURL,
     database: drizzleAdapter(options.database, {
-      provider: "sqlite",
+      provider: "pg",
       schema,
     }),
     emailAndPassword: {
@@ -36,3 +36,5 @@ export function createAuth(options: AuthOptions) {
     ],
   })
 }
+
+export type Auth = ReturnType<typeof createAuth>

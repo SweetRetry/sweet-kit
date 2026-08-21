@@ -1,9 +1,8 @@
+import { webEnv } from "@workspace/env/web"
 import { createRequestClient } from "@workspace/request/http"
 import { queryOptions } from "@workspace/request/react"
 
-const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3001"
-
-const api = createRequestClient({ baseUrl: `${serverUrl}/` })
+const api = createRequestClient({ baseUrl: `${webEnv.serverUrl}/` })
 
 interface Health {
   status: "ok"
