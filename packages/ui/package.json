@@ -37,12 +37,13 @@
     "@types/react-dom": "^19.2.3",
     "@workspace/typescript-config": "workspace:*",
     "tailwindcss": "^4.2.2",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   },
   "exports": {
     "./globals.css": "./src/styles/globals.css",
     "./postcss.config": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
+    "./hooks/*": "./src/hooks/*.ts",
     "./components/*": "./src/components/*.tsx"
   }
 }

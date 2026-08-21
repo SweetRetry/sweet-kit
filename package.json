@@ -27,7 +27,7 @@
     "@workspace/typescript-config": "workspace:*",
     "knip": "^6.0.5",
     "turbo": "^2.8.20",
-    "typescript": "^5.9.3",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.11"
   },
   "packageManager": "pnpm@11.22.0",

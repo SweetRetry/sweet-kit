@@ -1,14 +1,14 @@
 import Link from "next/link"
 
 import { AuthLayout } from "@/components/auth-layout"
-import { SignInForm } from "@/components/sign-in-form"
+import { SignUpForm } from "@/components/sign-up-form"
 import { SocialLogin } from "@/components/social-login"
 
 function safeRedirect(value: string | undefined) {
   return value?.startsWith("/") && !value.startsWith("//") ? value : "/"
 }
 
-export default async function SignInPage({
+export default async function SignUpPage({
   searchParams,
 }: {
   searchParams: Promise<{ redirect?: string }>
@@ -19,8 +19,8 @@ export default async function SignInPage({
     <AuthLayout>
       <article className="space-y-6">
         <header className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">登录 Sweet Kit</h1>
-          <p className="text-sm text-muted-foreground">选择登录方式继续</p>
+          <h1 className="text-2xl font-semibold tracking-tight">创建账号</h1>
+          <p className="text-sm text-muted-foreground">注册以开始使用 Sweet Kit</p>
         </header>
 
         <SocialLogin />
@@ -34,12 +34,12 @@ export default async function SignInPage({
           </div>
         </div>
 
-        <SignInForm redirectTo={safeRedirect(redirect)} />
+        <SignUpForm redirectTo={safeRedirect(redirect)} />
 
         <footer className="text-center text-sm text-muted-foreground">
-          没有账号？{" "}
-          <Link className="font-medium text-foreground hover:underline" href="/sign-up">
-            创建账号
+          已有账号？{" "}
+          <Link className="font-medium text-foreground hover:underline" href="/sign-in">
+            登录
           </Link>
         </footer>
       </article>

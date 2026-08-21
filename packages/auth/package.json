@@ -16,8 +16,9 @@
     "better-auth": "^1.7.1"
   },
   "devDependencies": {
+    "@types/node": "^25.5.0",
     "@workspace/typescript-config": "workspace:*",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   },
   "exports": {
     "./constants": {

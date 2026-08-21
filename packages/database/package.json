@@ -23,7 +23,7 @@
     "@workspace/env": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "drizzle-kit": "^0.31.10",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   },
   "exports": {
     "./client": {

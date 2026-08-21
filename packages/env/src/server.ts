@@ -9,6 +9,8 @@ const values = z
   .object({
     BETTER_AUTH_SECRET: z.string().min(32).optional(),
     BETTER_AUTH_URL: z.string().url().optional(),
+    GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+    GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     OTEL_TRACES_EXPORTER: z.string().optional(),
     PORT: z.coerce.number().int().min(1).max(65_535).default(3001),
@@ -30,6 +32,10 @@ export const serverEnv = {
       : undefined),
   authSecret: values.BETTER_AUTH_SECRET ?? developmentSecret,
   databaseUrl: databaseEnv.databaseUrl,
+  google:
+    values.GOOGLE_CLIENT_ID && values.GOOGLE_CLIENT_SECRET
+      ? { clientId: values.GOOGLE_CLIENT_ID, clientSecret: values.GOOGLE_CLIENT_SECRET }
+      : undefined,
   port: values.PORT,
   serverUrl: values.SERVER_URL ?? values.BETTER_AUTH_URL ?? "http://localhost:3001",
   webUrl: values.WEB_URL,

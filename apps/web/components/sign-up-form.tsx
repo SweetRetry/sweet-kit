@@ -7,7 +7,7 @@ import { type FormEvent, useState } from "react"
 
 import { authClient } from "@/lib/auth-client"
 
-export function SignInForm({ redirectTo }: { redirectTo: string }) {
+export function SignUpForm({ redirectTo }: { redirectTo: string }) {
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 
@@ -17,13 +17,14 @@ export function SignInForm({ redirectTo }: { redirectTo: string }) {
     setPending(true)
 
     const form = new FormData(event.currentTarget)
+    const name = String(form.get("name"))
     const email = String(form.get("email"))
     const password = String(form.get("password"))
 
-    const result = await authClient.signIn.email({ email, password })
+    const result = await authClient.signUp.email({ email, name, password })
 
     if (result.error) {
-      setError(result.error.message ?? "登录失败")
+      setError(result.error.message ?? "注册失败")
       setPending(false)
       return
     }
@@ -33,6 +34,10 @@ export function SignInForm({ redirectTo }: { redirectTo: string }) {
 
   return (
     <form className="space-y-4" onSubmit={submit}>
+      <div className="space-y-2">
+        <Label htmlFor="name">名称</Label>
+        <Input id="name" name="name" placeholder="输入名称" autoComplete="name" required />
+      </div>
       <div className="space-y-2">
         <Label htmlFor="email">邮箱</Label>
         <Input
@@ -50,15 +55,15 @@ export function SignInForm({ redirectTo }: { redirectTo: string }) {
           id="password"
           name="password"
           type="password"
-          placeholder="输入密码"
-          autoComplete="current-password"
+          placeholder="至少 8 位"
+          autoComplete="new-password"
           minLength={8}
           required
         />
       </div>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <Button className="w-full" type="submit" disabled={pending}>
-        {pending ? "登录中…" : "登录"}
+        {pending ? "创建中…" : "创建账号"}
       </Button>
     </form>
   )

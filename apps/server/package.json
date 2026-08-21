@@ -37,7 +37,7 @@
     "drizzle-orm": "^0.45.2",
     "graphile-worker": "^0.17.3",
     "tsx": "^4.23.12",
-    "typescript": "^5.9.3",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.11"
   }
 }

@@ -6,9 +6,15 @@ import { bearer, deviceAuthorization } from "better-auth/plugins"
 
 import { CLI_CLIENT_ID } from "./constants.js"
 
+export interface SocialProviderOptions {
+  clientId: string
+  clientSecret: string
+}
+
 export interface AuthOptions {
   baseURL: string
   database: Database
+  google?: SocialProviderOptions
   secret: string
   trustedOrigins: string[]
   verificationUri: string
@@ -26,6 +32,14 @@ export function createAuth(options: AuthOptions) {
       enabled: true,
     },
     secret: options.secret,
+    socialProviders: {
+      ...(options.google && {
+        google: {
+          clientId: options.google.clientId,
+          clientSecret: options.google.clientSecret,
+        },
+      }),
+    },
     trustedOrigins: options.trustedOrigins,
     plugins: [
       bearer(),
