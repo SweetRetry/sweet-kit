@@ -20,6 +20,10 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 - 修改 job enqueue、task handler 或 worker lifecycle 时，先读 `adr/0003-postgresql-and-graphile-worker.md`，保持 transaction、at-least-once 与 process 边界。
 - 新增或修改环境变量时，先读 `adr/0001-architecture-runtime-boundaries.md`，放入 `packages/env` 对应 runtime export。
 
+## 专项规则
+
+- 使用 Zod schema 校验时，先读 `rules/zod-v4.md`，使用 v4 推荐 API，避免已废弃的 v3 模式。
+
 ## 技术选型
 
 - 前端客户端状态管理统一使用 zustand，不引入其他 store 方案。
