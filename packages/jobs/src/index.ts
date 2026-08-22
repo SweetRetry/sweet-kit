@@ -12,7 +12,7 @@ export const systemPingPayloadSchema = z.object({
 })
 
 export const emailWelcomePayloadSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   name: z.string().min(1).max(100),
   userId: z.string().min(1),
 })
