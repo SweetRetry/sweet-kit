@@ -2,9 +2,9 @@ import { execFileSync } from "node:child_process"
 import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
-import { scanContent } from "./zod-v4-scan.js"
+import { scanContent } from "./scan.js"
 
-const repositoryRoot = resolve(fileURLToPath(new URL("..", import.meta.url)))
+const repositoryRoot = resolve(fileURLToPath(new URL("../..", import.meta.url)))
 
 function listSourceFiles() {
   const output = execFileSync(
@@ -16,8 +16,8 @@ function listSourceFiles() {
   return output
     .split("\0")
     .filter(Boolean)
-    .filter((f) => /\.(ts|tsx|js|jsx|mts|mjs)$/.test(f))
-    .filter((f) => !f.includes("node_modules") && !f.includes("/dist/") && !f.includes("scripts/zod-v4-"))
+    .filter((f) => /\.(tsx|jsx|html|vue|svelte)$/.test(f))
+    .filter((f) => !f.includes("node_modules") && !f.includes("/dist/"))
 }
 
 function main() {
@@ -30,15 +30,15 @@ function main() {
   }
 
   if (allFindings.length === 0) {
-    console.log("✓ No deprecated Zod v3 patterns found")
+    console.log("✓ No arbitrary font sizes found")
     return
   }
 
-  console.log(`Found ${allFindings.length} deprecated Zod v3 pattern(s):\n`)
+  console.log(`Found ${allFindings.length} arbitrary font size(s):\n`)
 
   for (const finding of allFindings) {
     const location = `${finding.file}:${finding.line}:${finding.column}`
-    const suggestion = finding.fix ? ` → ${finding.fix}` : ""
+    const suggestion = finding.suggestion ? ` → ${finding.suggestion}` : ""
     console.log(`  ${location}`)
     console.log(`    ${finding.message}${suggestion}`)
     console.log()

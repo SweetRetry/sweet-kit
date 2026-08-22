@@ -14,7 +14,9 @@
       "**/*.jsx",
       "**/*.json",
       "!**/next-env.d.ts",
-      "!packages/ui"
+      "!packages/ui",
+      "!scripts",
+      "!rules"
     ]
   },
   "formatter": {
