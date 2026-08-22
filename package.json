@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo watch dev:compile dev",
+    "dev": "turbo watch build dev",
     "cli": "pnpm --filter cli sweet",
     "worker": "pnpm --filter worker dev",
     "adr:reorder": "node scripts/adr-reorder.js",

@@ -5,7 +5,6 @@
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev:compile": "tsc -p tsconfig.json",
     "db:generate": "pnpm --filter @workspace/env build && drizzle-kit generate --config drizzle.config.ts && pnpm exec biome format --write drizzle/meta/*.json",
     "db:migrate": "pnpm --filter @workspace/env build && drizzle-kit migrate --config drizzle.config.ts",
     "lint": "biome check .",

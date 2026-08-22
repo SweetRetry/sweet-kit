@@ -13,13 +13,8 @@
     "typecheck": {
       "dependsOn": ["^build", "^typecheck"]
     },
-    "dev:compile": {
-      "dependsOn": ["^dev:compile"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"]
-    },
     "dev": {
-      "dependsOn": ["^dev:compile"],
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true,
       "interruptible": true
