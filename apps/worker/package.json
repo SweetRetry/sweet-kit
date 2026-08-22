@@ -12,6 +12,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "@workspace/env": "workspace:*",
     "@workspace/jobs": "workspace:*",
     "@workspace/logger": "workspace:*",

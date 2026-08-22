@@ -1,3 +1,4 @@
+import "dotenv/config"
 import { serverEnv } from "@workspace/env/server"
 import { startObservability } from "@workspace/observability"
 

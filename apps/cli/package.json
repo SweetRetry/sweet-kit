@@ -14,6 +14,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "@workspace/auth": "workspace:*",
     "@workspace/env": "workspace:*",
     "@workspace/observability": "workspace:*",

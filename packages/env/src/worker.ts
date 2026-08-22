@@ -1,4 +1,3 @@
-import "dotenv/config"
 import path from "node:path"
 import { z } from "zod"
 
@@ -6,8 +5,8 @@ import { databaseEnv } from "./database.ts"
 
 const values = z
   .object({
-    JOB_CONCURRENCY: z.coerce.number().int().positive().default(5),
-    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+    JOB_CONCURRENCY: z.coerce.number().int().positive(),
+    NODE_ENV: z.enum(["development", "test", "production"]),
     OTEL_TRACES_EXPORTER: z.string().optional(),
     SWEET_KIT_WORKER_TRACE_FILE: z.string().min(1).optional(),
   })

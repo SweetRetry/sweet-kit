@@ -1,11 +1,10 @@
-import "dotenv/config"
 import { z } from "zod"
 
 const values = z
   .object({
-    LOG_LEVEL: z.string().min(1).default("info"),
-    LOG_PRETTY: z.enum(["true", "false"]).default("false"),
-    NODE_ENV: z.string().min(1).default("development"),
+    LOG_LEVEL: z.string().min(1),
+    LOG_PRETTY: z.enum(["true", "false"]),
+    NODE_ENV: z.enum(["development", "test", "production"]),
   })
   .parse(process.env)
 

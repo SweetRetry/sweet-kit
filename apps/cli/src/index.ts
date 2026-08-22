@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import "dotenv/config"
 import { CLI_CLIENT_ID } from "@workspace/auth/constants"
 import { cliEnv } from "@workspace/env/cli"
 import { createRequestClient } from "@workspace/request/http"

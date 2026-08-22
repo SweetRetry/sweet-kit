@@ -13,6 +13,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "@ai-sdk/openai": "^4.0.44",
     "@hono/node-server": "^2.1.1",
     "@hono/otel": "^1.1.2",

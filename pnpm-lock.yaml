@@ -47,6 +47,9 @@ importers:
       commander:
         specifier: ^15.0.0
         version: 15.0.0
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       open:
         specifier: ^11.0.1
         version: 11.0.1
@@ -102,6 +105,9 @@ importers:
       ai:
         specifier: ^7.0.70
         version: 7.0.70(zod@4.3.6)
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       hono:
         specifier: ^4.13.3
         version: 4.13.3
@@ -218,6 +224,9 @@ importers:
       '@workspace/observability':
         specifier: workspace:*
         version: link:../../packages/observability
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       graphile-worker:
         specifier: ^0.17.3
         version: 0.17.3(supports-color@7.2.0)(typescript@7.0.2)
@@ -290,9 +299,6 @@ importers:
 
   packages/env:
     dependencies:
-      dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
       zod:
         specifier: ^4.3.6
         version: 4.3.6
