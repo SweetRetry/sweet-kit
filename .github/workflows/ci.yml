@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: sweet_kit
+          POSTGRES_PASSWORD: sweet
+          POSTGRES_USER: sweet
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U sweet -d sweet_kit"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://sweet:sweet@localhost:5432/sweet_kit
+      BETTER_AUTH_SECRET: ci-test-secret-at-least-32-characters-long
+      BETTER_AUTH_URL: http://localhost:3001
+      WEB_URL: http://localhost:3000
+      SERVER_URL: http://localhost:3001
+      NEXT_PUBLIC_SERVER_URL: http://localhost:3001
+      LOG_LEVEL: silent
+      LOG_PRETTY: "false"
+      JOB_CONCURRENCY: 5
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm db:migrate
+
+      - run: pnpm verify

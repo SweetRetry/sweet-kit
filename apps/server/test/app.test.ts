@@ -3,7 +3,7 @@ import { tmpdir } from "node:os"
 import path from "node:path"
 import { CLI_CLIENT_ID } from "@workspace/auth/constants"
 import { deviceCode } from "@workspace/database/schema"
-import { createTaskList, enqueueSystemPing } from "@workspace/jobs"
+import { createTaskList, enqueueEmailWelcome, enqueueSystemPing } from "@workspace/jobs"
 import { createLogger } from "@workspace/logger"
 import { type Observability, startObservability } from "@workspace/observability"
 import { ErrorCode } from "@workspace/request/contract"
@@ -11,7 +11,7 @@ import { sql } from "drizzle-orm"
 import { runOnce } from "graphile-worker"
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest"
 
-import { createServerFixture, type ServerFixture } from "./fixture.js"
+import { createServerFixture, type ServerFixture } from "./fixture.ts"
 
 const webUrl = "http://localhost:3000"
 const healthTraceId = "11111111111111111111111111111111"
@@ -159,6 +159,34 @@ describe("Hono server", () => {
       sql`select count(*)::integer as count from graphile_worker.jobs`
     )
 
+    expect(before.rows[0]?.count).toBe(1)
+
+    await runOnce(
+      { connectionString: fixture.databaseUrl },
+      createTaskList({
+        logger: createLogger({ level: "silent", service: "sweet-kit-worker-test" }),
+      })
+    )
+
+    const after = await fixture.database.execute<{ count: number }>(
+      sql`select count(*)::integer as count from graphile_worker.jobs`
+    )
+    expect(after.rows[0]?.count).toBe(0)
+  })
+
+  it("入队并执行 email.welcome task，job_key 保证幂等", async () => {
+    const payload = {
+      email: "new-user@example.com",
+      name: "New User",
+      userId: "user-id-001",
+    }
+
+    await fixture.database.execute(enqueueEmailWelcome(payload))
+    await fixture.database.execute(enqueueEmailWelcome(payload))
+
+    const before = await fixture.database.execute<{ count: number }>(
+      sql`select count(*)::integer as count from graphile_worker.jobs`
+    )
     expect(before.rows[0]?.count).toBe(1)
 
     await runOnce(

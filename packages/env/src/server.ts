@@ -2,7 +2,7 @@ import "dotenv/config"
 import path from "node:path"
 import { z } from "zod"
 
-import { databaseEnv } from "./database.js"
+import { databaseEnv } from "./database.ts"
 
 const developmentSecret = "sweet-kit-development-secret-change-me"
 const values = z

@@ -39,6 +39,10 @@
       "types": "./dist/web.d.ts",
       "default": "./dist/web.js"
     },
+    "./storage": {
+      "types": "./dist/storage.d.ts",
+      "default": "./dist/storage.js"
+    },
     "./worker": {
       "types": "./dist/worker.d.ts",
       "default": "./dist/worker.js"

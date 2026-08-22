@@ -1,12 +1,12 @@
 import ky, { isHTTPError, type KyInstance } from "ky"
-import { type ErrorCode, getErrorStatus, isApiErrorBody, isTraceId } from "./contract.js"
+import { type ErrorCode, getErrorStatus, isApiErrorBody, isTraceId } from "./contract.ts"
 
 export {
   type ApiErrorBody,
   type ApiErrorStatus,
   ErrorCode,
   type ErrorCode as ErrorCodeValue,
-} from "./contract.js"
+} from "./contract.ts"
 
 export type AccessTokenProvider = () => Promise<string | null> | string | null
 

@@ -2,7 +2,7 @@ import "dotenv/config"
 import path from "node:path"
 import { z } from "zod"
 
-import { databaseEnv } from "./database.js"
+import { databaseEnv } from "./database.ts"
 
 const values = z
   .object({

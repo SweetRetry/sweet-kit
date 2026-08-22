@@ -9,7 +9,7 @@
     "cli": "pnpm --filter cli sweet",
     "worker": "pnpm --filter worker dev",
     "adr:reorder": "node scripts/adr-reorder.js",
-    "infra:up": "docker compose up -d --wait postgres",
+    "infra:up": "docker compose up -d --wait postgres minio",
     "infra:down": "docker compose down",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",

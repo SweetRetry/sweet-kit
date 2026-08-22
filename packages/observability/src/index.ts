@@ -3,7 +3,7 @@ import { trace } from "@opentelemetry/api"
 import { NodeSDK } from "@opentelemetry/sdk-node"
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base"
 
-import { AgentTraceFileExporter } from "./agent-traces.js"
+import { AgentTraceFileExporter } from "./agent-traces.ts"
 
 export interface StartObservabilityOptions {
   serviceName: string

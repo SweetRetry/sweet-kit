@@ -4,7 +4,7 @@ import { PostgreSqlContainer } from "@testcontainers/postgresql"
 import { sql } from "drizzle-orm"
 import { migrate } from "drizzle-orm/node-postgres/migrator"
 
-import { closeDatabase, createDatabase } from "./client.js"
+import { closeDatabase, createDatabase } from "./client.ts"
 
 const migrationsFolder = fileURLToPath(new URL("../drizzle", import.meta.url))
 

@@ -4,7 +4,7 @@ import { createTestDatabase } from "@workspace/database/testing"
 import { createLogger } from "@workspace/logger"
 import { makeWorkerUtils } from "graphile-worker"
 
-import { createServerApp } from "../src/create-app.js"
+import { createServerApp } from "../src/create-app.ts"
 
 const serverUrl = "http://localhost:3001"
 const webUrl = "http://localhost:3000"

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { ErrorCode } from "../src/contract.js"
-import { createRequestClient, RequestError } from "../src/http.js"
+import { ErrorCode } from "../src/contract.ts"
+import { createRequestClient, RequestError } from "../src/http.ts"
 
 const traceId = "11111111111111111111111111111111"
 

@@ -8,8 +8,8 @@ import { deviceAuthorizationClient } from "better-auth/client/plugins"
 import { Command } from "commander"
 import open from "open"
 
-import { clearAccessToken, readAccessToken, writeAccessToken } from "./credentials.js"
-import { showTrace, type TraceCommandOptions } from "./trace.js"
+import { clearAccessToken, readAccessToken, writeAccessToken } from "./credentials.ts"
+import { showTrace, type TraceCommandOptions } from "./trace.ts"
 
 const serverUrl = cliEnv.serverUrl
 const deviceGrant = "urn:ietf:params:oauth:grant-type:device_code" as const

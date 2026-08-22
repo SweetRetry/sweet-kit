@@ -4,7 +4,7 @@ import * as schema from "@workspace/database/schema"
 import { betterAuth } from "better-auth/minimal"
 import { bearer, deviceAuthorization } from "better-auth/plugins"
 
-import { CLI_CLIENT_ID } from "./constants.js"
+import { CLI_CLIENT_ID } from "./constants.ts"
 
 export interface SocialProviderOptions {
   clientId: string

@@ -27,6 +27,7 @@
     "ai": "^7.0.70",
     "hono": "^4.13.3",
     "hono-pino": "^0.10.3",
+    "hono-rate-limiter": "^0.5.3",
     "zod": "^4.3.6"
   },
   "devDependencies": {

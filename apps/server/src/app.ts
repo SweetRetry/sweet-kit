@@ -1,8 +1,8 @@
 import { serverEnv } from "@workspace/env/server"
 import { createLogger } from "@workspace/logger"
 
-import { auth } from "./auth.js"
-import { createServerApp } from "./create-app.js"
+import { auth } from "./auth.ts"
+import { createServerApp } from "./create-app.ts"
 
 const logger = createLogger({ service: "sweet-kit-server" })
 const app = createServerApp({

@@ -14,6 +14,7 @@ import type { Context } from "hono"
 import { cors } from "hono/cors"
 import { requestId } from "hono/request-id"
 import { type Env as HonoPinoEnv, pinoLogger } from "hono-pino"
+import { rateLimiter } from "hono-rate-limiter"
 
 const HealthSchema = z
   .object({
@@ -138,6 +139,16 @@ export function createServerApp(options: CreateServerAppOptions) {
       origin: options.webUrl,
       credentials: true,
       exposeHeaders: ["x-request-id", "x-trace-id"],
+    })
+  )
+
+  app.use(
+    "/api/*",
+    rateLimiter({
+      windowMs: 60_000,
+      limit: 100,
+      keyGenerator: (c) =>
+        c.req.header("x-forwarded-for") ?? c.req.header("x-real-ip") ?? "anonymous",
     })
   )
 
