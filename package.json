@@ -8,7 +8,6 @@
     "dev": "turbo watch build dev",
     "cli": "pnpm --filter cli sweet",
     "worker": "pnpm --filter worker dev",
-    "browser:cdp": "bash scripts/browser-cdp.sh",
     "adr:reorder": "node scripts/adr-reorder.js",
     "zod:check": "node rules/zod-v4/check.js",
     "infra:up": "docker compose up -d --wait postgres minio",
