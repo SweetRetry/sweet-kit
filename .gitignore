@@ -32,6 +32,9 @@ dist
 # Debug
 npm-debug.log*
 
+# Agent browser
+.agent-browser/
+
 # Misc
 .DS_Store
 *.pem

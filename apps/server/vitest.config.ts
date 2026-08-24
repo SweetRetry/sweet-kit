@@ -1,7 +1,7 @@
 import { config } from "dotenv"
 import { defineProject } from "vitest/config"
 
-config({ path: new URL(".env", import.meta.url).pathname })
+config({ path: new URL(".env.local", import.meta.url).pathname })
 
 export default defineProject({
   test: {

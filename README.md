@@ -38,14 +38,14 @@ pnpm dev
 
 默认地址：
 
-- Web：<http://localhost:3000>
-- Hono：<http://localhost:3001>
-- Scalar：<http://localhost:3001/docs>
-- OpenAPI：<http://localhost:3001/openapi.json>
+- Web：<http://localhost:43110>
+- Hono：<http://localhost:43111>
+- Scalar：<http://localhost:43111/docs>
+- OpenAPI：<http://localhost:43111/openapi.json>
 
 `pnpm dev` 同时启动 Web、Hono server 和 Graphile Worker；PostgreSQL 由 `compose.yaml` 提供。
 
-生产环境变量参考 [`.env.example`](./.env.example)。本地开发可以直接使用内置 localhost 配置；生产环境必须提供高熵 `BETTER_AUTH_SECRET`。
+各应用的本地配置存放在对应目录的 `.env.local`，生产环境变量参考相邻的 `.env.example`；生产环境必须提供高熵 `BETTER_AUTH_SECRET`。
 
 日志默认以 JSON 写入 stdout。使用 `LOG_LEVEL` 控制级别；本地需要可读输出时设置 `LOG_PRETTY=true`。
 

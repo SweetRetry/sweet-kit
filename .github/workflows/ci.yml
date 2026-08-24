@@ -32,10 +32,10 @@ jobs:
     env:
       DATABASE_URL: postgresql://sweet:sweet@localhost:5432/sweet_kit
       BETTER_AUTH_SECRET: ci-test-secret-at-least-32-characters-long
-      BETTER_AUTH_URL: http://localhost:3001
-      WEB_URL: http://localhost:3000
-      SERVER_URL: http://localhost:3001
-      NEXT_PUBLIC_SERVER_URL: http://localhost:3001
+      BETTER_AUTH_URL: http://localhost:43111
+      WEB_URL: http://localhost:43110
+      SERVER_URL: http://localhost:43111
+      NEXT_PUBLIC_SERVER_URL: http://localhost:43111
       LOG_LEVEL: silent
       LOG_PRETTY: "false"
       JOB_CONCURRENCY: 5

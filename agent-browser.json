@@ -1,0 +1,5 @@
+{
+  "$schema": "https://agent-browser.dev/schema.json",
+  "cdp": "9222",
+  "pinTab": true
+}

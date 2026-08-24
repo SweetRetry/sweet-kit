@@ -5,9 +5,9 @@
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.js",
-    "auth:generate": "pnpm --filter @workspace/env build && pnpm --filter @workspace/database build && auth generate --config src/auth.ts --output ../../packages/database/src/schema.ts --yes && pnpm exec biome check --write ../../packages/database/src/schema.ts",
+    "dev": "DOTENV_CONFIG_PATH=.env.local tsx watch src/index.ts",
+    "start": "DOTENV_CONFIG_PATH=.env.local node dist/index.js",
+    "auth:generate": "pnpm --filter @workspace/env build && pnpm --filter @workspace/database build && DOTENV_CONFIG_PATH=.env.local auth generate --config src/auth.ts --output ../../packages/database/src/schema.ts --yes && pnpm exec biome check --write ../../packages/database/src/schema.ts",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json"

@@ -6,8 +6,8 @@ import { makeWorkerUtils } from "graphile-worker"
 
 import { createServerApp } from "../src/create-app.ts"
 
-const serverUrl = "http://localhost:3001"
-const webUrl = "http://localhost:3000"
+const serverUrl = "http://localhost:43111"
+const webUrl = "http://localhost:43110"
 
 interface SignUpResult {
   token: string | null

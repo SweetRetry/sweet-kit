@@ -13,7 +13,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest"
 
 import { createServerFixture, type ServerFixture } from "./fixture.ts"
 
-const webUrl = "http://localhost:3000"
+const webUrl = "http://localhost:43110"
 const healthTraceId = "11111111111111111111111111111111"
 const errorTraceId = "33333333333333333333333333333333"
 
