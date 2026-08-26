@@ -1,6 +1,7 @@
 import "dotenv/config"
-import { workerEnv } from "@workspace/env/worker"
 import { startObservability } from "@workspace/observability"
+
+import { workerEnv } from "./env.ts"
 
 const observability = startObservability({
   serviceName: "sweet-kit-worker",
@@ -13,7 +14,7 @@ const [{ createTaskList }, { createLogger }, { run }] = await Promise.all([
   import("graphile-worker"),
 ])
 
-const logger = createLogger({ service: "sweet-kit-worker" })
+const logger = createLogger({ ...workerEnv.logger, service: "sweet-kit-worker" })
 const runner = await run({
   concurrency: workerEnv.concurrency,
   connectionString: workerEnv.databaseUrl,

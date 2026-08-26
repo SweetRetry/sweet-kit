@@ -13,7 +13,7 @@
 - Logging：Pino、hono-pino、request ID、敏感字段 redaction
 - Observability：OpenTelemetry、trace/log correlation、Agent trace lookup
 - CLI：Commander
-- Env：按 runtime 隔离的 Zod 环境变量配置
+- Env：各应用独立拥有的 Zod 环境变量配置
 - Test：Vitest、Hono `app.request()`、Testcontainers PostgreSQL
 
 ## 仓库知识与自动化

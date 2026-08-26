@@ -18,12 +18,12 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 - 修改 CLI auth、token 或 device authorization 时，先读 `adr/0004-cli-authentication-boundary.md`，保持第一方 session credential 的信任边界。
 - 修改 server route、auth 或 database schema 时，使用 `createServerFixture` 运行真实 migration 的 Hono 集成测试；完成代码修改后以 `pnpm verify` 为唯一全量验证入口。
 - 修改 job enqueue、task handler 或 worker lifecycle 时，先读 `adr/0003-postgresql-and-graphile-worker.md`，保持 transaction、at-least-once 与 process 边界。
-- 新增或修改环境变量时，先读 `adr/0001-architecture-runtime-boundaries.md`，放入 `packages/env` 对应 runtime export。
+- 新增或修改应用 runtime 环境变量时，先读 `adr/0001-architecture-runtime-boundaries.md`，由所属应用校验并通过 composition root 显式传入 package。
 
 ## 专项规则
 
 - 使用 Zod schema 校验时，先读 `rules/zod-v4/README.md`，使用 v4 推荐 API，避免已废弃的 v3 模式。
-- 设计或修改 UI 时，先读 `DESIGN.md`，遵循其中引用的字体与布局规则。
+- 设计或修改 UI 时，先读 `DESIGN.md`，遵循其中引用的字体、布局与色彩规则。
 
 ## 技术选型
 
@@ -43,7 +43,6 @@ apps/worker/                 # Graphile Worker process
 apps/cli/                    # Commander CLI 与 device authorization
 packages/auth/               # Better Auth 切面
 packages/database/           # Drizzle ORM 与 schema
-packages/env/                # 分 runtime 的环境配置与校验
 packages/jobs/               # Graphile task、payload 与 enqueue
 packages/logger/             # Pino 结构化日志
 packages/observability/      # OpenTelemetry tracing 与 Agent trace 查询

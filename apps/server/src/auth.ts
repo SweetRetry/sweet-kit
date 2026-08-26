@@ -1,6 +1,7 @@
 import { createAuth } from "@workspace/auth/server"
 import { createDatabase } from "@workspace/database/client"
-import { serverEnv } from "@workspace/env/server"
+
+import { serverEnv } from "./env.ts"
 
 export const db = createDatabase(serverEnv.databaseUrl)
 

@@ -16,12 +16,12 @@
   "dependencies": {
     "dotenv": "^17.4.2",
     "@workspace/auth": "workspace:*",
-    "@workspace/env": "workspace:*",
     "@workspace/observability": "workspace:*",
     "@workspace/request": "workspace:*",
     "better-auth": "^1.7.1",
     "commander": "^15.0.0",
-    "open": "^11.0.1"
+    "open": "^11.0.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

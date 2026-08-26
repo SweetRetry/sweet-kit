@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
-    "@workspace/env": "workspace:*",
     "pino": "^10.3.1"
   },
   "devDependencies": {

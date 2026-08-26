@@ -22,9 +22,6 @@
     "packages/auth": {
       "project": ["src/**/*.ts"]
     },
-    "packages/env": {
-      "project": ["src/**/*.ts"]
-    },
     "packages/request": {
       "project": ["src/**/*.{ts,tsx}"]
     },

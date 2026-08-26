@@ -2,7 +2,6 @@
 
 import "dotenv/config"
 import { CLI_CLIENT_ID } from "@workspace/auth/constants"
-import { cliEnv } from "@workspace/env/cli"
 import { createRequestClient } from "@workspace/request/http"
 import { createAuthClient } from "better-auth/client"
 import { deviceAuthorizationClient } from "better-auth/client/plugins"
@@ -10,6 +9,7 @@ import { Command } from "commander"
 import open from "open"
 
 import { clearAccessToken, readAccessToken, writeAccessToken } from "./credentials.ts"
+import { cliEnv } from "./env.ts"
 import { showTrace, type TraceCommandOptions } from "./trace.ts"
 
 const serverUrl = cliEnv.serverUrl

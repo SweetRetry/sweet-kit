@@ -34,7 +34,12 @@ export async function createServerFixture() {
   })
   const app = createServerApp({
     auth,
-    logger: createLogger({ level: "silent", service: "sweet-kit-server-test" }),
+    logger: createLogger({
+      environment: "test",
+      level: "silent",
+      pretty: false,
+      service: "sweet-kit-server-test",
+    }),
     webUrl,
   })
   app.get("/__test/error", () => {

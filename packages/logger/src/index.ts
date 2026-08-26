@@ -1,5 +1,4 @@
 import { isSpanContextValid, trace } from "@opentelemetry/api"
-import { loggerEnv } from "@workspace/env/logger"
 import pino, { type Logger, type LoggerOptions } from "pino"
 
 const redactedPaths = [
@@ -20,20 +19,20 @@ const redactedPaths = [
 ]
 
 export interface CreateLoggerOptions {
+  environment: string
+  level: string
+  pretty: boolean
   service: string
-  level?: string
-  pretty?: boolean
 }
 
 export function createLogger(options: CreateLoggerOptions): Logger {
-  const pretty = options.pretty ?? loggerEnv.pretty
   const loggerOptions: LoggerOptions = {
     base: null,
-    level: options.level ?? loggerEnv.level,
+    level: options.level,
     mixin: () => {
       const spanContext = trace.getActiveSpan()?.spanContext()
       return {
-        environment: loggerEnv.environment,
+        environment: options.environment,
         service: options.service,
         ...(spanContext && isSpanContextValid(spanContext)
           ? {
@@ -54,7 +53,7 @@ export function createLogger(options: CreateLoggerOptions): Logger {
     timestamp: pino.stdTimeFunctions.isoTime,
   }
 
-  if (!pretty) {
+  if (!options.pretty) {
     return pino(loggerOptions)
   }
 

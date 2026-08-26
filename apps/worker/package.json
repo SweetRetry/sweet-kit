@@ -13,11 +13,11 @@
   },
   "dependencies": {
     "dotenv": "^17.4.2",
-    "@workspace/env": "workspace:*",
     "@workspace/jobs": "workspace:*",
     "@workspace/logger": "workspace:*",
     "@workspace/observability": "workspace:*",
-    "graphile-worker": "^0.17.3"
+    "graphile-worker": "^0.17.3",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

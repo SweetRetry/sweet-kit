@@ -1,6 +1,7 @@
 import path from "node:path"
-import { cliEnv } from "@workspace/env/cli"
 import { type AgentSpanRecord, readAgentTrace } from "@workspace/observability/agent-traces"
+
+import { cliEnv } from "./env.ts"
 
 export interface TraceCommandOptions {
   file?: string

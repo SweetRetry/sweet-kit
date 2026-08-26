@@ -1,6 +1,7 @@
-import { webEnv } from "@workspace/env/web"
 import { createRequestClient } from "@workspace/request/http"
 import { queryOptions } from "@workspace/request/react"
+
+import { webEnv } from "./env"
 
 const api = createRequestClient({ baseUrl: `${webEnv.serverUrl}/` })
 

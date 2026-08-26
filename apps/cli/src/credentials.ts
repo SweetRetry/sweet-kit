@@ -1,6 +1,7 @@
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises"
 import path from "node:path"
-import { cliEnv } from "@workspace/env/cli"
+
+import { cliEnv } from "./env.ts"
 
 interface Credentials {
   accessToken: string

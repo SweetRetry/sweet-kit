@@ -10,14 +10,14 @@ Sweet Kit 同时包含 browser、server、worker 和 CLI。它们共享部分能
 ## 决策
 
 - `apps/*` 只承担进程入口、部署适配和切面装配。
-- `packages/*` 按 auth、database、env、jobs、logger、observability、request、UI 等架构切面划分，不以潜在复用性作为拆包依据。
+- `packages/*` 按 auth、database、jobs、logger、observability、request、UI 等架构切面划分，不以潜在复用性作为拆包依据。
 - 应用只能通过 package 的公开 exports 使用切面，不跨 package 导入内部文件。
 - runtime-specific 初始化留在对应应用入口，不在不同 Node.js process 或 browser 之间共享有副作用的初始化模块。
-- 环境配置由 `packages/env` 统一校验，并按 runtime 提供独立 exports。browser export 不得包含 server secret 或 database 配置。
+- 应用的 runtime 环境配置由所属应用读取和校验，并在 composition root 显式传给 package；公共 package 不维护跨 runtime 的配置聚合。
 - 新增抽象前先用完整纵切验证需求；优先使用现有依赖和成熟第三方库的公开扩展能力。
 
 ## 结果
 
 - 应用可以独立运行和部署，package 保持单一架构职责。
-- runtime 和 secret 边界由 import graph 表达，可通过静态检查持续验证。
+- runtime 和 secret 边界由应用所有权和 import graph 表达，可通过静态检查持续验证。
 - 跨切面行为在 composition root 显式组装，不由公共模块隐式启动。

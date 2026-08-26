@@ -32,9 +32,6 @@ importers:
       '@workspace/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@workspace/env':
-        specifier: workspace:*
-        version: link:../../packages/env
       '@workspace/observability':
         specifier: workspace:*
         version: link:../../packages/observability
@@ -53,6 +50,9 @@ importers:
       open:
         specifier: ^11.0.1
         version: 11.0.1
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@types/node':
         specifier: ^25.5.0
@@ -90,9 +90,6 @@ importers:
       '@workspace/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@workspace/env':
-        specifier: workspace:*
-        version: link:../../packages/env
       '@workspace/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -157,9 +154,6 @@ importers:
       '@lobehub/icons':
         specifier: ^5.16.0
         version: 5.16.0(@lobehub/ui@5.32.3)(@types/react@19.2.14)(antd@6.6.1(date-fns@4.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@7.2.0)
-      '@workspace/env':
-        specifier: workspace:*
-        version: link:../../packages/env
       '@workspace/request':
         specifier: workspace:*
         version: link:../../packages/request
@@ -212,9 +206,6 @@ importers:
 
   apps/worker:
     dependencies:
-      '@workspace/env':
-        specifier: workspace:*
-        version: link:../../packages/env
       '@workspace/jobs':
         specifier: workspace:*
         version: link:../../packages/jobs
@@ -230,6 +221,9 @@ importers:
       graphile-worker:
         specifier: ^0.17.3
         version: 0.17.3(supports-color@7.2.0)(typescript@7.0.2)
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@types/node':
         specifier: ^25.5.0
@@ -284,9 +278,6 @@ importers:
       '@types/pg':
         specifier: ^8.23.1
         version: 8.23.1
-      '@workspace/env':
-        specifier: workspace:*
-        version: link:../env
       '@workspace/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -296,22 +287,9 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
-
-  packages/env:
-    dependencies:
       zod:
         specifier: ^4.3.6
         version: 4.3.6
-    devDependencies:
-      '@types/node':
-        specifier: ^25.5.0
-        version: 25.5.0
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
 
   packages/jobs:
     dependencies:
@@ -346,9 +324,6 @@ importers:
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.1
-      '@workspace/env':
-        specifier: workspace:*
-        version: link:../env
       pino:
         specifier: ^10.3.1
         version: 10.3.1

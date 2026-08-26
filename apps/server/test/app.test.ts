@@ -164,7 +164,12 @@ describe("Hono server", () => {
     await runOnce(
       { connectionString: fixture.databaseUrl },
       createTaskList({
-        logger: createLogger({ level: "silent", service: "sweet-kit-worker-test" }),
+        logger: createLogger({
+          environment: "test",
+          level: "silent",
+          pretty: false,
+          service: "sweet-kit-worker-test",
+        }),
       })
     )
 
@@ -192,7 +197,12 @@ describe("Hono server", () => {
     await runOnce(
       { connectionString: fixture.databaseUrl },
       createTaskList({
-        logger: createLogger({ level: "silent", service: "sweet-kit-worker-test" }),
+        logger: createLogger({
+          environment: "test",
+          level: "silent",
+          pretty: false,
+          service: "sweet-kit-worker-test",
+        }),
       })
     )
 
