@@ -23,7 +23,7 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 ## 专项规则
 
 - 使用 Zod schema 校验时，先读 `rules/zod-v4/README.md`，使用 v4 推荐 API，避免已废弃的 v3 模式。
-- 编写字体大小样式时，先读 `rules/font-system/README.md`，使用 Tailwind 标准 text utility，禁止 arbitrary value。
+- 设计或修改 UI 时，先读 `DESIGN.md`，遵循其中引用的字体与布局规则。
 
 ## 技术选型
 
