@@ -243,11 +243,3 @@ Schema 与 JSON Schema 互转。
 ### z.coerce 命名空间
 
 与 v3 一致：`z.coerce.string()`, `z.coerce.number()`, `z.coerce.boolean()`, `z.coerce.bigint()`, `z.coerce.date()`。
-
-### zod/mini
-
-轻量子包，体积更小，适合 bundle-sensitive 场景：
-
-```ts
-import { z } from "zod/mini"
-```
