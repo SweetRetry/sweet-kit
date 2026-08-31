@@ -1,6 +1,9 @@
 packages:
   - "apps/*"
   - "packages/*"
+peerDependencyRules:
+  allowedVersions:
+    "@emoji-mart/react@1>react": "^19.0.0"
 allowBuilds:
   better-sqlite3: false
   cpu-features: false
