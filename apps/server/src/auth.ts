@@ -1,15 +1,54 @@
-import { createAuth } from "@workspace/auth/server"
-import { createDatabase } from "@workspace/database/client"
+import { drizzleAdapter } from "@better-auth/drizzle-adapter"
+import { CLI_CLIENT_ID } from "@workspace/request/contract"
+import { betterAuth } from "better-auth/minimal"
+import { bearer, deviceAuthorization } from "better-auth/plugins"
 
-import { serverEnv } from "./env.ts"
+import type { Database } from "./database/client.ts"
+import * as schema from "./database/schema.ts"
 
-export const db = createDatabase(serverEnv.databaseUrl)
+export interface SocialProviderOptions {
+  clientId: string
+  clientSecret: string
+}
 
-export const auth = createAuth({
-  baseURL: serverEnv.serverUrl,
-  database: db,
-  google: serverEnv.google,
-  secret: serverEnv.authSecret,
-  trustedOrigins: [serverEnv.webUrl],
-  verificationUri: `${serverEnv.webUrl}/device`,
-})
+export interface AuthOptions {
+  baseURL: string
+  database: Database
+  google?: SocialProviderOptions
+  secret: string
+  trustedOrigins: string[]
+  verificationUri: string
+}
+
+export function createAuth(options: AuthOptions) {
+  return betterAuth({
+    appName: "Sweet Kit",
+    baseURL: options.baseURL,
+    database: drizzleAdapter(options.database, {
+      provider: "pg",
+      schema,
+    }),
+    emailAndPassword: {
+      enabled: true,
+    },
+    secret: options.secret,
+    socialProviders: {
+      ...(options.google && {
+        google: {
+          clientId: options.google.clientId,
+          clientSecret: options.google.clientSecret,
+        },
+      }),
+    },
+    trustedOrigins: options.trustedOrigins,
+    plugins: [
+      bearer(),
+      deviceAuthorization({
+        verificationUri: options.verificationUri,
+        validateClient: (clientId) => clientId === CLI_CLIENT_ID,
+      }),
+    ],
+  })
+}
+
+export type Auth = ReturnType<typeof createAuth>

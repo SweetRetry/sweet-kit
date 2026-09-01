@@ -5,7 +5,7 @@ const nextConfig = {
   experimental: {
     useTypeScriptCli: true,
   },
-  transpilePackages: ["@workspace/auth", "@workspace/request", "@workspace/ui"],
+  transpilePackages: ["@workspace/request", "@workspace/ui"],
   turbopack: {
     root: path.join(import.meta.dirname, "../.."),
   },

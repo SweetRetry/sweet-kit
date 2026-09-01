@@ -1,9 +1,10 @@
 {
-  "extends": "@workspace/typescript-config/react-library.json",
+  "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
     "declaration": false,
     "declarationMap": false,
-    "noEmit": true
+    "noEmit": true,
+    "types": []
   },
   "include": ["src", "test", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]

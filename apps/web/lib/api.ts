@@ -1,5 +1,5 @@
+import { queryOptions } from "@tanstack/react-query"
 import { createRequestClient } from "@workspace/request/http"
-import { queryOptions } from "@workspace/request/react"
 
 import { webEnv } from "./env"
 

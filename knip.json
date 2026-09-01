@@ -10,8 +10,9 @@
     },
     "apps/server": {
       "entry": ["src/auth.ts", "src/ai.ts"],
-      "project": ["src/**/*.ts", "test/**/*.ts"],
-      "ignoreDependencies": ["ai"]
+      "project": ["src/**/*.ts"],
+      "ignoreDependencies": ["ai"],
+      "drizzle": false
     },
     "apps/cli": {
       "project": ["src/**/*.ts"]
@@ -19,13 +20,7 @@
     "apps/worker": {
       "project": ["src/**/*.ts"]
     },
-    "packages/auth": {
-      "project": ["src/**/*.ts"]
-    },
     "packages/request": {
-      "project": ["src/**/*.{ts,tsx}"]
-    },
-    "packages/database": {
       "project": ["src/**/*.ts"]
     },
     "packages/logger": {

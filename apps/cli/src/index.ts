@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import "dotenv/config"
-import { CLI_CLIENT_ID } from "@workspace/auth/constants"
+import { CLI_CLIENT_ID } from "@workspace/request/contract"
 import { createRequestClient } from "@workspace/request/http"
 import { createAuthClient } from "better-auth/client"
 import { deviceAuthorizationClient } from "better-auth/client/plugins"

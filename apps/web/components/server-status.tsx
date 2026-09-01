@@ -1,6 +1,6 @@
 "use client"
 
-import { useQuery } from "@workspace/request/react"
+import { useQuery } from "@tanstack/react-query"
 
 import { healthQueryOptions } from "@/lib/api"
 

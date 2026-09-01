@@ -15,23 +15,5 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
-  minio:
-    image: minio/minio
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: sweet
-      MINIO_ROOT_PASSWORD: sweetsweet
-    healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
-      interval: 2s
-      timeout: 5s
-      retries: 10
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    volumes:
-      - minio-data:/data
-
 volumes:
   postgres-data:
-  minio-data:

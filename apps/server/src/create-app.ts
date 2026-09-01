@@ -1,7 +1,6 @@
 import { httpInstrumentationMiddleware } from "@hono/otel"
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { Scalar } from "@scalar/hono-api-reference"
-import type { Auth } from "@workspace/auth/server"
 import type { Logger } from "@workspace/logger"
 import { getActiveTraceId } from "@workspace/observability"
 import {
@@ -15,6 +14,8 @@ import { cors } from "hono/cors"
 import { requestId } from "hono/request-id"
 import { type Env as HonoPinoEnv, pinoLogger } from "hono-pino"
 import { rateLimiter } from "hono-rate-limiter"
+
+import type { Auth } from "./auth.ts"
 
 const HealthSchema = z
   .object({

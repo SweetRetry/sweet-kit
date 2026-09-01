@@ -14,10 +14,8 @@
       "dependsOn": ["^build", "^typecheck"]
     },
     "dev": {
-      "dependsOn": ["^build"],
       "cache": false,
-      "persistent": true,
-      "interruptible": true
+      "persistent": true
     }
   }
 }

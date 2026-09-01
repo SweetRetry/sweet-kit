@@ -10,36 +10,23 @@
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.102.8",
     "ky": "^2.1.0"
   },
   "devDependencies": {
-    "@types/react": "^19.2.18",
     "@workspace/typescript-config": "workspace:*",
-    "react": "^19.2.8",
     "typescript": "^7.0.2",
     "vitest": "^4.1.11"
   },
-  "peerDependencies": {
-    "react": "^19.0.0"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    }
-  },
   "exports": {
     "./contract": {
-      "types": "./dist/contract.d.ts",
+      "types": "./src/contract.ts",
+      "development": "./src/contract.ts",
       "default": "./dist/contract.js"
     },
     "./http": {
-      "types": "./dist/http.d.ts",
+      "types": "./src/http.ts",
+      "development": "./src/http.ts",
       "default": "./dist/http.js"
-    },
-    "./react": {
-      "types": "./dist/react.d.ts",
-      "default": "./dist/react.js"
     }
   }
 }

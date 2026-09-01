@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 43110",
+    "dev": "NODE_OPTIONS=--conditions=development next dev --turbopack --port 43110",
     "build": "next build",
     "start": "next start",
     "lint": "biome check .",
@@ -14,6 +14,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
     "@lobehub/icons": "^5.16.0",
+    "@tanstack/react-query": "^5.102.8",
     "@workspace/request": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.7.2",
@@ -31,6 +32,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "@workspace/typescript-config": "workspace:*",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
   }
 }

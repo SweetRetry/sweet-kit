@@ -11,8 +11,8 @@ const observability = startObservability({
 const [{ serve }, { app, logger }, { db }, { closeDatabase }] = await Promise.all([
   import("@hono/node-server"),
   import("./app.js"),
-  import("./auth.js"),
-  import("@workspace/database/client"),
+  import("./auth-config.js"),
+  import("./database/client.js"),
 ])
 
 const server = serve({

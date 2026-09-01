@@ -1,6 +1,6 @@
 import { createLogger } from "@workspace/logger"
 
-import { auth } from "./auth.ts"
+import { auth } from "./auth-config.ts"
 import { createServerApp } from "./create-app.ts"
 import { serverEnv } from "./env.ts"
 

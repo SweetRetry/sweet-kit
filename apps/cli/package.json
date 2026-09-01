@@ -8,13 +8,12 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "sweet": "DOTENV_CONFIG_PATH=.env.local tsx src/index.ts",
+    "sweet": "NODE_OPTIONS=--conditions=development DOTENV_CONFIG_PATH=.env.local tsx src/index.ts",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@workspace/auth": "workspace:*",
     "@workspace/observability": "workspace:*",
     "@workspace/request": "workspace:*",
     "better-auth": "^1.7.2",

@@ -5,12 +5,12 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo watch build dev",
+    "dev": "turbo dev --filter=server --filter=web --filter=worker",
     "cli": "pnpm --filter cli sweet",
     "worker": "pnpm --filter worker dev",
     "adr:reorder": "node scripts/adr-reorder.js",
     "zod:check": "node rules/zod-v4/check.js",
-    "infra:up": "docker compose up -d --wait postgres minio",
+    "infra:up": "docker compose up -d --wait postgres",
     "infra:down": "docker compose down",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -19,8 +19,8 @@
     "typecheck": "turbo typecheck",
     "test": "turbo build --filter=server... && vitest run",
     "verify": "pnpm lint && pnpm adr:reorder --check && pnpm typecheck && pnpm test && pnpm build && pnpm knip && pnpm peers check",
-    "db:generate": "pnpm --filter server auth:generate && pnpm --filter @workspace/database db:generate",
-    "db:migrate": "pnpm --filter @workspace/database db:migrate",
+    "db:generate": "pnpm --filter server auth:generate && pnpm --filter server db:generate",
+    "db:migrate": "pnpm --filter server db:migrate",
     "knip": "knip"
   },
   "devDependencies": {

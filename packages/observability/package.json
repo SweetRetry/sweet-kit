@@ -22,11 +22,13 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
       "default": "./dist/index.js"
     },
     "./agent-traces": {
-      "types": "./dist/agent-traces.d.ts",
+      "types": "./src/agent-traces.ts",
+      "development": "./src/agent-traces.ts",
       "default": "./dist/agent-traces.js"
     }
   }

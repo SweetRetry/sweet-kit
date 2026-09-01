@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "DOTENV_CONFIG_PATH=.env.local tsx watch src/index.ts",
+    "dev": "NODE_OPTIONS=--conditions=development DOTENV_CONFIG_PATH=.env.local tsx watch src/index.ts",
     "start": "DOTENV_CONFIG_PATH=.env.local node dist/index.js",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
