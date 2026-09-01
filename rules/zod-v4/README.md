@@ -1,6 +1,6 @@
 # Zod v4 规则
 
-本项目使用 Zod v4 (4.3.6)。生成代码时必须使用 v4 API，避免已废弃的 v3 模式。
+本项目使用 Zod v4。实际安装版本以各 workspace `package.json` 中的 `zod` 依赖和 `pnpm-lock.yaml` 为准。生成代码时必须使用 v4 API，避免已废弃的 v3 模式。
 
 ## 字符串格式校验：优先使用 standalone 构造器
 
@@ -48,7 +48,7 @@ v4 新增独立类型构造器，产出专属类型（如 `ZodEmail`），而非
 | `ZodFirstPartyTypeKind` | 已清空为空 enum stub |
 | `setErrorMap(map)` | `z.config({ customError: map })` |
 | `getErrorMap()` | `z.config().customError` |
-| `.deepPartial()` | 已移除，无直接替代 |
+| `schema.deepPartial()` | `z.deepPartial(schema)`；方法形式已移除，使用顶层函数 |
 
 ## 破坏性变更
 
@@ -116,10 +116,49 @@ z.string().transform(v => v.length).prefault("tuna") // => 4
 
 - 默认行为为 strip（去除未知 key），与 v3 一致
 - `.strict()` / `.passthrough()` / `.strip()` / `.merge()` / `.extend()` / `.pick()` / `.omit()` / `.partial()` 仍可用
-- `.deepPartial()` 已移除
+- `.deepPartial()` 方法已移除；递归可选使用 `z.deepPartial(schema)`，返回值仍为 `ZodObject`
+- `.exactPartial()` 允许省略 key，但拒绝显式传入 `undefined`
 - 新增顶层 `z.strictObject()` 和 `z.looseObject()`
 
+### 验证语义
+
+- `z.iso.datetime()` 按 RFC 3339 校验时要求秒；如需同时接受分钟精度，显式组合对应精度的 schema
+- 字符串 `.min()` / `.max()` / `.length()` 按 Unicode code point 计数，不按 UTF-16 code unit 计数
+- `z.object()` 支持声明 symbol key；未声明的 symbol key 仍会被忽略
+- 对象与 record 始终移除 `__proto__` key；strict object 会将输入自有的 `__proto__` 报为 `unrecognized_keys`
+
 ## v4 新增 API
+
+### z.compile()
+
+对重复执行的 schema 可显式编译，编译结果保留原 schema 的类型和解析 API，原 schema 不变：
+
+```ts
+const User = z.object({
+  id: z.uuid(),
+  name: z.string(),
+})
+
+const CompiledUser = z.compile(User)
+CompiledUser.parse(input)
+```
+
+- 只在有基准或 profiling 证据的高频校验路径使用，不为一次性解析增加编译层
+- 默认无法编译的 schema 会继续使用 runtime parser；需要保证 schema 可编译时传入 `{ strict: true }`
+- async、encode 和 `skipChecks` 路径不使用编译 fast path
+- 如需应用级自动编译，入口最先 `import "zod/compile"`；只有应用级基准证明收益时才启用
+
+### z.validate() / z.validateAsync()
+
+只需要判断输入是否合法、不需要解析结果或错误详情时使用 boolean fast path：
+
+```ts
+if (z.validate(User, input)) {
+  // input 已收窄为 User 的 input 类型
+}
+```
+
+包含 async refinement 或 transform 的 schema 使用 `await z.validateAsync(schema, input)`。
 
 ### 数值类型构造器
 
@@ -146,6 +185,14 @@ strbool.parse("0")     // => false
 
 ```ts
 z.file().min(1024).max(5_000_000).mime("image/png")
+```
+
+### z.creditCard()
+
+校验 12–19 位、可用单个空格或连字符分隔且通过 Luhn checksum 的银行卡号：
+
+```ts
+z.creditCard().parse("4111 1111 1111 1111")
 ```
 
 ### z.pipe() 和 z.codec()
@@ -205,6 +252,15 @@ z.partialRecord(z.enum(["a", "b"]), z.number())
 z.looseRecord(z.string(), z.number())
 ```
 
+### z.deepPartial() / .exactPartial()
+
+```ts
+const PartialUser = z.deepPartial(User)
+const ExactPartialUser = User.exactPartial()
+```
+
+`z.deepPartial()` 递归地将对象字段变为可选；`.exactPartial()` 区分缺失 key 与值为 `undefined`。
+
 ### z.exactOptional()
 
 区分 `undefined` 和 key 不存在：
@@ -234,7 +290,29 @@ z.templateLiteral(["user_", z.number()])
 
 ### z.json()
 
-验证 JSON 字符串（parse 后仍为 string）。
+验证 JSON-compatible value，包括 string、number、boolean、null、数组和 string-keyed object；不接受 `undefined`、`Date`、`Symbol` 等值。它不解析 JSON 字符串。
+
+### z.properties()
+
+在一个 `.check()` 中校验实例的多个属性：
+
+```ts
+const HttpsUrl = z.instanceof(URL).check(
+  ...z.properties({
+    protocol: z.literal("https:" as string),
+    hostname: z.string().regex(z.regexes.domain),
+  })
+)
+```
+
+### z.input() / z.output()
+
+将包含 codec 或 pipe 的 schema 投影到输入侧或输出侧，分别校验转换前后的数据：
+
+```ts
+z.input(schema).parse(encodedValue)
+z.output(schema).parse(decodedValue)
+```
 
 ### z.toJSONSchema() / z.fromJSONSchema()
 

@@ -34,7 +34,7 @@ const DEPRECATED_PATTERNS = [
   {
     pattern: /\.deepPartial\(\)/g,
     fix: () => null,
-    message: () => ".deepPartial() removed in v4, no direct replacement",
+    message: () => ".deepPartial() method was removed; use the top-level z.deepPartial(schema)",
   },
   {
     pattern: /z\.function\(\)\s*\.args\(/g,
