@@ -12,13 +12,16 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 - `packages/*` 只承载已经被多个应用或进程共同使用的能力与契约，不以潜在复用性作为拆包依据。
 - `packages/ui` 负责 Tailwind CSS、shadcn/ui 组件和全局设计 token。
 - 应用通过 package 的公开 exports 访问切面，不跨 package 导入内部文件。
-- 新增抽象前先用完整纵切验证当前需求。
 - 优先使用维护活跃、经过生产验证的第三方成熟库；自行实现前先检查现有依赖的文档、类型定义和扩展能力。
 - 修改 tracing、日志关联、错误 `traceId` 或 Agent trace 查询时，先读 `adr/0002-opentelemetry-observability.md`，保持 signal 边界、redaction 和 runtime 隔离。
 - 修改 CLI auth、token 或 device authorization 时，先读 `adr/0004-cli-authentication-boundary.md`，保持第一方 session credential 的信任边界。
 - 测试不得自行启动或依赖开发机的 container runtime；需要外部资源的集成验证由显式 integration environment 提供。完成代码修改后以 `pnpm verify` 为唯一全量验证入口。
 - 修改 job enqueue、task handler 或 worker lifecycle 时，先读 `adr/0003-postgresql-and-graphile-worker.md`，保持 transaction、at-least-once 与 process 边界。
 - 新增或修改应用 runtime 环境变量时，先读 `adr/0001-architecture-runtime-boundaries.md`，由所属应用校验并通过 composition root 显式传入 package。
+
+## 代码设计
+
+- 目录名承担分组与语义前缀；当目录已明确表达领域或职责时，文件名只表达目录内的具体职责，不重复目录语义。例如 `canvas-commands/generation-handlers.ts`，而非 `canvas-commands/canvas-command-generation-handlers.ts`。
 
 ## 专项规则
 
