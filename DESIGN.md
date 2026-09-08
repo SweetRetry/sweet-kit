@@ -10,4 +10,4 @@
 | **新页面排版、卡片构图** | [UI Design Quality](rules/ui-design-quality/README.md) | **拒绝套路**：拒绝无脑包裹卡片与无意义装饰；单一视觉焦点，留白与排版优先。 |
 | **主题切换、背景与表面明度** | [UI Color & Surface](rules/ui-color-and-surface/README.md) | **高度递亮**：组件只消费语义 Token，越靠近用户的表面感知明度越高。 |
 | **字体字号设置** | [Font System](rules/font-system/README.md) | **字号阶梯**：严禁 `text-[*]`；文本字号严格下限为 `text-xs` (12px)。 |
-| **交互反馈、进出场、布局转场、手势动画** | [UI Animation](rules/ui-animation/README.md) | **克制与可打断**：高频操作 0ms，常规过渡 ≤200ms；严禁 scale(0) 与 transition-all；仅动 transform/opacity。 |
+| **交互反馈、进出场、布局转场、手势动画** | [UI Animation](rules/ui-animation/README.md) | **克制与可打断**：按频率与输入方式决定动效，尊重减少动态效果偏好；设计取舍以 Emil 为准。 |
