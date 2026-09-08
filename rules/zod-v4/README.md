@@ -321,3 +321,12 @@ Schema 与 JSON Schema 互转。
 ### z.coerce 命名空间
 
 与 v3 一致：`z.coerce.string()`, `z.coerce.number()`, `z.coerce.boolean()`, `z.coerce.bigint()`, `z.coerce.date()`。
+
+## 自动化验证
+
+修改 Schema 或数据校验代码后，运行静态检查脚本验证废弃 API：
+
+```bash
+pnpm zod:check
+```
+

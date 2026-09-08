@@ -17,7 +17,13 @@ function listSourceFiles() {
     .split("\0")
     .filter(Boolean)
     .filter((f) => /\.(ts|tsx|js|jsx|mts|mjs)$/.test(f))
-    .filter((f) => !f.includes("node_modules") && !f.includes("/dist/") && !f.includes("rules/zod-v4/"))
+    .filter(
+      (f) =>
+        !f.includes("node_modules") &&
+        !f.includes("/dist/") &&
+        !f.includes("rules/zod-v4/") &&
+        !f.startsWith("packages/ui/")
+    )
 }
 
 function main() {

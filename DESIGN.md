@@ -1,13 +1,14 @@
 # Design 规范路由器
 
-本文件是 Sweet Kit 的设计与 UI 工程规范入口。编写、修改或审查 UI 组件时，必须按具体操作场景查阅对应专项规则：
+本文件是 Sweet Kit 的设计工程与 UI 规范唯一入口。编写、修改或审查前端组件与页面时，按具体分支查阅对应专项规则：
 
-| 任务场景 | 专项规则 | 核心心智与不可触犯的铁律 |
+| 触发分支 (Leading Words) | 专项规则 | 核心心智契约 (Positive Principles) |
 | :--- | :--- | :--- |
-| **异步加载、空状态、表单反馈** | [UI Stability](rules/ui-stability/README.md) | **尺寸守恒**：禁止高度突变与塌陷；必须有 `min-h`、aspect-ratio 与空兜底，按钮防抖。 |
-| **下拉菜单、弹窗、层叠把手** | [Z-Index System](rules/z-index/README.md) | **局部隔离**：严禁任意值 `z-[*]`；局部层叠父级必加 `isolate`；全局浮层必须 Portal。 |
-| **组件封装、间距、网格与格式塔** | [UI Layout & Grid](rules/ui-layout-and-loading/README.md) | **秩序与网格**：组件对外 margin 为 0；格式塔亲密性（组间距为组内 2~3 倍）；12 栏响应式网格；同心圆角。 |
-| **新页面排版、卡片构图** | [UI Design Quality](rules/ui-design-quality/README.md) | **拒绝套路**：拒绝无脑包裹卡片与无意义装饰；单一视觉焦点，留白与排版优先。 |
-| **主题切换、背景与表面明度** | [UI Color & Surface](rules/ui-color-and-surface/README.md) | **高度递亮**：组件只消费语义 Token，越靠近用户的表面感知明度越高。 |
-| **字体字号设置** | [Font System](rules/font-system/README.md) | **字号阶梯**：严禁 `text-[*]`；文本字号严格下限为 `text-xs` (12px)。 |
-| **交互反馈、进出场、布局转场、手势动画** | [UI Animation](rules/ui-animation/README.md) | **克制与可打断**：按频率与输入方式决定动效，尊重减少动态效果偏好；设计取舍以 Emil 为准。 |
+| **异步加载、骨架占位、防塌陷、按钮防抖** | [UI Stability](rules/ui-stability/README.md) | **尺寸守恒 (Conservation of Dimensions)**：锁定容器体量，`min-h-*` / aspect-ratio 兜底，禁用裸奔 Loader。 |
+| **浮层、弹窗、下拉气泡、层叠把手** | [Z-Index System](rules/z-index/README.md) | **局部隔离与 Portal**：局部重叠必须父级 `isolate`；全局浮层一律 Portal 挂载；严禁 `z-[*]` 任意值。 |
+| **间距、外边距、同心圆角、网格秩序** | [UI Layout & Grid](rules/ui-layout-and-loading/README.md) | **零外边距与几何秩序**：组件 Zero Margin；父容器控制 `gap`；$R_{inner} = \max(0, R_{outer} - P)$；12 栏响应式。 |
+| **构图排版、信息密度、去模板化** | [UI Design Quality](rules/ui-design-quality/README.md) | **排版优先 (Content-First)**：单焦点构图，拒绝机械卡片与 Badge 泛滥，留白与对齐建立层级。 |
+| **主题明度、表面抬升、色彩语义** | [UI Color & Surface](rules/ui-color-and-surface/README.md) | **高度递亮 (Elevation Ladder)**：越靠近用户感知明度越高；仅消费语义 Token。 |
+| **文本字号、排版阶梯** | [Font System](rules/font-system/README.md) | **标准阶梯**：严禁 `text-[*]` 任意值；正文字号下限严格为 `text-xs` (12px)；可运行 `pnpm font:check` 验证。 |
+| **交互动效、手势、转场、退出** | [UI Animation](rules/ui-animation/README.md) | **按频定效与可打断**：高频交互 0ms 即时反馈；中低频强力 ease-out；Spring 不混写；尊重减少动态偏好。 |
+

@@ -4,7 +4,7 @@
 
 动效用于解释状态、空间关系与操作反馈，应自然、即时、克制且可打断。装饰性表现只在服务内容与既定设计方向时使用，不能延迟用户操作。
 
-设计取舍以 [Emil Kowalski 的 Design Engineering](https://github.com/emilkowalski/skills/blob/main/skills/emil-design-eng/SKILL.md) 为准；Ant Motion 作为空间与编排的补充，冲突时以 Emil 为准。具体 API 与性能结论以当前依赖版本的官方文档、类型和实测为准。
+设计取舍以 Emil Kowalski 的 Design Engineering 为准；Ant Motion 作为空间与编排的补充，冲突时以 Emil 为准。具体 API 与性能结论以当前依赖版本的官方文档、类型和实测为准。
 
 技术选型遵循根目录 `AGENTS.md`：**前端动画统一使用 `motion` (`motion/react`) 或 Tailwind CSS 纯过渡，不引入其他动画库**。
 
@@ -74,7 +74,7 @@ transition={{ type: "spring", duration: 0.3, bounce: 0 }}
 transition={{ type: "spring", stiffness: 300, damping: 35 }}
 ```
 
-`duration + bounce` 便于控制视觉节奏；`stiffness + damping + mass` 用于物理弹簧并结合已有速度。设置物理参数后，`duration` 与 `bounce` 会被覆盖，不混写两套参数。[Motion Transitions](https://motion.dev/docs/react-transitions)
+`duration + bounce` 便于控制视觉节奏；`stiffness + damping + mass` 用于物理弹簧并结合已有速度。设置物理参数后，`duration` 与 `bounce` 会被覆盖，不混写两套参数。
 
 ---
 
@@ -122,7 +122,7 @@ Tooltip 首次出现需有微小防误触延迟（复用组件已有的延迟配
 优先动画化 `transform` 与 `opacity`，允许有意义的颜色过渡。`blur`、`clip-path` 等效果仅在改善理解时使用，并检查实际渲染开销；不因属性名称就断言动画一定由 GPU 加速；独立的 `scale`、`translate`、`rotate` 属性同样按变换类属性处理。
 
 - 位移不通过逐帧修改 `top`、`left`、margin 或 padding 实现。宽高动画可能逐帧触发布局，只有尺寸变化本身是交互语义且验证开销可接受时才使用。
-- 布局变化先检查 `layout`；同一对象跨视图衔接再考虑 `layoutId`。它们通过 transform 呈现布局变化，但仍需测量布局，并可能缩放文字或子元素，不能保证所有场景无需调节。[Motion Layout](https://motion.dev/docs/react-layout-animations)
+- 布局变化先检查 `layout`；同一对象跨视图衔接再考虑 `layoutId`。它们通过 transform 呈现布局变化，但仍需测量布局，并可能缩放文字或子元素，不能保证所有场景无需调节。
 - 异步加载先按 [UI Stability](../ui-stability/README.md) 保持占位；布局动画不能替代稳定的容器尺寸。
 - 避免逐帧更新 React 状态或父容器上大量后代继承的 CSS 变量，检查内容加载与连续操作同时发生时的表现。
 
@@ -152,7 +152,7 @@ Tooltip 首次出现需有微小防误触延迟（复用组件已有的延迟配
 必须支持操作系统的 `prefers-reduced-motion` 设置。对于开启了减少动态效果的用户：
 - 彻底移除位移（`translate`）、缩放（`scale`）与 3D 空间运动。
 - 可保留帮助理解状态的轻微透明度或颜色过渡，不强制添加淡入淡出。
-- React 中使用 `MotionConfig reducedMotion="user"` 或 `useReducedMotion`；CSS 通过媒体查询单独处理，Motion 配置不会替 CSS 过渡应用该偏好。[Motion Accessibility](https://motion.dev/docs/react-accessibility)
+- React 中使用 `MotionConfig reducedMotion="user"` 或 `useReducedMotion`；CSS 通过媒体查询单独处理，Motion 配置不会替 CSS 过渡应用该偏好。
 - 所有功能、交互与信息反馈必须 100% 保持完整可用。
 
 ### 5.3 触屏设备的 Hover 防粘连
@@ -184,7 +184,7 @@ Tooltip 首次出现需有微小防误触延迟（复用组件已有的延迟配
 </div>
 ```
 
-Tailwind CSS v4 的 `scale-*` 使用独立 `scale` 属性，因此上例显式过渡 `scale`。[Tailwind Scale](https://tailwindcss.com/docs/scale) 自定义缓动使用 `ease-[cubic-bezier(...)]`，不能将裸 `cubic-bezier(...)` 作为类名。[Tailwind 缓动](https://tailwindcss.com/docs/transition-timing-function)
+Tailwind CSS v4 的 `scale-*` 使用独立 `scale` 属性，因此上例显式过渡 `scale`。自定义缓动使用 `ease-[cubic-bezier(...)]`，不能将裸 `cubic-bezier(...)` 作为类名。
 
 ### 6.2 列表元素增删与位置变化
 
@@ -247,6 +247,6 @@ export function AnimatedList({
 
 ## 来源
 
-- [Emil Kowalski：Design Engineering](https://github.com/emilkowalski/skills/blob/main/skills/emil-design-eng/SKILL.md)：动画决策、时长、缓动、组件细节、可打断性与可访问性的主要依据。
-- Ant Motion：[动效价值](https://motion.ant.design/language/basic-cn)、[原则](https://motion.ant.design/language/principle-cn)、[速度](https://motion.ant.design/language/speed-cn)、[空间](https://motion.ant.design/language/space-cn)、[组合](https://motion.ant.design/language/combined-cn)、[转场](https://motion.ant.design/language/transition-cn)：空间关系与动效编排的补充参考。
-- [Motion](https://motion.dev/docs/react)、[Tailwind CSS](https://tailwindcss.com/docs)：核对实现 API；来源示例中的库名、参数与性能描述不直接作为项目契约。
+- Emil Kowalski：Design Engineering：动画决策、时长、缓动、组件细节、可打断性与可访问性的主要依据。
+- Ant Motion（动效价值、原则、速度、空间、组合与转场）：空间关系与动效编排的补充参考。
+- Motion、Tailwind CSS：核对实现 API；来源示例中的库名、参数与性能描述不直接作为项目契约。

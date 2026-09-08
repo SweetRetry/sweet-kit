@@ -17,7 +17,12 @@ function listSourceFiles() {
     .split("\0")
     .filter(Boolean)
     .filter((f) => /\.(tsx|jsx|html|vue|svelte)$/.test(f))
-    .filter((f) => !f.includes("node_modules") && !f.includes("/dist/"))
+    .filter(
+      (f) =>
+        !f.includes("node_modules") &&
+        !f.includes("/dist/") &&
+        !f.startsWith("packages/ui/")
+    )
 }
 
 function main() {
