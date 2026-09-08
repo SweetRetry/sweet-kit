@@ -25,8 +25,14 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 
 ## 专项规则
 
-- 使用 Zod schema 校验时，先读 `rules/zod-v4/README.md`，使用 v4 推荐 API，避免已废弃的 v3 模式。
-- 设计或修改 UI 时，先读 `DESIGN.md`，遵循其中引用的专项规则；涉及加载状态时，按 UI Layout and Loading 规则区分 Skeleton 与 Loader。
+- **数据校验**：使用 Zod 时先读 `rules/zod-v4/README.md`，使用 v4 推荐 API，避免已废弃的 v3 模式。
+- **UI 设计与组件编码（统一入口 `DESIGN.md`）**：开发时根据场景精准触发对应规则：
+  - 🔄 **异步数据 / 列表 / 状态切换**：必读 `rules/ui-stability/README.md`，落实尺寸守恒（`min-h`）、空值防塌陷与按钮防抖。
+  - 🪜 **浮层 / 弹窗 / 元素重叠**：必读 `rules/z-index/README.md`，严禁 arbitrary 值，局部重叠父级必须声明 `isolate`。
+  - 📐 **间距 / 外边距 / 圆角几何**：必读 `rules/ui-layout-and-loading/README.md`，遵循零外边距（Zero Margin）、Gap-First 与同心圆角。
+  - 🎨 **色彩 / 表面明度**：必读 `rules/ui-color-and-surface/README.md`，仅消费语义 Token，越靠近用户感知明度越高。
+  - 🧱 **构图与反生成式惯性**：必读 `rules/ui-design-quality/README.md`，拒绝无脑套卡片与滥用 Badge，排版与留白优先。
+  - 🔤 **字体字号**：必读 `rules/font-system/README.md`，严禁 `text-[*]`，正文下限为 `text-xs`。
 
 ## 技术选型
 

@@ -20,6 +20,79 @@
 
 以下模式不能作为默认构图；只有它直接表达当前任务关系，并且移除后会损害理解或操作时才可使用。
 
+### 典型模式对比（Anti-patterns vs Best Practice）
+
+#### 模式 1：列表与内容组织——拒绝“万物皆套 Card + Badge 泛滥”
+
+```tsx
+// ❌ 典型 AI 生成式惯性：为每个普通元数据套 Badge、每个列表项套厚重 Card、满屏装饰边框
+<div className="space-y-4">
+  {users.map(user => (
+    <Card key={user.id} className="p-4 shadow-md bg-gradient-to-r from-background to-muted/20">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Avatar className="size-10" />
+          <div>
+            <h4 className="font-bold">{user.name}</h4>
+            <Badge variant="outline" className="text-xs">ID: {user.id}</Badge>
+          </div>
+        </div>
+        <Badge variant="secondary">{user.department}</Badge>
+      </div>
+    </Card>
+  ))}
+</div>
+
+// ✅ 现代克制实践：通过留白、自然对齐与微弱明度差表达秩序，消除视觉噪音
+<div className="divide-y divide-border/40">
+  {users.map(user => (
+    <div key={user.id} className="flex items-center justify-between py-3 px-2 hover:bg-muted/40 transition-colors rounded-lg">
+      <div className="flex items-center gap-3 min-w-0">
+        <Avatar className="size-8 shrink-0" />
+        <div className="min-w-0">
+          <p className="text-sm font-medium leading-none truncate">{user.name}</p>
+          <span className="text-xs text-muted-foreground">{user.id}</span>
+        </div>
+      </div>
+      <span className="text-xs text-muted-foreground shrink-0">{user.department}</span>
+    </div>
+  ))}
+</div>
+```
+
+#### 模式 2：指标呈现——拒绝“机械等大 3 列指标卡”
+
+```tsx
+// ❌ 典型 AI 生成式惯性：3 个无论重要与否都一模一样的大方块卡片，带着彩色图标背景
+<div className="grid grid-cols-3 gap-4">
+  <Card className="p-4"><div className="size-8 rounded-full bg-blue-100 flex items-center justify-center"><UsersIcon /></div><p>总用户</p><h3>12,340</h3></Card>
+  <Card className="p-4"><div className="size-8 rounded-full bg-green-100 flex items-center justify-center"><CheckIcon /></div><p>已激活</p><h3>9,820</h3></Card>
+  <Card className="p-4"><div className="size-8 rounded-full bg-purple-100 flex items-center justify-center"><StarIcon /></div><p>满意度</p><h3>98%</h3></Card>
+</div>
+
+// ✅ 现代克制实践：突出主导核心指标，次要指标辅以对比节奏与紧凑排版
+<div className="flex flex-col sm:flex-row sm:items-baseline gap-6 p-6 rounded-xl bg-card border border-border/50">
+  <div>
+    <p className="text-xs text-muted-foreground uppercase tracking-wider">活跃用户转化</p>
+    <div className="flex items-baseline gap-2 mt-1">
+      <span className="text-3xl font-semibold tracking-tight">79.6%</span>
+      <span className="text-xs font-medium text-emerald-600">+4.2%</span>
+    </div>
+  </div>
+  <div className="h-8 w-px bg-border hidden sm:block" />
+  <div className="flex gap-6 text-sm">
+    <div>
+      <span className="text-muted-foreground">总用户：</span>
+      <span className="font-medium ml-1">12,340</span>
+    </div>
+    <div>
+      <span className="text-muted-foreground">已激活：</span>
+      <span className="font-medium ml-1">9,820</span>
+    </div>
+  </div>
+</div>
+```
+
 ### 布局与容器
 
 - 通用居中 Hero 文案后接等宽卡片网格。

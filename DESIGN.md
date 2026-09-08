@@ -1,8 +1,12 @@
-# Design
+# Design 规范路由器
 
-本文件是 Sweet Kit 的设计规范入口。具体约束以对应专项规则为准：
+本文件是 Sweet Kit 的设计与 UI 工程规范入口。编写、修改或审查 UI 组件时，必须按具体操作场景查阅对应专项规则：
 
-- [Font System](rules/font-system/README.md)：字体大小与 Tailwind text utility 规范。
-- [UI Layout and Loading](rules/ui-layout-and-loading/README.md)：间距体系、Padding/Margin、圆角几何体系、内容分区与加载反馈规范。
-- [UI Design Quality](rules/ui-design-quality/README.md)：任务导向的构图质量与生成式设计惯性审查规则。
-- [UI Color and Surface](rules/ui-color-and-surface/README.md)：色彩语义、任务密度、表面高度与主题 Token 规则。
+| 任务场景 | 专项规则 | 核心心智与不可触犯的铁律 |
+| :--- | :--- | :--- |
+| **异步加载、空状态、表单反馈** | [UI Stability](rules/ui-stability/README.md) | **尺寸守恒**：禁止高度突变与塌陷；必须有 `min-h`、aspect-ratio 与空兜底，按钮防抖。 |
+| **下拉菜单、弹窗、层叠把手** | [Z-Index System](rules/z-index/README.md) | **局部隔离**：严禁任意值 `z-[*]`；局部层叠父级必加 `isolate`；全局浮层必须 Portal。 |
+| **组件封装、容器间距、圆角** | [UI Layout](rules/ui-layout-and-loading/README.md) | **容器调度**：组件对外 margin 为 0，子元素圆角严格服从同心圆公式 $R_{in}=\max(0, R_{out}-P)$。 |
+| **新页面排版、卡片构图** | [UI Design Quality](rules/ui-design-quality/README.md) | **拒绝套路**：拒绝无脑包裹卡片与无意义装饰；单一视觉焦点，留白与排版优先。 |
+| **主题切换、背景与表面明度** | [UI Color & Surface](rules/ui-color-and-surface/README.md) | **高度递亮**：组件只消费语义 Token，越靠近用户的表面感知明度越高。 |
+| **字体字号设置** | [Font System](rules/font-system/README.md) | **字号阶梯**：严禁 `text-[*]`；文本字号严格下限为 `text-xs` (12px)。 |
