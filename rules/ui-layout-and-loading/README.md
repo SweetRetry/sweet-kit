@@ -5,6 +5,7 @@
 1. 优先利用负空间、表面色调差与动态反馈建立视觉秩序；禁止使用高对比度的 1px 闭合边框作为内容分隔手段。
 2. 间距体系（Spacing）、内边距（Padding）与外边距（Margin）严格服从 8px 网格与现代容器调度机制。
 3. 容器与子元素圆角（Border Radius）严格遵循同心圆角几何法则与尺寸层级递增阶梯。
+4. 结构与排版严格遵循格式塔心理学（亲密性倍率、连续性共享轴）与 12 栏响应式网格体系。
 
 ## 间距与内边距体系（Spacing & Padding）
 
@@ -134,6 +135,117 @@ $$R_{inner} = \max(0, R_{outer} - \text{Padding})$$
 - **禁止内角大外角小**：内层元素的圆角半径在任何情况下不得超过外层容器半径。
 - **禁止无根据的 Arbitrary Radius**：禁止使用 `rounded-[13px]` 等随意值，所有圆角必须映射至主题 Token 或标准阶梯。
 
+## 格式塔视觉秩序与网格系统（Gestalt & Grid System）
+
+界面不仅是尺寸的罗列，更是大脑感知信息的几何映射。大模型生成代码时缺乏 2D 视觉画布，极易写出“间距完全均等”、“对齐左右锯齿”的无序代码。编写组件时必须严格遵循以下格式塔物理规律与网格纪律。
+
+### 1. 格式塔亲密性原则（Law of Proximity）与 2~3 倍间距阶梯
+
+在视觉认知中，**距离近的物体会被大脑自动归纳为同一逻辑单元**。如果组内元素间距与组外间距相等，界面就会失去逻辑层级，用户无法判断标签到底归属哪个输入框。
+
+#### 核心数学倍率公式：
+$$\text{Gap}_{\text{inter-group}} \ge (2 \sim 3) \times \text{Gap}_{\text{intra-group}}$$
+
+- **微观内聚（组内间距 Intra-group）**：
+  - 标签与控件（Label ➔ Input）：`gap-1.5` (6px) 或 `gap-2` (8px)
+  - 标题与副标题（Heading ➔ Subtitle）：`gap-1` (4px) 或 `gap-1.5` (6px)
+  - 图标与正文（Icon ➔ Text）：`gap-2` (8px)
+- **宏观聚合（组间间距 Inter-group）**：
+  - 表单项之间（Field ➔ Field）：`gap-6` (24px) 或 `gap-8` (32px)
+  - 内容段落之间（Block ➔ Block）：`gap-6` (24px) 或 `gap-8` (32px)
+  - 独立功能章节之间（Section ➔ Section）：`gap-12` (48px) 或 `gap-16` (64px)
+
+#### 标题垂直吸附法则（Heading Anchoring）
+大标题或小节标题，其**上方留白必须是下方留白的 3 倍以上**（例如 `pt-8 pb-2` 或 `mt-8 mb-2`）。视觉重心必须牢牢“吸附”在它所统领的内容上，严禁让标题垂直居中悬空。
+
+#### 典型代码对比：
+
+```tsx
+// ❌ 灾难：均一化间距。Label 到自己 Input 的距离(16px)，等于到上一个 Input 的距离(16px)！
+<form className="flex flex-col gap-4">
+  <label>用户名</label>
+  <input />
+  <label>登录密码</label>  {/* 悬浮在两个输入框的正中间，无法识别归属 */}
+  <input />
+</form>
+
+// ✅ 正确：严格遵循 2~3 倍亲密性阶梯，逻辑从属一目了然
+<form className="flex flex-col gap-6">
+  <div className="flex flex-col gap-2">
+    <Label htmlFor="username">用户名</Label>
+    <Input id="username" />
+  </div>
+  <div className="flex flex-col gap-2">
+    <Label htmlFor="password">登录密码</Label>
+    <Input id="password" type="password" />
+  </div>
+</form>
+```
+
+---
+
+### 2. 12 栏响应式网格系统（12-Column Grid Rhythm）
+
+页面画布和复杂看板**严禁使用随意绝对像素宽度（如 `w-[350px]`）或孤立百分比**，必须纳入标准 12 栏栅格体系（`grid grid-cols-12`）以保证各断点下的韵律对称与统一。
+
+#### 常用列跨度节奏查表（Column Span Rhythms）：
+
+| 布局形态 | 网格声明 | 列分配 (Col Span) | 适用场景 |
+| :--- | :--- | :--- | :--- |
+| **主辅非对称 (黄金比)** | `grid grid-cols-12 gap-6` | `col-span-12 lg:col-span-8` + `col-span-12 lg:col-span-4` | 详情页主体 + 侧边栏操作区；长表单 + 帮助说明 |
+| **对称双栏** | `grid grid-cols-12 gap-6` | `col-span-12 md:col-span-6` × 2 | 双栏表单、左右对比卡片、并列图表 |
+| **三列内容看板** | `grid grid-cols-12 gap-6` | `col-span-12 md:col-span-4` × 3 | 功能卡片矩阵、项目看板、方案比较 |
+| **四列紧凑指标** | `grid grid-cols-12 gap-4` | `col-span-6 lg:col-span-3` × 4 | 核心 KPI 统计卡片、轻量元数据面板 |
+
+#### 响应式流动规范：
+必须显式声明移动端退化。所有在桌面端占据多列的子项，默认在移动端使用 `col-span-12` 垂直单列平铺，禁止在移动端挤压出窄长缝隙。
+
+---
+
+### 3. 视觉连续性与共享参考轴（Continuity & Shared Axis）
+
+人眼具有沿直线扫描的生理惯性。界面的排版必须建立稳定贯穿的**对齐轴线（Alignment Track）**，消除像锯齿一样的视觉杂波。
+
+#### 铁律一：图文混排强制轴线对齐
+- 图标与单行文本并排时，必须声明 `inline-flex items-center gap-2`，杜绝因行高（line-height）与图标尺寸不一致造成上浮或下沉错位。
+- 大标题伴随辅助操作时，使用 `items-baseline`，以字体主基线为基准对齐。
+
+#### 铁律二：数据、金额与统计列的等宽与右对齐（Tabular Numbers）
+- 凡涉及数字对比、金额、百分比、时间戳和计数器，必须添加 `tabular-nums`，启用等宽数字特性。
+- 表格和列表中，**数值列及其表头必须统一右对齐（`text-right`）**；长文本列左对齐；状态标签居中。
+- 右对齐使十位、百位、千位及小数点垂直精确对齐在同一条纵轴线上，扫视即可感知数量级差异。
+
+```tsx
+// ❌ 错误：数值比例字体且居中/左对齐，小数点与位数上下错位，像锯齿一样晃眼
+<div className="flex justify-between py-2">
+  <span>月度消费</span>
+  <span>$1,240.50</span>
+</div>
+<div className="flex justify-between py-2">
+  <span>年度结余</span>
+  <span>$89.20</span>
+</div>
+
+// ✅ 正确：右对齐 + 等宽数字，垂直落位整齐划一
+<div className="flex justify-between items-center py-2">
+  <span className="text-sm text-muted-foreground">月度消费</span>
+  <span className="tabular-nums text-right font-medium">$1,240.50</span>
+</div>
+<div className="flex justify-between items-center py-2">
+  <span className="text-sm text-muted-foreground">年度结余</span>
+  <span className="tabular-nums text-right font-medium">$89.20</span>
+</div>
+```
+
+---
+
+### 4. 格式塔闭合与无形边界（Law of Closure）
+
+大脑具有自动补全轮廓（Closure）的强大能力。**不要把界面变成无休止的“小方块笼子”**。
+
+- **依靠对齐形成虚边界**：当列表项共享严格的左对齐轴（Shared Left Anchor）时，人眼自然知道它们属于同一个列表，不需要给每一行外面都包一圈边框。
+- **依靠微弱明度差形成层级**：外层容器用背景留白和微弱的表面明度差建立空间秩序，彻底取代高对比度的 1px 闭合灰色边框。
+
 ## 规则
 
 1. **负空间定义分组**：根据内容的从属关系规划间距，使组内间距明显小于组间距；通过留白、对齐、网格和容器宽度表达区块边界。
@@ -158,9 +270,12 @@ $$R_{inner} = \max(0, R_{outer} - \text{Padding})$$
 ## 验收清单
 
 - [ ] **间距合规**：所有 `padding`、`gap` 均为 8px 整数倍（或唯一的 4px 半步紧凑微距），无偏离网格的 arbitrary value。
+- [ ] **亲密性倍率**：组间距（Inter-group）达到组内间距（Intra-group）的 2~3 倍以上，表单项逻辑归属明确，标题上方留白明显大于下方。
+- [ ] **12 栏网格合规**：页面和复合看板采用标准 12 列栅格（`col-span-8/4`、`col-span-6/6`、`col-span-4*3` 等），移动端具备 `col-span-12` 优雅退化。
+- [ ] **轴线与等宽对齐**：图标与文字垂直居中或基线对齐；所有金额、数值与统计指标声明了 `tabular-nums` 且采用右对齐。
 - [ ] **组件零外边距**：所有独立复用组件根节点无外部 margin，组件间距由父容器 `gap` 统一控制。
 - [ ] **同心圆角几何**：存在嵌套关系的圆角结构符合 $R_{inner} = \max(0, R_{outer} - P)$ 公式；不存在内外同值套用或内角大于外角现象。
 - [ ] **圆角阶梯匹配**：控件用小圆角（6~8px）、卡片用中大圆角（12~16px）、弹窗用大圆角（16~24px），层级匹配清晰。
 - [ ] **光学内边距平衡**：文本交互控件（Button, Input）水平内边距明显大于垂直内边距。
-- [ ] **分区克制**：移除内容区块闭合边框和分隔线后，依靠留白、明度差与排版层级依然清晰。
+- [ ] **分区克制与闭合自然**：移除高对比度闭合边框后，依靠对齐、留白与明度差界面依然具备清晰逻辑边界。
 - [ ] **加载状态规范**：页面级使用结构对齐的 Skeleton，局部操作使用就地 Loader。
