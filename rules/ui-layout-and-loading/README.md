@@ -4,7 +4,7 @@
 
 1. 优先利用负空间、表面色调差与动态反馈建立视觉秩序；禁止使用高对比度的 1px 闭合边框作为内容分隔手段。
 2. 间距体系（Spacing）、内边距（Padding）与外边距（Margin）严格服从 8px 网格与现代容器调度机制。
-3. 容器与子元素圆角（Border Radius）严格遵循同心圆角几何法则与尺寸层级递增阶梯。
+3. 容器与子元素圆角（Border Radius）100% 收敛遵循 [UI Radius 规则](../ui-radius/README.md)，服从相对几何、同心推导与控件形态决断。
 4. 结构与排版严格遵循格式塔心理学（亲密性倍率、连续性共享轴）与 12 栏响应式网格体系。
 
 ## 间距与内边距体系（Spacing & Padding）
@@ -75,65 +75,14 @@
 
 ## 圆角体系（Border Radius System）
 
-圆角不仅是美学特征，更是界面的几何拓扑与层级秩序。
+圆角体系已独立解耦并全面升级至专项规则，**100% 收敛遵循 [UI Radius 规则](../ui-radius/README.md)**：
+- **圆角感知相对性**：圆角大小随着组件体量与尺寸协同阶梯演化（Radius Ladder）。
+- **控件形态决断**：按钮拒绝中庸浮肿陷阱，二选一于“受控圆角矩形”或“彻底胶囊药丸”。
+- **边框计入间隙的同心定律**：$R_{inner} = \max(0, R_{outer} - (\text{Padding} + \text{Border}))$。
+- **光学平衡微调**：同心几何为底线基准，微小内角允许 +1~2px 视觉平衡补偿。
+- **现代超椭圆规范**：渐进增强 `@supports (corner-shape: squircle)` 与标准正圆回退。
 
-### 1. 同心圆角几何法则（Concentric Radius Formula）
-
-当一个带有圆角的元素嵌套在另一个带有圆角的容器内部，且两者的转角靠近时，内外两层圆弧必须共享同一个虚拟同心圆心。
-
-**核心数学公式**：
-$$R_{inner} = \max(0, R_{outer} - \text{Padding})$$
-
-```text
-       ┌────────────────────────┐  R_outer
-       │   Padding              │
-       │   ┌────────────────┐   │
-       │   │                │   │  R_inner = max(0, R_outer - Padding)
-       │   │  Inner Element │   │
-       │   │                │   │
-       │   └────────────────┘   │
-       └────────────────────────┘
-```
-
-#### 临界情况与处理规则：
-1. **标准同心嵌套 ($R_{outer} > \text{Padding}$)**：
-   内层圆角取 $R_{outer} - \text{Padding}$。转角处各方向空隙均匀对称，彻底杜绝内外穿插或转角畸变。
-2. **内边距填满转角 ($R_{outer} \le \text{Padding}$)**：
-   当外圆角小于或等于 Padding 时，外层圆弧已完全在 Padding 缓冲区内结束，内部内容所在的物理区域是标准直角矩形。
-   **处理**：内层圆角归零（`rounded-none`）或使用极微圆角（2px/4px，若组件自身是交互控件）。**严禁**在内层设置大圆角，否则会在内部生硬制造第二重凹陷。
-3. **非等宽内边距 ($P_x \neq P_y$)**：
-   若横纵 Padding 不一致，内层以较小一侧（即最贴近外边框的一侧）的留白计算基准，或使用独立轴向圆角。
-
-### 2. 圆角尺寸阶梯与语义角色（Radius Hierarchy Scale）
-
-圆角大小应与容器尺寸及视觉层级成正比。外壳大、内层小；浮层与窗口更圆润，基础控件更精简：
-
-| 层级与角色 | 推荐 Radius 取值 | Tailwind Class | 典型组件 / 场景 |
-| :--- | :--- | :--- | :--- |
-| **Micro / Sub-controls** | 2px ~ 4px | `rounded-xs` / `rounded-sm` | Checkbox、Tag 内部状态标、极小指示器 |
-| **Controls** | 6px ~ 8px | `rounded-md` | 按钮 (Button)、输入框 (Input)、Select 触发器 |
-| **Surfaces / Popovers** | 8px ~ 10px | `rounded-lg` | 下拉菜单 (Dropdown)、Popover、Tooltip |
-| **Containers / Cards** | 12px ~ 16px | `rounded-xl` | 内容卡片 (Card)、结构面板 (Panel) |
-| **Windows / Modals** | 16px ~ 24px | `rounded-2xl` / `rounded-3xl` | 对话框 (Dialog)、弹窗 Modal、Sheet 抽屉 |
-| **Pills / Avatars** | 完全圆形 (9999px) | `rounded-full` | 用户头像 (Avatar)、状态药丸 (Status Badge)、搜索胶囊条 |
-
-### 3. 实战嵌套推导查表（8px 网格对齐）
-
-| 容器外层 Radius | 容器 Padding | 内部子元素推导 Radius | 适用场景 |
-| :--- | :--- | :--- | :--- |
-| **`rounded-3xl` (24px)** | `p-2` (8px) | `rounded-2xl` (16px) | 窗口内紧凑包裹的内容区 / 嵌套卡片 |
-| **`rounded-3xl` (24px)** | `p-4` (16px) | `rounded-md` (8px) | 模态框内的可交互表单卡片 |
-| **`rounded-3xl` (24px)** | `p-6` (24px) | `rounded-none` / 直角 | 大模态框常规通栏内容区 |
-| **`rounded-2xl` (16px)** | `p-2` (8px) | `rounded-md` (8px) | 卡片内部高亮选择项 / hover 激活背景 |
-| **`rounded-2xl` (16px)** | `p-4` (16px) | `rounded-none` / 直角 | 标准卡片内部主要内容块 |
-| **`rounded-lg` (10px)** | `p-1` (4px) | `rounded-sm` (6px) | 下拉菜单容器与内部 MenuItem 项 |
-| **`rounded-full`** | 任意等比 | `rounded-full` | 胶囊搜索条与内部圆形 Action 按钮 |
-
-### 4. 严禁的圆角反模式（Anti-patterns）
-
-- **禁止内外同值套用**：严禁外层写 `rounded-2xl`，内部子卡片或 Item 也写 `rounded-2xl`。
-- **禁止内角大外角小**：内层元素的圆角半径在任何情况下不得超过外层容器半径。
-- **禁止无根据的 Arbitrary Radius**：禁止使用 `rounded-[13px]` 等随意值，所有圆角必须映射至主题 Token 或标准阶梯。
+有关圆角设计、嵌套推导、Token 映射与反模式的完整细则，直接查阅 [UI Radius 规则](../ui-radius/README.md)。
 
 ## 格式塔视觉秩序与网格系统（Gestalt & Grid System）
 
@@ -260,6 +209,7 @@ $$\text{Gap}_{\text{inter-group}} \ge (2 \sim 3) \times \text{Gap}_{\text{intra-
 
 ## 关联规则与边界
 
+- **圆角与几何拓扑**：圆角阶梯、嵌套同心推导、边框间隙计算与控件形态决断，100% 收敛遵循 [UI Radius 规则](../ui-radius/README.md)。
 - **异步加载与骨架稳定性**：完整的尺寸守恒、防塌陷、Skeleton 与 Loader 细则，100% 收敛遵循 [UI Stability 规则](../ui-stability/README.md)。
 - **表面明度与高度**：表面的承载、抬升与内凹明度关系，遵循 [UI Color and Surface 规则](../ui-color-and-surface/README.md#表面高度)。
 
@@ -270,7 +220,6 @@ $$\text{Gap}_{\text{inter-group}} \ge (2 \sim 3) \times \text{Gap}_{\text{intra-
 - [ ] **12 栏网格合规**：页面和复合看板采用标准 12 列栅格（`col-span-8/4`、`col-span-6/6`、`col-span-4*3` 等），移动端具备 `col-span-12` 优雅退化。
 - [ ] **轴线与等宽对齐**：图标与文字垂直居中或基线对齐；所有金额、数值与统计指标声明了 `tabular-nums` 且采用右对齐。
 - [ ] **组件零外边距**：所有独立复用组件根节点无外部 margin，组件间距由父容器 `gap` 统一控制。
-- [ ] **同心圆角几何**：存在嵌套关系的圆角结构符合 $R_{inner} = \max(0, R_{outer} - P)$ 公式；不存在内外同值套用或内角大于外角现象。
-- [ ] **圆角阶梯匹配**：控件用小圆角（6~8px）、卡片用中大圆角（12~16px）、弹窗用大圆角（16~24px），层级匹配清晰。
+- [ ] **圆角与拓扑合规**：所有圆角使用、嵌套推导与控件形态符合 [UI Radius 规则](../ui-radius/README.md)。
 - [ ] **光学内边距平衡**：文本交互控件（Button, Input）水平内边距明显大于垂直内边距。
 - [ ] **分区克制与闭合自然**：依靠对齐、留白与微弱明度差形成清晰逻辑边界，不滥用高对比度闭合边框。
