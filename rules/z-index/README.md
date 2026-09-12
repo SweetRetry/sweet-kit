@@ -26,17 +26,11 @@
 | **Sticky / Handle** | `z-20` | 20 | **局部吸顶与把手** | 表格吸顶表头 (Sticky Header)、分栏拖拽把手 (`ResizableHandle`)、侧边栏拖拽导轨 (`SidebarRail`)、局部滚动吸顶操作条 |
 | **Navigation / Fixed** | `z-30` | 30 | **持久性全局导航** | 页面顶部固定导航栏 (Fixed Header/Navbar)、移动端底部操作栏 (Bottom Bar)、固定侧边栏 (Fixed Sidebar) |
 | **Backdrop** | `z-40` | 40 | **遮罩蒙层** | 全屏半透明遮罩背景（当遮罩与内容需独立分层控制时） |
-| **Modal / Overlays** | `z-50` | 50 | **模态窗口与核心浮层** | Dialog 对话框、Sheet 侧边抽屉、Drawer 底部抽屉、AlertDialog、NavigationMenu 展开视区 |
-| **Floating / Popovers** | `z-60` (或 50+Portal) | 60 | **嵌套浮动控件** | 下拉菜单 (DropdownMenu)、气泡卡片 (Popover)、Select 下拉面板、ContextMenu 右键菜单 |
-| **Tooltip** | `z-70` (或 50+Portal) | 70 | **全局气泡提示** | Tooltip 气泡（必须能悬浮于模态弹窗及浮动控件之上，不被遮挡截断） |
-| **Toast / Notice** | `z-80` | 80 ~ 100 | **全局即时反馈通知** | 全局 Toast (Sonner 消息通知)、系统网络状态横幅、顶层操作反馈 |
-| **Spotlight / System** | `z-90` / `z-100` | 90 ~ 100 | **系统最高优先级** | Command Palette (`Cmd+K` cmdk 快捷指令面板)、全屏阻断加载遮罩、系统崩溃 Fatal Error 屏 |
+| **Overlay / Modal / Floating** | `z-50` | 50 | **全部浮层** | Dialog、Sheet、Drawer、AlertDialog、NavigationMenu、DropdownMenu、Popover、Select、ContextMenu、Tooltip、Toast 统一使用 `packages/ui` 提供的 `z-50` |
 
 > [!NOTE]
-> **关于 Radix UI 默认 `z-50` 的协作说明**：
-> 本项目的 Radix UI 原生浮层组件（Dialog, Sheet, Popover, Dropdown, Tooltip）在 `packages/ui` 中默认挂载至 `<body>` 根节点并使用 `z-50`。
-> 在常规单层浮层场景中，依赖 Radix 的 Portal 挂载顺序自然即可维持后开先上的正确次序；
-> 但在**跨层级复合场景**（如模态弹窗内弹出 Dropdown、弹窗内悬停显示 Tooltip、弹窗弹出时触发 Toast），必须确保 Tooltip 与 Toast 处于更高阶梯（`z-70` / `z-80`），防止因挂载时序异常引发的遮挡。
+> **`z-50` 是业务层上限。** 更高层不需要、也不应该在业务层表达：本项目的浮层组件在 `packages/ui` 中均 Portal 至 `<body>` 并使用 `z-50`，同层顺序由**挂载先后**决定（后挂载者在上）；Sonner 的 toaster 自带 `z-index: 999999999`，不参与本阶梯。
+> 当两个浮层真的互相遮挡时，修的是挂载顺序或祖先层叠上下文，不是数值。
 
 ---
 
@@ -119,20 +113,27 @@
 
 ---
 
-## 严禁的反模式（Anti-patterns）
+## 反模式
 
-1. **禁止任意数值（No Arbitrary z-index）**：严禁出现 `z-[99]`, `z-[999]`, `z-[9999]`, `z-[99999]` 等 arbitrary value。必须严格落在语义阶梯定义内。
-2. **禁止裸奔的局部提拉（No Un-isolated Local z-index）**：严禁在未加 `isolate` 的容器内直接对子元素使用 `z-10`、`z-20` 进行重叠排序。
-3. **禁止静态文档流无意义赋权**：严禁对既非 `relative`/`absolute`/`fixed`/`sticky` 也非 Flex/Grid item 的普通静态文档流元素添加 `z-index`（该写法在标准 CSS 中无任何实际效果）。
-4. **禁止以大盖大（No Escalation Wars）**：当层级被遮挡时，必须定位父级 Stacking Context 和 Portal 挂载点，严禁以“再加个 0”的心态盲目递增。
-5. **禁止随意篡改基础组件预设**：严禁在业务层为了单一场景随意覆盖 `packages/ui` 中已标准化的浮层层级（如私自修改 `<Dialog />` 为 `z-[200]`）。
+1. **任意值**：`z-*` 只取阶梯内的类；需要新层级时先加阶梯，不写 `z-[...]`。
+2. **未隔离的局部提拉**：在未声明 `isolate` 的容器内用 `z-10`、`z-20` 排序，会溢出到祖先上下文。
+3. **静态元素赋权**：既不定位、也不是 Flex/Grid item 的静态元素加 `z-index`，在标准 CSS 中不产生效果。
+4. **覆盖基础组件预设**：为单一场景改 `packages/ui` 已标准化的浮层层级，属于用数值掩盖结构问题。
 
 ---
 
 ## 验收清单
 
-- [ ] **阶梯合规**：所有 `z-*` 属于规范阶梯（`-z-10`, `z-0`, `z-10`, `z-20`, `z-30`, `z-40`, `z-50`, `z-60`, `z-70`, `z-80`, `z-90`, `z-100`），无 `z-[...]` 任意值。
+- [ ] **阶梯合规**：所有 `z-*` 属于 `-z-10` / `z-0` / `z-10` / `z-20` / `z-30` / `z-40` / `z-50`，无 `z-[...]` 任意值，业务层无 `z-50` 以上取值。
 - [ ] **局部隔离**：使用 `z-10` 进行局部重叠（AvatarStack、InputGroup 激活环、日历选中态等）的父容器均显式声明了 `isolate`。
 - [ ] **Portal 归位**：所有 Dialog、Sheet、Popover、DropdownMenu、Tooltip 和 Toast 均正确使用 Portal 挂载在顶层，未被父容器 `overflow: hidden` 或 `transform` 截断。
 - [ ] **动效安全**：包含 `transform` / `opacity` 动效的父容器未内嵌非 Portal 的浮动菜单或气泡。
-- [ ] **层叠可预期**：即使在打开模态弹窗（`z-50`）的情况下，其内部的下拉菜单与 Tooltip 仍能正常清晰展示，Toast 提示仍处于可见最顶层。
+- [ ] **层叠可预期**：打开模态弹窗时，其内部的下拉菜单、Tooltip 与 Toast 仍完整可见（依靠 Portal 挂载顺序，而非更大的数值）。
+
+## 适用范围
+
+本规则约束 `apps/**` 与新增业务组件。`packages/ui` 内的上游 shadcn/ui 组件按上游实现维护（其 `z-[1]` 等写法不构成本规则违规），改造它们需要单独提交。
+
+## 自动化验证
+
+修改层叠代码后运行 `pnpm ui:check`（检查任意值 `z-[...]`）。

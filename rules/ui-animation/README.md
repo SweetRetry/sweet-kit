@@ -2,11 +2,9 @@
 
 本规则约束 Sweet Kit 全栈应用与组件库中的交互微动效、进出场过渡、布局转场（Layout Animation）与手势动画。
 
-动效用于解释状态、空间关系与操作反馈，应自然、即时、克制且可打断。装饰性表现只在服务内容与既定设计方向时使用，不能延迟用户操作。
+动效用于解释状态、空间关系与操作反馈，应自然、即时、克制且可打断。
 
-设计取舍以 Emil Kowalski 的 Design Engineering 为准；Ant Motion 作为空间与编排的补充，冲突时以 Emil 为准。具体 API 与性能结论以当前依赖版本的官方文档、类型和实测为准。
-
-技术选型遵循根目录 `AGENTS.md`：**前端动画统一使用 `motion` (`motion/react`) 或 Tailwind CSS 纯过渡，不引入其他动画库**。
+取舍以 Emil Kowalski 的 Design Engineering 为准，Ant Motion 补充空间与编排，冲突时以 Emil 为准。技术选型遵循根目录 `AGENTS.md`：`motion` (`motion/react`) 或 Tailwind CSS 过渡。具体 API 与性能结论以当前依赖版本的官方文档、类型和实测为准。
 
 ---
 
@@ -80,29 +78,13 @@ transition={{ type: "spring", stiffness: 300, damping: 35 }}
 
 ## 3. 物理自然度与微交互规范
 
-### 3.1 严禁从 `scale(0)` 凭空生成
+### 3.1 缩放入场从接近最终尺寸开始
 
-现实物理世界中没有任何物体能从绝对几何零点瞬间膨胀生成。
-- **错误**：`scale(0)` ➔ `scale(1)`（看起来像凭空戳出来的假象）。
-- **正确**：**从 `scale(0.95)` 开始，配合 `opacity: 0` 渐变**。初始尺寸已具有明确形态暗示，进场更具质感。
+入场从 `scale(0.95)` 起步并配合 `opacity: 0`，初始尺寸已带有明确的形态暗示。`scale(0)` 会读成凭空戳出的假象。
 
-### 3.2 按钮瞬时按压确认（Scale-on-Press）
+### 3.2 按压瞬时确认（Scale-on-Press）
 
-通过第 1 节决策的按钮可使用轻微按压缩放，例如 `scale(0.97)`。键盘与减少动态效果分支保持原尺寸；复用现有组件反馈，不叠加第二套动画。
-
-下面是局部 CSS 示例；`data-press-feedback` 由调用方按实际使用频率决定。`:active:not(:focus-visible)` 将缩放限制在非键盘焦点场景，组件若已提供输入来源信息应优先复用。
-
-```css
-@media (prefers-reduced-motion: no-preference) {
-  .pressable[data-press-feedback="true"]:not(:focus-visible) {
-    transition: scale 150ms cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  .pressable[data-press-feedback="true"]:active:not(:focus-visible) {
-    scale: 0.97;
-  }
-}
-```
+经第 1 节判定可动画的按钮使用 `active:scale-95` 配合 150ms `ease-out`（过渡 `scale`，不用 `transition-all`）。缩放只作用于指针按压：`:active:not(:focus-visible)` 或等价的输入来源判断，键盘与减少动态效果分支保持原尺寸。复用组件已有的按压反馈，不叠加第二套动画。
 
 ### 3.3 锚点感知（Origin-Aware Popovers）
 
@@ -126,15 +108,11 @@ Tooltip 首次出现需有微小防误触延迟（复用组件已有的延迟配
 - 异步加载先按 [UI Stability](../ui-stability/README.md) 保持占位；布局动画不能替代稳定的容器尺寸。
 - 避免逐帧更新 React 状态或父容器上大量后代继承的 CSS 变量，检查内容加载与连续操作同时发生时的表现。
 
-### 4.2 严禁 `transition-all`
+### 4.2 显式声明动画属性
 
-在 CSS 或 Tailwind 中**严禁直接使用 `transition: all` 或 `transition-all`**。
-`transition-all` 会让未计划的可动画属性变化也触发过渡。必须显式声明受控属性；它本身并不监听父级重绘或文本换行：
-```html
-<!-- ❌ 错误：滥用 all -->
-<div className="transition-all duration-200">...</div>
+在 CSS 与 Tailwind 中显式列出受控属性，例如 `transition-[transform,opacity] duration-200 ease-out`。`transition-all` 会连带过渡未计划的属性，它也不监听父级重绘或文本换行，不构成兜底。`pnpm ui:check` 会拦住它。
 
-<!-- ✅ 正确：显式指明属性 -->
+```tsx
 <div className="transition-[transform,opacity] duration-200 ease-out">...</div>
 ```
 
@@ -144,8 +122,8 @@ Tooltip 首次出现需有微小防误触延迟（复用组件已有的延迟配
 
 ### 5.1 交互可打断（Interruptibility）
 
-- 快速反复点击开关、手势滑动中途松手、或者在动画进行中按下 Escape 键时，元素必须**从当前视觉状态转向最新目标**；键盘与超高频分支直接呈现最终状态，其他分支平滑衔接，绝对禁止跳回初始状态重新播放，严禁排队堆积过期的动画帧。
-- **业务逻辑解耦**：表单提交、状态变更或数据拉取，**绝对禁止绑定在 `onAnimationComplete` 回调上**。网络请求必须并行或前置触发，防止因动画被系统打断导致业务逻辑丢失。
+- 元素从当前视觉状态转向最新目标：快速反复点击开关、手势中途松手、动画进行中按 Escape，都直接朝最新状态衔接，不跳回起点、不排队播放过期帧；键盘与超高频分支直接呈现最终状态。
+- **业务状态与动画解耦**：表单提交、状态变更与数据拉取并行或前置触发，动画完成回调只做视觉收尾。
 
 ### 5.2 尊重减少动态效果偏好（Reduced Motion）
 
@@ -168,74 +146,6 @@ Tooltip 首次出现需有微小防误触延迟（复用组件已有的延迟配
 
 ---
 
-## 6. 实现示例
-
-### 6.1 浮层过渡样式
-
-以下仅展示浮层已挂载时的样式变化，实际显隐、焦点与退出卸载复用现有浮层组件。`data-instant` 由既有输入来源与频率判断传入；键盘触发时跳过过渡。
-
-```tsx
-<div
-  data-open={open}
-  data-instant={instant}
-  className="origin-center scale-95 opacity-0 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] data-[open=true]:scale-100 data-[open=true]:opacity-100 data-[instant=true]:duration-0 data-[instant=true]:transition-none motion-reduce:scale-100 motion-reduce:transition-opacity"
->
-  <ModalBody />
-</div>
-```
-
-Tailwind CSS v4 的 `scale-*` 使用独立 `scale` 属性，因此上例显式过渡 `scale`。自定义缓动使用 `ease-[cubic-bezier(...)]`，不能将裸 `cubic-bezier(...)` 作为类名。
-
-### 6.2 列表元素增删与位置变化
-
-`instant` 由调用方根据第 1 节的决策传入，列表数据仍由原状态 owner 管理。稳定 key 标识对象，`AnimatePresence` 保留退出项，`popLayout` 让其余项立即按新布局排列，`layout="position"` 平滑衔接位置而不缩放内容。初次渲染不播放整列入场。
-
-```tsx
-"use client"
-
-import { AnimatePresence, motion, useReducedMotion } from "motion/react"
-
-type Item = { id: string; label: string }
-
-export function AnimatedList({
-  items,
-  instant,
-}: {
-  items: Item[]
-  instant: boolean
-}) {
-  const reduceMotion = useReducedMotion()
-  const allowMovement = !instant && !reduceMotion
-
-  return (
-    <ul className="relative">
-      <AnimatePresence initial={false} mode="popLayout">
-        {items.map((item) => (
-          <motion.li
-            key={item.id}
-            layout={allowMovement ? "position" : false}
-            initial={instant ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{
-              type: "tween",
-              duration: instant ? 0 : 0.18,
-              ease: [0.23, 1, 0.32, 1],
-            }}
-          >
-            {item.label}
-          </motion.li>
-        ))}
-      </AnimatePresence>
-    </ul>
-  )
-}
-```
-
-带交互控件的列表还需由现有组件处理删除后的焦点去向与退出项的交互禁用；示例仅包含文本项。
-
----
-
 ## 验收清单
 
 - [ ] **决策一致**：按实际频率与输入方式决定是否动画，键盘与超高频分支即时呈现。
@@ -243,10 +153,12 @@ export function AnimatedList({
 - [ ] **空间连续**：缩放入场接近最终尺寸，方向与锚点符合来源，布局变化不造成内容塌陷。
 - [ ] **可打断**：连续操作停在最新状态，无跳回起点或过期队列；业务状态与请求不等待动画。
 - [ ] **性能可控**：显式声明动画属性，复杂效果与必要的尺寸动画已检查实际开销。
-- [ ] **可访问**：减少动态效果时无空间运动，键盘、触屏与焦点行为完整；示例中的按压与浮层也遵循这些分支。
+- [ ] **可访问**：减少动态效果时无空间运动，键盘、触屏与焦点行为完整；按压与浮层同样遵循这些分支。
 
-## 来源
+## 适用范围
 
-- Emil Kowalski：Design Engineering：动画决策、时长、缓动、组件细节、可打断性与可访问性的主要依据。
-- Ant Motion（动效价值、原则、速度、空间、组合与转场）：空间关系与动效编排的补充参考。
-- Motion、Tailwind CSS：核对实现 API；来源示例中的库名、参数与性能描述不直接作为项目契约。
+本规则约束 `apps/**` 与新增业务组件。`packages/ui` 内的上游 shadcn/ui 组件按上游实现维护（其 `transition-all` 等写法不构成本规则违规）。
+
+## 自动化验证
+
+修改动效代码后运行 `pnpm ui:check`（检查 `transition-all` 等）。

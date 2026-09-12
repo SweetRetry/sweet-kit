@@ -2,10 +2,6 @@
 
 本规则约束组件与界面的几何稳定性、数据鲁棒性与状态切换抗突变能力。
 
-优秀的 UI 在面对网络延迟、数据缺失、异步响应或状态切换时，必须保持**视觉恒定**与**空间稳定**，彻底消除布局颠簸（Layout Shifts / CLS）、容器塌陷与尺寸突变。
-
-Coding Agent 在构建与重构任何 UI 组件时，必须优先建立防御性布局习惯。
-
 ---
 
 ## 核心指导原则
@@ -133,7 +129,9 @@ Coding Agent 在构建与重构任何 UI 组件时，必须优先建立防御性
   <span className="min-w-0 truncate font-medium">
     {user?.displayName ?? "未知用户"}
   </span>
-  <Badge className="shrink-0">{user?.role ?? "Guest"}</Badge>
+  <span className="shrink-0 text-xs text-muted-foreground">
+    {user?.role ?? "Guest"}
+  </span>
 </div>
 ```
 
@@ -143,15 +141,8 @@ Coding Agent 在构建与重构任何 UI 组件时，必须优先建立防御性
 
 ### 3.1 加载反馈选型：Skeleton vs Loader
 
-根据加载范围严格区分使用场景，**严禁使用全屏或页面级旋转 Loader 替代结构骨架**：
-
-- **Skeleton（骨架屏）**：
-  - 用于路由级 `loading.tsx`、页面首次加载和主要内容区首次加载。
-  - 必须 1:1 精确复制最终渲染态的**空间体量、边距与排版行高**（如 `text-sm` 对应 `h-4`/`h-5`；卡片 Skeleton 的 `padding` 和 `gap` 必须与真卡片 100% 相同）。
-  - Skeleton 只占位尚未获得的内容，加载完成后周围元素的位置偏移应当为 0（CLS = 0）。
-- **Loader（局部指示器）**：
-  - 仅用于按钮提交、局部刷新、分页加载和其他操作范围明确的就地反馈。
-  - 放在触发操作的控件内（如 `<Button disabled>{loading && <Spinner />}保存</Button>`），不阻塞无关区域，增量加载时保留已有内容，绝不导致已有内容区坍塌。
+- **Skeleton（骨架屏）**：用于路由级 `loading.tsx`、页面首次加载与主要内容区首次加载。1:1 复制最终渲染态的体量、`padding`、`gap` 与行高（`text-sm` 对应 `h-4`/`h-5`）；加载完成后周围元素的位置偏移为 0（CLS = 0）。
+- **Loader（局部指示器）**：用于按钮提交、局部刷新、分页等操作范围明确、就地生效的反馈，放在触发它的控件内（`<Button disabled>{loading && <Spinner />}保存</Button>`），不阻塞无关区域，增量加载保留已有内容。
 
 ### 3.2 表单校验错误的预留空间（Reserved Space）
 
@@ -200,16 +191,6 @@ Coding Agent 在构建与重构任何 UI 组件时，必须优先建立防御性
   </div>
 </div>
 ```
-
----
-
-## 5. 严禁的反模式（Anti-patterns）
-
-1. **禁止裸写无兜底属性**：严禁直接在 JSX 中渲染可能为 undefined 的属性（如 `<div>{data.user.bio}</div>`），必须使用可选链与默认值（`data?.user?.bio || "—"`）。
-2. **禁止高度骤缩的 Loading 占位**：严禁把原本几百像素的内容区直接替换成一个居中的单行 `<Spinner />`，必须使用等体量的 Skeleton 或保留原容器尺寸。
-3. **禁止媒体无宽高比裸奔**：严禁未指定 `aspect-ratio` 或固定宽高的 `<img>`、`<video>` 裸标签直接进入流式布局。
-4. **禁止按钮文案消失型加载**：严禁在加载时将按钮文案彻底抹去导致按钮变窄。
-5. **禁止 Flex 子项不设 `min-w-0` 的文本截断**：未设置 `min-w-0` 的 `truncate` 是不可靠的虚假截断。
 
 ---
 
