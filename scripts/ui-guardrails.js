@@ -1,3 +1,12 @@
+/**
+ * 只扫描两类“无判断余地”的 UI 禁令：
+ * - transition-all / transition: all（web-design/animation）
+ * - z-index 任意值（z-index）
+ *
+ * 圆角与间距的任意值**不在此列**：规则本身有判断余地（公式推导的转角、
+ * 行高托底与光学微调值域），扫描会产生误报，交由审查判断。
+ */
+
 import { execFileSync } from "node:child_process"
 import { readFileSync } from "node:fs"
 import { dirname, join, resolve } from "node:path"
@@ -9,35 +18,22 @@ const SELF = "scripts/ui-guardrails.js"
 
 const CHECKS = [
   {
-    rule: "ui-animation",
+    rule: "web-design/animation",
     pattern: /\btransition-all\b/g,
     message: "transition-all 会连带过渡未计划的属性",
     suggestion: "显式声明属性，如 transition-[transform,opacity]",
   },
   {
-    rule: "ui-animation",
+    rule: "web-design/animation",
     pattern: /\btransition\s*:\s*all\b/g,
     message: "transition: all 会连带过渡未计划的属性",
     suggestion: "显式声明属性，如 transition: transform, opacity",
   },
   {
-    rule: "z-index",
+    rule: "web-design/z-index",
     pattern: /(?<![\w-])-?z-\[[^\]]+\]/g,
     message: "z-index 使用任意值，脱离语义阶梯",
     suggestion: "改用 -z-10 / z-0 / z-10 / z-20 / z-30 / z-40 / z-50",
-  },
-  {
-    rule: "ui-radius",
-    pattern: /(?<![\w-])rounded(?:-[a-z]+)?-\[[^\]]+\]/g,
-    message: "圆角使用任意值，脱离圆角阶梯",
-    suggestion: "改用 rounded-xs/sm/md/lg/xl/2xl/3xl/full，或先加 Token",
-  },
-  {
-    rule: "ui-layout-and-loading",
-    pattern:
-      /(?<![\w-])-?(?:p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|space-x|space-y)-\[[^\]]+\]/g,
-    message: "间距或内边距使用任意值，脱离 8px 网格",
-    suggestion: "改用 8px 阶梯，或确认它属于行高托底/光学微调值域",
   },
 ]
 
@@ -99,7 +95,7 @@ function main() {
   }
 
   if (allFindings.length === 0) {
-    console.log("✓ No arbitrary UI values found")
+    console.log("✓ No transition-all or arbitrary z-index found")
     return
   }
 

@@ -4,10 +4,10 @@ import { Scalar } from "@scalar/hono-api-reference"
 import type { Logger } from "@workspace/logger"
 import { getActiveTraceId } from "@workspace/observability"
 import {
-  type ApiErrorBody,
+  createProblemDetails,
   ErrorCode,
-  type ErrorCode as ErrorCodeValue,
   getErrorStatus,
+  PROBLEM_MEDIA_TYPE,
 } from "@workspace/request/contract"
 import type { Context } from "hono"
 import { cors } from "hono/cors"
@@ -32,27 +32,28 @@ const UserSchema = z
   })
   .openapi("User")
 
-const ErrorSchema = z
+const ProblemDetailsSchema = z
   .object({
+    type: z.string(),
+    title: z.string(),
+    status: z.number().int(),
+    detail: z.string(),
     code: z.enum(ErrorCode),
-    message: z.string(),
     traceId: z.string().length(32).optional(),
   })
-  .openapi("Error")
+  .openapi("ProblemDetails")
 
-function errorResponse<C extends ErrorCodeValue>(c: Context, code: C, message: string) {
+const problemContent = { [PROBLEM_MEDIA_TYPE]: { schema: ProblemDetailsSchema } }
+
+function problemResponse<C extends ErrorCode>(c: Context, code: C, detail: string) {
   const status = getErrorStatus(code)
-  const traceId = getActiveTraceId()
-  const body: ApiErrorBody<C> = {
-    code,
-    message,
-    ...(code === ErrorCode.INTERNAL_SERVER_ERROR && traceId ? { traceId } : {}),
-  }
-  return c.json(body, status)
+  const body = createProblemDetails(code, detail, { traceId: getActiveTraceId() })
+
+  return c.json(body, status, { "Content-Type": PROBLEM_MEDIA_TYPE })
 }
 
 const internalErrorResponse = {
-  content: { "application/json": { schema: ErrorSchema } },
+  content: problemContent,
   description: "Internal server error with trace correlation",
 }
 
@@ -60,6 +61,7 @@ const healthRoute = createRoute({
   method: "get",
   path: "/api/health",
   tags: ["System"],
+  summary: "Server health",
   responses: {
     200: {
       content: { "application/json": { schema: HealthSchema } },
@@ -73,6 +75,7 @@ const meRoute = createRoute({
   method: "get",
   path: "/api/me",
   tags: ["Account"],
+  summary: "Current authenticated user",
   security: [{ bearerAuth: [] }],
   responses: {
     200: {
@@ -80,7 +83,7 @@ const meRoute = createRoute({
       description: "Current authenticated user",
     },
     401: {
-      content: { "application/json": { schema: ErrorSchema } },
+      content: problemContent,
       description: "Authentication required",
     },
     500: internalErrorResponse,
@@ -161,7 +164,7 @@ export function createServerApp(options: CreateServerAppOptions) {
     const session = await options.auth.api.getSession({ headers: c.req.raw.headers })
 
     if (!session) {
-      return errorResponse(c, ErrorCode.UNAUTHORIZED, "Authentication required")
+      return problemResponse(c, ErrorCode.UNAUTHORIZED, "Authentication required")
     }
 
     return c.json(
@@ -192,7 +195,7 @@ export function createServerApp(options: CreateServerAppOptions) {
 
   app.onError((error, c) => {
     c.get("logger").error({ err: error }, "request.failed")
-    return errorResponse(c, ErrorCode.INTERNAL_SERVER_ERROR, "Internal Server Error")
+    return problemResponse(c, ErrorCode.INTERNAL_SERVER_ERROR, "Internal Server Error")
   })
 
   return app

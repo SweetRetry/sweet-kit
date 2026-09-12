@@ -105,10 +105,6 @@ Tailwind 下按公式取最近阶梯即可：
 
 本规则约束 `apps/**` 与新增业务组件。`packages/ui` 内的上游 shadcn/ui 组件按上游实现维护（其 `rounded-[2px]`、`rounded-[inherit]` 等写法不构成本规则违规）。
 
-## 自动化验证
-
-修改圆角后运行 `pnpm ui:check`（检查任意值 `rounded-[...]`）。
-
 ## 验收
 
 - [ ] 每个圆角用类名表达，不用任意值；语义角色与阶梯表一致。

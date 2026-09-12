@@ -1,11 +1,11 @@
 import ky, { isHTTPError, type KyInstance } from "ky"
-import { type ErrorCode, getErrorStatus, isApiErrorBody, isTraceId } from "./contract.ts"
+import { type ErrorCode, isProblemDetails, isTraceId } from "./contract.ts"
 
 export {
-  type ApiErrorBody,
   type ApiErrorStatus,
   ErrorCode,
   type ErrorCode as ErrorCodeValue,
+  type ProblemDetails,
 } from "./contract.ts"
 
 export type AccessTokenProvider = () => Promise<string | null> | string | null
@@ -47,19 +47,17 @@ function toRequestError(error: Error): Error {
 
   const body: unknown = error.data
 
-  const parsedError = isApiErrorBody(body) ? body : undefined
-  const apiError =
-    parsedError && getErrorStatus(parsedError.code) === error.response.status
-      ? parsedError
-      : undefined
+  const parsedProblem = isProblemDetails(body) ? body : undefined
+  const problem =
+    parsedProblem && parsedProblem.status === error.response.status ? parsedProblem : undefined
   const responseTraceId = error.response.headers.get("x-trace-id")
-  const traceId = apiError?.traceId ?? (isTraceId(responseTraceId) ? responseTraceId : undefined)
+  const traceId = problem?.traceId ?? (isTraceId(responseTraceId) ? responseTraceId : undefined)
 
   return new RequestError(
-    apiError?.message ?? `Request failed with status ${error.response.status}`,
+    problem?.detail ?? `Request failed with status ${error.response.status}`,
     {
       status: error.response.status,
-      code: apiError?.code,
+      code: problem?.code,
       traceId,
       details: body,
       cause: error,

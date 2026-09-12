@@ -9,7 +9,7 @@
     "cli": "pnpm --filter cli sweet",
     "worker": "pnpm --filter worker dev",
     "adr:reorder": "node scripts/adr-reorder.js",
-    "font:check": "node rules/font-system/check.js",
+    "font:check": "node rules/web-design/font-system/check.js",
     "zod:check": "node rules/zod-v4/check.js",
     "ui:check": "node scripts/ui-guardrails.js",
     "rules:check": "pnpm font:check && pnpm zod:check && pnpm ui:check",

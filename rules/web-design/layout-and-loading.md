@@ -4,7 +4,7 @@
 
 1. 优先利用负空间、表面色调差与动态反馈建立视觉秩序；禁止使用高对比度的 1px 闭合边框作为内容分隔手段。
 2. 间距体系（Spacing）、内边距（Padding）与外边距（Margin）严格服从 8px 网格与现代容器调度机制。
-3. 容器与子元素圆角（Border Radius）100% 收敛遵循 [UI Radius 规则](../ui-radius/README.md)，服从相对几何、同心推导与控件形态决断。
+3. 容器与子元素圆角（Border Radius）100% 收敛遵循 [UI Radius 规则](radius.md)，服从相对几何、同心推导与控件形态决断。
 4. 结构与排版严格遵循格式塔心理学（亲密性倍率、连续性共享轴）与 12 栏响应式网格体系。
 
 ## 间距与内边距体系（Spacing & Padding）
@@ -74,7 +74,7 @@
 
 ## 圆角
 
-圆角阶梯、嵌套同心推导与控件形态决断 100% 遵循 [UI Radius 规则](../ui-radius/README.md)。
+圆角阶梯、嵌套同心推导与控件形态决断 100% 遵循 [UI Radius 规则](radius.md)。
 
 ## 格式塔视觉秩序与网格系统（Gestalt & Grid System）
 
@@ -189,7 +189,7 @@ $$\text{Gap}_{\text{inter-group}} \ge (2 \sim 3) \times \text{Gap}_{\text{intra-
 
 1. **负空间定义分组**：根据内容的从属关系规划间距，使组内间距明显小于组间距；通过留白、对齐、网格和容器宽度表达区块边界。
 2. **排版建立层级**：使用标题层级、字号、字重和文字颜色组织阅读顺序，不依赖容器轮廓补救层级不清。
-3. **表面高度表达层次**：布局先确定表面的承载、抬升或内凹关系，再按 [UI Color and Surface](../ui-color-and-surface/README.md#表面高度) 取当前主题的表面 Token，避免高对比度描边。
+3. **表面高度表达层次**：布局先确定表面的承载、抬升或内凹关系，再按 [UI Color and Surface](color-and-surface.md#表面高度) 取当前主题的表面 Token，避免高对比度描边。
 4. **动态反馈表达可交互性**：交互区域通过 hover、pressed、focus 等状态的色调、阴影或形变反馈其边界和状态，不使用静态闭合边框代替交互反馈。
 5. **分隔线不是默认分区方式**：页面、卡片和表单区块先靠留白、共享对齐轴与微弱表面差分区。成组列表允许低对比度分隔（`divide-y divide-border/40`）；高对比度闭合边框、`<Separator />` 与同类线条不得作为默认分区手段。
 
@@ -201,15 +201,11 @@ $$\text{Gap}_{\text{inter-group}} \ge (2 \sim 3) \times \text{Gap}_{\text{intra-
 
 本规则约束 `apps/**` 与新增业务组件。`packages/ui` 内的上游 shadcn/ui 组件按上游实现维护（其 `p-[3px]` 等任意值不构成本规则违规），改造它们需单独提交。
 
-## 自动化验证
-
-修改布局后运行 `pnpm ui:check`（检查任意值间距与 `padding`）。
-
 ## 关联规则与边界
 
-- **圆角与几何拓扑**：圆角阶梯、嵌套同心推导、边框间隙计算与控件形态决断，100% 收敛遵循 [UI Radius 规则](../ui-radius/README.md)。
-- **异步加载与骨架稳定性**：完整的尺寸守恒、防塌陷、Skeleton 与 Loader 细则，100% 收敛遵循 [UI Stability 规则](../ui-stability/README.md)。
-- **表面明度与高度**：表面的承载、抬升与内凹关系，遵循 [UI Color and Surface 规则](../ui-color-and-surface/README.md#表面高度)。
+- **圆角与几何拓扑**：圆角阶梯、嵌套同心推导、边框间隙计算与控件形态决断，100% 收敛遵循 [UI Radius 规则](radius.md)。
+- **异步加载与骨架稳定性**：完整的尺寸守恒、防塌陷、Skeleton 与 Loader 细则，100% 收敛遵循 [UI Stability 规则](stability.md)。
+- **表面明度与高度**：表面的承载、抬升与内凹关系，遵循 [UI Color and Surface 规则](color-and-surface.md#表面高度)。
 
 ## 验收清单
 
@@ -218,6 +214,6 @@ $$\text{Gap}_{\text{inter-group}} \ge (2 \sim 3) \times \text{Gap}_{\text{intra-
 - [ ] **12 栏网格合规**：页面和复合看板采用标准 12 列栅格（`col-span-8/4`、`col-span-6/6`、`col-span-4*3` 等），移动端具备 `col-span-12` 优雅退化。
 - [ ] **轴线与等宽对齐**：图标与文字垂直居中或基线对齐；所有金额、数值与统计指标声明了 `tabular-nums` 且采用右对齐。
 - [ ] **组件零外边距**：所有独立复用组件根节点无外部 margin，组件间隔由父容器 `gap-*` 或 `space-y-*` 统一控制。
-- [ ] **圆角与拓扑合规**：所有圆角使用、嵌套推导与控件形态符合 [UI Radius 规则](../ui-radius/README.md)。
+- [ ] **圆角与拓扑合规**：所有圆角使用、嵌套推导与控件形态符合 [UI Radius 规则](radius.md)。
 - [ ] **光学内边距平衡**：文本交互控件（Button, Input）水平内边距明显大于垂直内边距。
 - [ ] **分区克制与闭合自然**：依靠对齐、留白与微弱明度差形成清晰逻辑边界，不滥用高对比度闭合边框。
