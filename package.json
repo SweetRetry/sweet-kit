@@ -8,7 +8,6 @@
     "dev": "turbo dev --filter=server --filter=web --filter=worker",
     "cli": "pnpm --filter cli sweet",
     "worker": "pnpm --filter worker dev",
-    "adr:reorder": "node scripts/adr-reorder.js",
     "font:check": "node rules/web-design/font-system/check.js",
     "zod:check": "node rules/zod-v4/check.js",
     "ui:check": "node scripts/ui-guardrails.js",
@@ -21,7 +20,7 @@
     "check": "biome check --write .",
     "typecheck": "turbo typecheck",
     "test": "turbo build --filter=server... && vitest run",
-    "verify": "pnpm lint && pnpm rules:check && pnpm adr:reorder --check && pnpm typecheck && pnpm test && pnpm build && pnpm knip && pnpm peers check",
+    "verify": "pnpm lint && pnpm rules:check && pnpm typecheck && pnpm test && pnpm build && pnpm knip && pnpm peers check",
     "db:generate": "pnpm --filter server auth:generate && pnpm --filter server db:generate",
     "db:migrate": "pnpm --filter server db:migrate",
     "knip": "knip"

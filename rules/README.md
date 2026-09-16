@@ -14,22 +14,4 @@
 
 ## 结构
 
-```text
-rules/
-  api-contract.md              # API 描述层与 RFC 9457 错误契约
-  web-design/                  # 前端设计规则，由根目录 DESIGN.md 路由
-    animation.md
-    color-and-surface.md
-    design-quality.md
-    layout-and-loading.md
-    radius.md
-    stability.md
-    z-index.md
-    font-system/               # 带扫描脚本的规则保留目录
-      README.md
-      check.js
-      scan.js
-  zod-v4/                      # 带扫描脚本的规则保留目录（同上）
-```
-
-规则只包含一个文档时，直接写为 `{name}.md`；需要同时维护脚本等其他文件时才建目录，并保留 `README.md` 作为入口。
+规则只包含一个文档时，直接写为 `{name}.md`；需要同时维护脚本等其他文件时才建目录，并保留 `README.md` 作为入口。现有规则与脚本以 `rules/` 目录实际内容为准，路由由 `AGENTS.md` 与 `DESIGN.md` 负责。

@@ -13,4 +13,4 @@
 | **阶梯** | 字号、排版层级 | [Font System](rules/web-design/font-system/README.md) | 字号只取标准阶梯，正文下限 `text-xs` |
 | **频率** | 交互动效、手势、转场、进出场 | [UI Animation](rules/web-design/animation.md) | 高频即时呈现，中低频强 ease-out，随时可打断 |
 
-数据校验规则见 [Zod v4](rules/zod-v4/README.md)。静态门禁只覆盖边界明确、误报率低的项：`pnpm ui:check`（`transition-all`、`z-[...]`）、`pnpm font:check`（字号）、`pnpm zod:check`（废弃 API），或直接 `pnpm rules:check`。
+数据校验规则见 [Zod v4](rules/zod-v4/README.md)。静态门禁与引入标准见 [rules/README.md](rules/README.md)，一次执行 `pnpm rules:check`。

@@ -4,7 +4,7 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 
 ## 仓库知识与自动化边界
 
-新增项目资料时按内容路由：长期架构取舍写入 `adr/`，强制工程约束写入 `rules/`，系统与使用知识写入 `docs/`，Local Loop、构建、database seed 或 Agent 自定义工具写入 `scripts/`。
+新增项目资料时按内容路由：长期架构取舍写入 `docs/adr/`，外部资料调研存入 `docs/research/`，未定型的计划写入 `docs/future/`，强制工程约束写入 `rules/`，系统与使用知识写入 `docs/`，Local Loop、构建、database seed 或 Agent 自定义工具写入 `scripts/`。新增或修改 `rules/` 下的规则时先读 `rules/README.md`（准入条件、自动化门禁边界与目录约定）。
 
 ## 架构约定
 
@@ -13,10 +13,11 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 - `packages/ui` 负责 Tailwind CSS、shadcn/ui 组件和全局设计 token。
 - 应用通过 package 的公开 exports 访问切面，不跨 package 导入内部文件。
 - 优先使用维护活跃、经过生产验证的第三方成熟库；自行实现前先检查现有依赖的文档、类型定义和扩展能力。
-- 环境变量：新增或修改应用 runtime 环境变量时，先读 `adr/0001-architecture-runtime-boundaries.md`，由所属应用校验并通过 composition root 显式传入 package。
-- Tracing 与诊断关联：修改 tracing、日志关联、错误 `traceId` 或 Agent trace 查询时，先读 `adr/0002-opentelemetry-observability.md`，保持 signal 边界、redaction 和 runtime 隔离。
-- 后台任务与一致性：修改 job enqueue、task handler 或 worker lifecycle 时，先读 `adr/0003-postgresql-and-graphile-worker.md`，保持 transaction、at-least-once 与 process 边界。
-- CLI 认证边界：修改 CLI auth、token 或 device authorization 时，先读 `adr/0004-cli-authentication-boundary.md`，保持第一方 session credential 的信任边界。
+- 环境变量：新增或修改应用 runtime 环境变量时，先读 `docs/adr/0001-architecture-runtime-boundaries.md`，由所属应用校验并通过 composition root 显式传入 package。
+- Tracing 与诊断关联：修改 tracing、日志关联、错误 `traceId` 或 Agent trace 查询时，先读 `docs/adr/0002-opentelemetry-observability.md`，保持 signal 边界、redaction 和 runtime 隔离。
+- 后台任务与一致性：修改 job enqueue、task handler 或 worker lifecycle 时，先读 `docs/adr/0003-postgresql-and-graphile-worker.md`，保持 transaction、at-least-once 与 process 边界。
+- CLI 认证边界：修改 CLI auth、token 或 device authorization 时，先读 `docs/adr/0004-cli-authentication-boundary.md`，保持第一方 session credential 的信任边界。
+- HTTP API 形态：引入 API 版本前缀、调整 REST 严格度或做无法兼容的 API 变更时，先读 `docs/adr/0005-http-api-shape.md`，保持资源路径、方法取舍与兼容演进策略。
 - 测试集成环境：测试不得自行启动或依赖开发机的 container runtime；需要外部资源的集成验证由显式 integration environment 提供。
 
 ## 代码设计
@@ -51,6 +52,7 @@ packages/jobs/               # Graphile task、payload 与 enqueue
 packages/logger/             # Pino 结构化日志
 packages/observability/      # OpenTelemetry tracing 与 Agent trace 查询
 packages/request/            # ky HTTP client 与 API error contract
+packages/typescript-config/  # 共享 tsconfig 预设：base / nextjs / react-library
 packages/ui/                 # Tailwind CSS v4 + shadcn/ui
 ```
 

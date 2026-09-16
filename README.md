@@ -14,15 +14,17 @@
 - Observability：OpenTelemetry、trace/log correlation、Agent trace lookup
 - CLI：Commander
 - Env：各应用独立拥有的 Zod 环境变量配置
-- Test：Vitest、Hono `app.request()`、Testcontainers PostgreSQL
+- Test：Vitest
 
 ## 仓库知识与自动化
 
 | 目录 | 关注点 | 内容 |
 | --- | --- | --- |
-| [`adr/`](./adr/) | Why | 长期架构决策、背景、取舍与风险 |
-| [`rules/`](./rules/) | How | 编码规范、架构边界和 Agent 必须遵守的约束 |
 | [`docs/`](./docs/) | What | 系统说明、开发指南、API、业务与运维知识 |
+| [`docs/adr/`](./docs/adr/) | Why | 长期架构决策、背景、取舍与风险 |
+| [`docs/research/`](./docs/research/) | Source | 外部资料调研存档：升级指南、上游设计与规范参考 |
+| [`docs/future/`](./docs/future/) | Later | 尚未决定或时机未到的计划：候选方案与触发条件 |
+| [`rules/`](./rules/) | How | 编码规范、架构边界和 Agent 必须遵守的约束 |
 | [`scripts/`](./scripts/) | Tools | Local Loop、构建、database seed 与 Agent 自定义工具 |
 
 根目录 `AGENTS.md` 是 Agent 规则入口；专项规则由它引用 `rules/` 中的文档。
@@ -73,7 +75,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=https://collector.example.com \
 pnpm --filter server start
 ```
 
-`OTEL_EXPORTER_OTLP_ENDPOINT` 是 base endpoint，不附加 `/v1/traces`。Pino stdout 继续负责 logs；当前设置 `OTEL_LOGS_EXPORTER=none`，避免重复日志 pipeline。
+`OTEL_EXPORTER_OTLP_ENDPOINT` 是 base endpoint，不附加 `/v1/traces`。Pino stdout 继续负责 logs；当前设置 `OTEL_LOGS_EXPORTER=none`，避免重复日志 pipeline。信号边界与 redaction 决策见 [docs/adr/0002](docs/adr/0002-opentelemetry-observability.md)。
 
 ## CLI
 
@@ -84,7 +86,7 @@ pnpm cli logout
 pnpm cli trace <traceId> [--json]
 ```
 
-`login` 会启动 Better Auth device authorization，在浏览器中完成登录和明确授权后，将 session token 写入用户配置目录，文件权限为 `0600`。
+`login` 会启动 Better Auth device authorization，在浏览器中完成登录和明确授权后，将 session token 写入用户配置目录，文件权限为 `0600`。信任边界见 [docs/adr/0004](docs/adr/0004-cli-authentication-boundary.md)。
 
 ## Database
 
@@ -95,7 +97,7 @@ pnpm db:generate
 pnpm db:migrate
 ```
 
-业务状态与 job 需要原子写入时，在同一个 Drizzle transaction 中执行 `packages/jobs` 提供的 enqueue SQL。
+业务状态与 job 需要原子写入时，在同一个 Drizzle transaction 中执行 `packages/jobs` 提供的 enqueue SQL。一致性边界与 at-least-once 语义见 [docs/adr/0003](docs/adr/0003-postgresql-and-graphile-worker.md)。
 
 ## 检查
 
@@ -104,4 +106,4 @@ pnpm test
 pnpm verify
 ```
 
-server 集成测试使用 Testcontainers 启动临时 PostgreSQL，执行正式 Drizzle 与 Graphile Worker migration，并通过 Hono `app.request()` 覆盖 OpenAPI、middleware、Better Auth Bearer session、device authorization 和 job execution。`pnpm verify` 依次执行 lint、typecheck、test、build、Knip 和 peer dependency 检查。
+当前自动化测试覆盖 `packages/request` 的错误契约与 HTTP 客户端，以及 `apps/web` 的 analytics。`apps/server` 的集成测试尚未建立，计划见 [docs/future/server-integration-tests.md](docs/future/server-integration-tests.md)。CI 会启动 PostgreSQL 并执行 `pnpm db:migrate`，随后运行 `pnpm verify`；其完整步骤见根目录 `package.json`。
