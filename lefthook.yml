@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://json.schemastore.org/lefthook.json
+#
+# Git hooks：把 `pnpm verify` 里能快速复现的检查前移，让机械问题在本地暴露。
+# 全量门禁仍是 `pnpm verify`（见 AGENTS.md「验证门禁」）；hook 只是它的前置子集，
+# 不替代 CI。
+pre-commit:
+  parallel: true
+  jobs:
+    # 只处理 staged 文件，并把格式化结果重新入 stage。packages/ui、scripts、rules
+    # 由 biome.json 的 files.includes 排除，命中这些路径时 biome 会跳过。
+    - name: biome
+      glob: "*.{ts,tsx,js,jsx,json,jsonc}"
+      run: pnpm exec biome check --write --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+      stage_fixed: true
+
+    # 零判断余地的机械门禁：Zod 废弃 API、className 词法层、UI 上游冻结基线。
+    - name: rules
+      run: pnpm rules:check
+
+pre-push:
+  parallel: true
+  jobs:
+    # 类型与测试是 lint 覆盖不到的语义错误；build 与 knip 留给 `pnpm verify` 与 CI。
+    - name: typecheck
+      run: pnpm typecheck
+
+    - name: test
+      run: pnpm test

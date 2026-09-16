@@ -32,6 +32,7 @@
     "@shadcn/lint": "^0.1.0",
     "@workspace/typescript-config": "workspace:*",
     "knip": "^6.33.0",
+    "lefthook": "^2.1.14",
     "oxlint": "^1.83.0",
     "turbo": "^2.10.12",
     "typescript": "^7.0.2",

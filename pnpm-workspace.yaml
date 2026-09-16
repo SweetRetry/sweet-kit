@@ -12,6 +12,7 @@ allowBuilds:
   better-sqlite3: false
   cpu-features: false
   esbuild: true
+  lefthook: true
   protobufjs: true
   sharp: false
   ssh2: false

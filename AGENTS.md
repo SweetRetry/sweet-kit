@@ -49,3 +49,4 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 ## 验证门禁
 
 - 完成代码修改后以 `pnpm verify` 为唯一全量验证入口（串联 Biome、rules:check、typecheck、test、build、knip）；日常命令见根目录 `package.json`。
+- Git hooks 由根目录 `lefthook.yml` 管理，`pnpm install` 时自动安装：pre-commit 对 staged 文件跑 Biome（并重新入 stage）加 `rules:check`，pre-push 跑 typecheck 与 test。hook 只是 `pnpm verify` 的前置子集，不替代 CI；绕开用 `git commit --no-verify` 或 `LEFTHOOK=0`。

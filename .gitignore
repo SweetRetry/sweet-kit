@@ -29,6 +29,9 @@ dist
 *.jsonl
 
 
+# Lefthook local overrides
+lefthook-local.yml
+
 # Debug
 npm-debug.log*
 
