@@ -26,7 +26,7 @@
 
 ```tsx
 // ❌ 逐项 Card + Badge
-<Card className="p-4 shadow-md"><Badge>{user.department}</Badge></Card>
+<Card><Badge>{user.department}</Badge></Card>
 
 // ✅ 留白 + 对齐轴 + 文本元数据
 <div className="space-y-1">

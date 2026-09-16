@@ -30,6 +30,8 @@
 
 固定高度控件在高度一半附近取值会落进「中庸浮肿」区间：过于圆润而失去受控矩形的精密感，又不够圆而不构成胶囊，视觉结果是臃肿。
 
+下表的类名只表达几何量（$H$ 与 $R$ 的比值），不表示调用点可以写这些类；落成组件时由变体提供，见 `AGENTS.md` 的外观归属。
+
 | 形态 | 比例 | 示例（`h-10`） | 适用 |
 | --- | --- | --- | --- |
 | 受控圆角矩形 | $R \le H/4$ | `h-10 rounded-md` | 桌面端工具、数据密集型界面、中性标准操作 |
@@ -37,9 +39,11 @@
 | ❌ 浮肿禁区 | $H/4 < R < H/2$ | `h-10 rounded-xl` | 禁用 |
 
 ```tsx
-<Button className="h-10 px-4 rounded-md">确定操作</Button>
-<Button className="h-10 px-6 rounded-full">立即体验</Button>
+// 受控圆角矩形：Button 的 lg 变体即 h-10 rounded-md px-6
+<Button size="lg">确定操作</Button>
 ```
+
+胶囊形态当前在 `packages/ui` 没有对应变体。需要药丸 CTA 时先给 `packages/ui/src/components/button.tsx` 新增变体（上游改造，单独提交），**不在调用点写 `rounded-full`**；否则同一次提交里就会出现组件变体与调用点覆盖两套真相。
 
 ## 嵌套同心
 
@@ -109,6 +113,7 @@ Tailwind 下按公式取最近阶梯即可：
 
 - [ ] 每个圆角用类名表达，不用任意值；语义角色与阶梯表一致。
 - [ ] 固定高度控件已明确落在受控矩形（$R \le H/4$）或胶囊（$R \ge H/2$），未进入浮肿区间。
+- [ ] 该形态由 `packages/ui` 变体提供，调用点未用 `className` 覆盖高度、padding 或圆角。
 - [ ] 存在内外嵌套的圆角容器，内圆角满足 $R_{inner} = \max(0, R_{outer} - (\text{Padding} + \text{Border}))$ 或在其 +1~2px 补偿窗口内，且 $R_{inner} \le R_{outer}$。
 - [ ] 间隙 ≥ 外圆角时，内层为 `rounded-none`。
 - [ ] 若使用 `corner-shape`，已包裹在 `@supports` 内并有标准回退。
