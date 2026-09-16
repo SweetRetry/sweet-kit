@@ -8,7 +8,7 @@
  */
 
 import { execFileSync } from "node:child_process"
-import { readFileSync } from "node:fs"
+import { existsSync, readFileSync } from "node:fs"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -90,6 +90,11 @@ function main() {
   const allFindings = []
 
   for (const file of listSourceFiles()) {
+    // git ls-files --cached 仍会列出已从工作区删除的文件；删除由 git status 呈现，这里只扫存在的内容。
+    if (!existsSync(join(repositoryRoot, file))) {
+      continue
+    }
+
     const content = readFileSync(join(repositoryRoot, file), "utf8")
     allFindings.push(...scanContent(content, file))
   }

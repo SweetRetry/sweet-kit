@@ -1,6 +1,6 @@
 # ADR 0002：OpenTelemetry 信号边界与诊断关联
 
-- 状态：Accepted
+- 状态：Accepted（暴露出口与关联字段命名部分由 [0006](0006-trace-context-contract.md) 取代）
 - 日期：2026-08-21
 
 ## 背景

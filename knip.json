@@ -26,10 +26,10 @@
     "packages/logger": {
       "project": ["src/**/*.ts"]
     },
-    "packages/jobs": {
+    "packages/observability": {
       "project": ["src/**/*.ts"]
     },
-    "packages/observability": {
+    "packages/tracing": {
       "project": ["src/**/*.ts"]
     },
     "packages/typescript-config": {

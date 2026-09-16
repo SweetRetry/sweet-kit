@@ -12,7 +12,6 @@
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/core": "^2.10.0",
-    "@opentelemetry/sdk-node": "^0.221.0",
     "@opentelemetry/sdk-trace-base": "^2.10.0"
   },
   "devDependencies": {
@@ -21,11 +20,6 @@
     "typescript": "^7.0.2"
   },
   "exports": {
-    ".": {
-      "types": "./src/index.ts",
-      "development": "./src/index.ts",
-      "default": "./dist/index.js"
-    },
     "./agent-traces": {
       "types": "./src/agent-traces.ts",
       "development": "./src/agent-traces.ts",

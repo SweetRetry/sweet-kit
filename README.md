@@ -1,6 +1,6 @@
 # Sweet Kit
 
-基于 TypeScript 的全栈开发套件，使用 Turborepo 按架构切面组织 Web、server 和 CLI。
+基于 TypeScript 的全栈开发套件，使用 Turborepo 按架构切面组织 Web、server、worker 和 CLI。
 
 ## 技术基线
 
@@ -27,7 +27,7 @@
 | [`rules/`](./rules/) | How | 编码规范、架构边界和 Agent 必须遵守的约束 |
 | [`scripts/`](./scripts/) | Tools | Local Loop、构建、database seed 与 Agent 自定义工具 |
 
-根目录 `AGENTS.md` 是 Agent 规则入口；专项规则由它引用 `rules/` 中的文档。
+根目录 `AGENTS.md` 是 Agent 规则入口；专项规则由它引用 `rules/` 中的文档。系统文档见 [architecture](docs/architecture.md)、[observability](docs/observability.md)、[database](docs/database.md)。
 
 ## 开始
 
@@ -49,33 +49,7 @@ pnpm dev
 
 各应用的本地配置存放在对应目录的 `.env.local`，生产环境变量参考相邻的 `.env.example`；生产环境必须提供高熵 `BETTER_AUTH_SECRET`。
 
-日志默认以 JSON 写入 stdout。使用 `LOG_LEVEL` 控制级别；本地需要可读输出时设置 `LOG_PRETTY=true`。
-
-## Observability
-
-Hono response 会返回 `x-trace-id`，未处理异常的 500 JSON body 同时包含 `traceId`。Pino request log 自动包含同一组 `traceId`、`spanId` 和 `traceFlags`。
-
-本地未设置 `OTEL_TRACES_EXPORTER` 时，span 默认写入 `apps/server/data/traces.jsonl`。可以从 response header 或错误 body 取得 `traceId` 后查询：
-
-```bash
-pnpm cli trace <traceId>
-pnpm cli trace <traceId> --json
-```
-
-`--json` 用于 Coding Agent 获取完整 span projection；`--file <path>` 可以指定其他 JSONL 文件。设置 `OTEL_TRACES_EXPORTER=console` 可改用 console exporter。
-
-生产使用标准 OTel 环境变量发送 OTLP：
-
-```bash
-NODE_ENV=production \
-OTEL_SERVICE_NAME=sweet-kit-server \
-OTEL_TRACES_EXPORTER=otlp \
-OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf \
-OTEL_EXPORTER_OTLP_ENDPOINT=https://collector.example.com \
-pnpm --filter server start
-```
-
-`OTEL_EXPORTER_OTLP_ENDPOINT` 是 base endpoint，不附加 `/v1/traces`。Pino stdout 继续负责 logs；当前设置 `OTEL_LOGS_EXPORTER=none`，避免重复日志 pipeline。信号边界与 redaction 决策见 [docs/adr/0002](docs/adr/0002-opentelemetry-observability.md)。
+日志与 tracing 的使用说明（trace 契约、本地 trace 查询、OTLP 导出、redaction）见 [docs/observability.md](docs/observability.md)；数据库与后台任务见 [docs/database.md](docs/database.md)。
 
 ## CLI
 
@@ -86,18 +60,7 @@ pnpm cli logout
 pnpm cli trace <traceId> [--json]
 ```
 
-`login` 会启动 Better Auth device authorization，在浏览器中完成登录和明确授权后，将 session token 写入用户配置目录，文件权限为 `0600`。信任边界见 [docs/adr/0004](docs/adr/0004-cli-authentication-boundary.md)。
-
-## Database
-
-业务表和 Better Auth 表由 Drizzle migration 管理。Graphile Worker 在独立的 `graphile_worker` schema 中维护自身对象：
-
-```bash
-pnpm db:generate
-pnpm db:migrate
-```
-
-业务状态与 job 需要原子写入时，在同一个 Drizzle transaction 中执行 `packages/jobs` 提供的 enqueue SQL。一致性边界与 at-least-once 语义见 [docs/adr/0003](docs/adr/0003-postgresql-and-graphile-worker.md)。
+`login` 会启动 Better Auth device authorization，在浏览器中完成登录和明确授权后，将 session token 写入 `$XDG_CONFIG_HOME/sweet-kit/credentials.json`（默认 `~/.config/sweet-kit/`），文件权限 `0600`。`SWEET_KIT_SERVER_URL` 必填，`SWEET_KIT_CONFIG_DIR` 与 `SWEET_KIT_TRACE_FILE` 可覆盖默认位置。信任边界见 [docs/adr/0004](docs/adr/0004-cli-authentication-boundary.md)。
 
 ## 检查
 
@@ -106,4 +69,4 @@ pnpm test
 pnpm verify
 ```
 
-当前自动化测试覆盖 `packages/request` 的错误契约与 HTTP 客户端，以及 `apps/web` 的 analytics。`apps/server` 的集成测试尚未建立，计划见 [docs/future/server-integration-tests.md](docs/future/server-integration-tests.md)。CI 会启动 PostgreSQL 并执行 `pnpm db:migrate`，随后运行 `pnpm verify`；其完整步骤见根目录 `package.json`。
+当前自动化测试覆盖 `packages/request` 的错误契约与 HTTP 客户端、`packages/tracing` 的 trace 契约不变量，以及 `apps/web` 的 analytics。`apps/server` 的集成测试尚未建立，计划见 [docs/future/server-integration-tests.md](docs/future/server-integration-tests.md)。CI 会启动 PostgreSQL 并执行 `pnpm db:migrate`，随后运行 `pnpm verify`；其完整步骤见根目录 `package.json`。

@@ -2,13 +2,18 @@ import { httpInstrumentationMiddleware } from "@hono/otel"
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { Scalar } from "@scalar/hono-api-reference"
 import type { Logger } from "@workspace/logger"
-import { getActiveTraceId } from "@workspace/observability"
 import {
   createProblemDetails,
   ErrorCode,
   getErrorStatus,
   PROBLEM_MEDIA_TYPE,
 } from "@workspace/request/contract"
+import {
+  getActiveSpanContext,
+  TRACE_ID_PATTERN,
+  TRACE_PARENT_HEADER,
+  traceResponseHeaders,
+} from "@workspace/tracing"
 import type { Context } from "hono"
 import { cors } from "hono/cors"
 import { requestId } from "hono/request-id"
@@ -39,7 +44,7 @@ const ProblemDetailsSchema = z
     status: z.number().int(),
     detail: z.string(),
     code: z.enum(ErrorCode),
-    traceId: z.string().length(32).optional(),
+    traceId: z.string().regex(new RegExp(TRACE_ID_PATTERN)).optional(),
   })
   .openapi("ProblemDetails")
 
@@ -47,7 +52,7 @@ const problemContent = { [PROBLEM_MEDIA_TYPE]: { schema: ProblemDetailsSchema } 
 
 function problemResponse<C extends ErrorCode>(c: Context, code: C, detail: string) {
   const status = getErrorStatus(code)
-  const body = createProblemDetails(code, detail, { traceId: getActiveTraceId() })
+  const body = createProblemDetails(code, detail, { traceId: getActiveSpanContext()?.traceId })
 
   return c.json(body, status, { "Content-Type": PROBLEM_MEDIA_TYPE })
 }
@@ -133,8 +138,7 @@ export function createServerApp(options: CreateServerAppOptions) {
   )
   app.use("*", async (c, next) => {
     await next()
-    const traceId = getActiveTraceId()
-    if (traceId) c.header("x-trace-id", traceId)
+    for (const [name, value] of Object.entries(traceResponseHeaders())) c.header(name, value)
   })
 
   app.use(
@@ -142,7 +146,7 @@ export function createServerApp(options: CreateServerAppOptions) {
     cors({
       origin: options.webUrl,
       credentials: true,
-      exposeHeaders: ["x-request-id", "x-trace-id"],
+      exposeHeaders: ["x-request-id", TRACE_PARENT_HEADER],
     })
   )
 

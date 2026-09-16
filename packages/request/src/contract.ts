@@ -3,8 +3,10 @@
  *
  * 标准成员 `type` / `title` / `status` / `detail` 按 RFC 9457 语义使用；
  * `code` 与 `traceId` 是扩展成员（RFC 9457 §3.2 允许扩展）。
- * `code` 是客户端唯一判据，且与 `type` 的最后一段一一对应。
+ * `code` 是客户端唯一判据，且与 `type` 的最后一段一一对应；
+ * `traceId` 的取值与形状由 W3C Trace Context 决定，校验见 `@workspace/tracing`。
  */
+import { isTraceId } from "@workspace/tracing"
 
 export const CLI_CLIENT_ID = "sweet-kit-cli"
 
@@ -61,7 +63,6 @@ const errorCodes = new Set<string>(Object.values(ErrorCode))
 const errorCodeBySlug = new Map<string, ErrorCode>(
   Object.entries(problemSlugByCode).map(([code, slug]) => [slug, code as ErrorCode])
 )
-const traceIdPattern = /^[0-9a-f]{32}$/i
 
 export interface ProblemDetails<C extends ErrorCode = ErrorCode> {
   type: string
@@ -93,10 +94,6 @@ export function getErrorCodeFromProblemType(type: unknown): ErrorCode | undefine
 
 export function isErrorCode(value: unknown): value is ErrorCode {
   return typeof value === "string" && errorCodes.has(value)
-}
-
-export function isTraceId(value: unknown): value is string {
-  return typeof value === "string" && traceIdPattern.test(value)
 }
 
 /** 由 `code` 唯一决定标准成员，调用方只提供 detail 与 traceId */

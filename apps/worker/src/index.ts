@@ -1,15 +1,11 @@
 import "dotenv/config"
-import { startObservability } from "@workspace/observability"
-
 import { workerEnv } from "./env.ts"
+import { startObservability } from "./observability.ts"
 
-const observability = startObservability({
-  serviceName: "sweet-kit-worker",
-  ...(workerEnv.agentTraceFile ? { localTraceFile: workerEnv.agentTraceFile } : {}),
-})
+const observability = startObservability()
 
 const [{ createTaskList }, { createLogger }, { run }] = await Promise.all([
-  import("@workspace/jobs"),
+  import("./jobs.ts"),
   import("@workspace/logger"),
   import("graphile-worker"),
 ])

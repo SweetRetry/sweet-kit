@@ -1,4 +1,4 @@
-import { isSpanContextValid, trace } from "@opentelemetry/api"
+import { traceLogFields } from "@workspace/tracing"
 import pino, { type Logger, type LoggerOptions } from "pino"
 
 const redactedPaths = [
@@ -29,20 +29,11 @@ export function createLogger(options: CreateLoggerOptions): Logger {
   const loggerOptions: LoggerOptions = {
     base: null,
     level: options.level,
-    mixin: () => {
-      const spanContext = trace.getActiveSpan()?.spanContext()
-      return {
-        environment: options.environment,
-        service: options.service,
-        ...(spanContext && isSpanContextValid(spanContext)
-          ? {
-              traceId: spanContext.traceId,
-              spanId: spanContext.spanId,
-              traceFlags: spanContext.traceFlags.toString(16).padStart(2, "0"),
-            }
-          : {}),
-      }
-    },
+    mixin: () => ({
+      environment: options.environment,
+      service: options.service,
+      ...traceLogFields(),
+    }),
     redact: {
       paths: redactedPaths,
       censor: "[Redacted]",

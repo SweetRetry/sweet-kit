@@ -10,6 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json"
   },
   "dependencies": {
+    "@workspace/tracing": "workspace:*",
     "ky": "^2.1.0"
   },
   "devDependencies": {

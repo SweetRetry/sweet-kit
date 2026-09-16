@@ -12,9 +12,12 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@workspace/jobs": "workspace:*",
+    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/sdk-node": "^0.221.0",
+    "@opentelemetry/sdk-trace-base": "^2.10.0",
     "@workspace/logger": "workspace:*",
     "@workspace/observability": "workspace:*",
+    "@workspace/tracing": "workspace:*",
     "dotenv": "^17.4.2",
     "graphile-worker": "^0.17.3",
     "zod": "^4.5.2"

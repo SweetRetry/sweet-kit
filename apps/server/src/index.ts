@@ -1,12 +1,8 @@
 import "dotenv/config"
-import { startObservability } from "@workspace/observability"
-
 import { serverEnv } from "./env.ts"
+import { startObservability } from "./observability.ts"
 
-const observability = startObservability({
-  serviceName: "sweet-kit-server",
-  ...(serverEnv.agentTraceFile ? { localTraceFile: serverEnv.agentTraceFile } : {}),
-})
+const observability = startObservability()
 
 const [{ serve }, { app, logger }, { db }, { closeDatabase }] = await Promise.all([
   import("@hono/node-server"),

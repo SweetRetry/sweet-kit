@@ -1,6 +1,6 @@
 # ADR 0003：PostgreSQL 与 Graphile Worker 一致性边界
 
-- 状态：Accepted
+- 状态：Accepted（`packages/jobs` 归属部分由 [0007](0007-runtime-assembly-and-app-ownership.md) 取代）
 - 日期：2026-08-21
 
 ## 背景

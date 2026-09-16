@@ -2,7 +2,7 @@
 
 本规则约束 HTTP API 的描述、成功响应与错误响应。描述层用 **OpenAPI 3.1**（由 zod schema 派生）；成功响应直接表达资源或操作结果；错误响应遵循 **RFC 9457 Problem Details**。HTTP 语义以 [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) 为准，问题详情以 [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html) 为准。
 
-Schema 派生、固定 `code → status` 映射与 `traceId` 范围是项目约定，不是 REST 或 RFC 的通用要求；标准覆盖不到的地方由这些约定补齐。取值真源见「错误响应 › 成员映射」，适用边界见文末。
+Schema 派生、固定 `code → status` 映射与 `traceId` 的暴露位置是项目约定，不是 REST 或 RFC 的通用要求；`traceId` 本身的形状由 W3C Trace Context 决定，标准覆盖不到的地方由这些约定补齐。取值真源见「错误响应 › 成员映射」，适用边界见文末。
 
 ## 核心契约
 
@@ -54,7 +54,7 @@ Schema 派生、固定 `code → status` 映射与 `traceId` 范围是项目约�
 | `status` | 由 `code` 派生 | 生成时必须与实际 HTTP 状态码一致（§3.1.2） |
 | `detail` | 调用方传入 | 面向调用方，帮助其纠正问题（§3.1.4） |
 | `code` | `ErrorCode` 枚举 | 扩展成员；项目 SDK 的问题类型别名 |
-| `traceId` | 活跃 trace | 扩展成员；仅 500 的错误体携带，不限制诊断响应头 |
+| `traceId` | 活跃 trace 的 W3C trace-id | 扩展成员；仅 500 的错误体携带；诊断响应头是 `traceparent`，见 [ADR 0006](../docs/adr/0006-trace-context-contract.md) |
 
 ### code 语义
 

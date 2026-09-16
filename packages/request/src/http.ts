@@ -1,5 +1,6 @@
+import { TRACE_PARENT_HEADER, traceIdFromHeader } from "@workspace/tracing"
 import ky, { isHTTPError, type KyInstance } from "ky"
-import { type ErrorCode, isProblemDetails, isTraceId } from "./contract.ts"
+import { type ErrorCode, isProblemDetails } from "./contract.ts"
 
 export {
   type ApiErrorStatus,
@@ -50,8 +51,9 @@ function toRequestError(error: Error): Error {
   const parsedProblem = isProblemDetails(body) ? body : undefined
   const problem =
     parsedProblem && parsedProblem.status === error.response.status ? parsedProblem : undefined
-  const responseTraceId = error.response.headers.get("x-trace-id")
-  const traceId = problem?.traceId ?? (isTraceId(responseTraceId) ? responseTraceId : undefined)
+  // 服务端把服务端 span context 写在 response 的 traceparent 上（W3C Trace Context）
+  const headerTraceId = traceIdFromHeader(error.response.headers.get(TRACE_PARENT_HEADER))
+  const traceId = problem?.traceId ?? headerTraceId
 
   return new RequestError(
     problem?.detail ?? `Request failed with status ${error.response.status}`,

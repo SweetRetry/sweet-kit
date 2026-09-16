@@ -188,6 +188,12 @@ importers:
       '@hono/zod-openapi':
         specifier: ^1.6.1
         version: 1.6.1(hono@4.13.5)(zod@4.5.2)
+      '@opentelemetry/sdk-node':
+        specifier: ^0.221.0
+        version: 0.221.0(@opentelemetry/api@1.9.1)(supports-color@7.2.0)
+      '@opentelemetry/sdk-trace-base':
+        specifier: ^2.10.0
+        version: 2.10.0(@opentelemetry/api@1.9.1)
       '@scalar/hono-api-reference':
         specifier: ^0.12.0
         version: 0.12.0(hono@4.13.5)
@@ -200,6 +206,9 @@ importers:
       '@workspace/request':
         specifier: workspace:*
         version: link:../../packages/request
+      '@workspace/tracing':
+        specifier: workspace:*
+        version: link:../../packages/tracing
       ai:
         specifier: ^7.0.84
         version: 7.0.84(zod@4.5.2)
@@ -316,15 +325,24 @@ importers:
 
   apps/worker:
     dependencies:
-      '@workspace/jobs':
-        specifier: workspace:*
-        version: link:../../packages/jobs
+      '@opentelemetry/api':
+        specifier: ^1.9.1
+        version: 1.9.1
+      '@opentelemetry/sdk-node':
+        specifier: ^0.221.0
+        version: 0.221.0(@opentelemetry/api@1.9.1)(supports-color@7.2.0)
+      '@opentelemetry/sdk-trace-base':
+        specifier: ^2.10.0
+        version: 2.10.0(@opentelemetry/api@1.9.1)
       '@workspace/logger':
         specifier: workspace:*
         version: link:../../packages/logger
       '@workspace/observability':
         specifier: workspace:*
         version: link:../../packages/observability
+      '@workspace/tracing':
+        specifier: workspace:*
+        version: link:../../packages/tracing
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -348,39 +366,11 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
 
-  packages/jobs:
-    dependencies:
-      '@opentelemetry/api':
-        specifier: ^1.9.1
-        version: 1.9.1
-      '@workspace/logger':
-        specifier: workspace:*
-        version: link:../logger
-      drizzle-orm:
-        specifier: ^0.45.2
-        version: 0.45.2(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.5)(pg@8.23.0)
-      graphile-worker:
-        specifier: ^0.17.3
-        version: 0.17.3(supports-color@7.2.0)(typescript@7.0.2)
-      zod:
-        specifier: ^4.5.2
-        version: 4.5.2
-    devDependencies:
-      '@types/node':
-        specifier: ^26.4.0
-        version: 26.4.0
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
-
   packages/logger:
     dependencies:
-      '@opentelemetry/api':
-        specifier: ^1.9.1
-        version: 1.9.1
+      '@workspace/tracing':
+        specifier: workspace:*
+        version: link:../tracing
       pino:
         specifier: ^10.3.1
         version: 10.3.1
@@ -406,9 +396,6 @@ importers:
       '@opentelemetry/core':
         specifier: ^2.10.0
         version: 2.10.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/sdk-node':
-        specifier: ^0.221.0
-        version: 0.221.0(@opentelemetry/api@1.9.1)(supports-color@7.2.0)
       '@opentelemetry/sdk-trace-base':
         specifier: ^2.10.0
         version: 2.10.0(@opentelemetry/api@1.9.1)
@@ -425,9 +412,31 @@ importers:
 
   packages/request:
     dependencies:
+      '@workspace/tracing':
+        specifier: workspace:*
+        version: link:../tracing
       ky:
         specifier: ^2.1.0
         version: 2.1.0
+    devDependencies:
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+      vitest:
+        specifier: ^4.1.11
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.4.0)(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/tracing:
+    dependencies:
+      '@opentelemetry/api':
+        specifier: ^1.9.1
+        version: 1.9.1
+      '@opentelemetry/core':
+        specifier: ^2.10.0
+        version: 2.10.0(@opentelemetry/api@1.9.1)
     devDependencies:
       '@workspace/typescript-config':
         specifier: workspace:*

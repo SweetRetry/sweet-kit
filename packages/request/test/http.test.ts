@@ -9,6 +9,7 @@ import {
 import { createRequestClient, RequestError } from "../src/http.ts"
 
 const traceId = "11111111111111111111111111111111"
+const spanId = "2222222222222222"
 
 function stubProblemResponse(body: unknown, status: number) {
   vi.stubGlobal(
@@ -18,7 +19,7 @@ function stubProblemResponse(body: unknown, status: number) {
         new Response(JSON.stringify(body), {
           headers: {
             "content-type": PROBLEM_MEDIA_TYPE,
-            "x-trace-id": traceId,
+            traceparent: `00-${traceId}-${spanId}-01`,
           },
           status,
         })

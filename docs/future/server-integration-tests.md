@@ -2,7 +2,7 @@
 
 ## 问题
 
-`apps/server` 目前没有自动化测试。已有覆盖只有 `packages/request`（错误契约、HTTP 客户端）和 `apps/web`（analytics）。路由、中间件错误出口、Better Auth Bearer session、device authorization 与 job execution 都依赖手动验证，`rules/api-contract.md` 要求的「应用响应测试」因此长期无人执行。
+`apps/server` 目前没有自动化测试。已有覆盖只有 `packages/request`（错误契约、HTTP 客户端）、`packages/tracing`（trace 契约不变量）和 `apps/web`（analytics）。路由、中间件错误出口、Better Auth Bearer session、device authorization 与 job execution 都依赖手动验证，`rules/api-contract.md` 要求的「应用响应测试」因此长期无人执行。
 
 ## 候选方案
 

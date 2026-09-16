@@ -98,8 +98,8 @@ async function main() {
   program.command("logout").description("清除本地凭据").action(logout)
   program
     .command("trace")
-    .description("按 traceId 读取本地 span tree")
-    .argument("<trace-id>", "HTTP 响应或日志中的 traceId")
+    .description("按 trace id 读取本地 span tree")
+    .argument("<trace-id>", "response 的 traceparent 或 500 body 中的 traceId")
     .option("-f, --file <path>", "Agent trace JSONL 文件")
     .option("--json", "输出完整结构化 span 数据")
     .action((traceId: string, options: TraceCommandOptions) => showTrace(traceId, options))
