@@ -1,30 +1,38 @@
 "use client"
 
 import { Button } from "@workspace/ui/components/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { type FormEvent, useState } from "react"
 
 import { authClient } from "@/lib/auth-client"
+import { useForm, z, zodResolver } from "@/lib/form"
+import { toast } from "@/lib/toast"
+
+const signInSchema = z.object({
+  email: z.email({ error: "请输入有效邮箱" }),
+  password: z.string().min(8, "密码至少 8 位"),
+})
+
+type SignInValues = z.infer<typeof signInSchema>
 
 export function SignInForm({ redirectTo }: { redirectTo: string }) {
-  const [error, setError] = useState<string | null>(null)
-  const [pending, setPending] = useState(false)
+  const form = useForm<SignInValues>({
+    defaultValues: { email: "", password: "" },
+    resolver: zodResolver(signInSchema),
+  })
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setError(null)
-    setPending(true)
-
-    const form = new FormData(event.currentTarget)
-    const email = String(form.get("email"))
-    const password = String(form.get("password"))
-
-    const result = await authClient.signIn.email({ email, password })
+  async function onSubmit(values: SignInValues) {
+    const result = await authClient.signIn.email({ email: values.email, password: values.password })
 
     if (result.error) {
-      setError(result.error.message ?? "登录失败")
-      setPending(false)
+      toast.error(result.error.message ?? "登录失败")
       return
     }
 
@@ -32,34 +40,53 @@ export function SignInForm({ redirectTo }: { redirectTo: string }) {
   }
 
   return (
-    <form className="space-y-4" onSubmit={submit}>
-      <div className="space-y-2">
-        <Label htmlFor="email">邮箱</Label>
-        <Input
-          id="email"
+    <Form {...form}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
           name="email"
-          type="email"
-          placeholder="name@example.com"
-          autoComplete="email"
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>邮箱</FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder="name@example.com"
+                  autoComplete="email"
+                  {...field}
+                />
+              </FormControl>
+              {/* 预留一行错误位：校验提示出现时不推动下方字段（UI Stability） */}
+              <div className="min-h-5">
+                <FormMessage />
+              </div>
+            </FormItem>
+          )}
         />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="password">密码</Label>
-        <Input
-          id="password"
+        <FormField
+          control={form.control}
           name="password"
-          type="password"
-          placeholder="输入密码"
-          autoComplete="current-password"
-          minLength={8}
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>密码</FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  placeholder="输入密码"
+                  autoComplete="current-password"
+                  {...field}
+                />
+              </FormControl>
+              <div className="min-h-5">
+                <FormMessage />
+              </div>
+            </FormItem>
+          )}
         />
-      </div>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-      <Button className="w-full" type="submit" disabled={pending}>
-        {pending ? "登录中…" : "登录"}
-      </Button>
-    </form>
+        <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>
+          {form.formState.isSubmitting ? "登录中…" : "登录"}
+        </Button>
+      </form>
+    </Form>
   )
 }

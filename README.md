@@ -7,6 +7,7 @@
 - Web：Next.js App Router、React 19、Tailwind CSS v4、shadcn/ui
 - Request：ky、TanStack Query
 - Server：Hono、OpenAPI 3.1、Scalar
+- AI：Vercel AI SDK（provider 与模型名由部署环境提供，见 `apps/server/src/ai.ts`）
 - Auth：Better Auth、device authorization、Bearer session
 - Database：PostgreSQL、Drizzle ORM、node-postgres
 - Jobs：Graphile Worker、transactional enqueue、独立 worker process
@@ -45,6 +46,8 @@ pnpm dev
 - Scalar：<http://localhost:43111/docs>
 - OpenAPI：<http://localhost:43111/openapi.json>
 
+`POST /api/assistant/reply`（需登录）在部署提供 `OPENAI_API_KEY` 后返回模型输出，未配置时返回 `503 SERVICE_UNAVAILABLE`；provider 调用参与 trace 关联。
+
 `pnpm dev` 同时启动 Web、Hono server 和 Graphile Worker；PostgreSQL 由 `compose.yaml` 提供。
 
 各应用的本地配置存放在对应目录的 `.env.local`，生产环境变量参考相邻的 `.env.example`；生产环境必须提供高熵 `BETTER_AUTH_SECRET`。
@@ -71,4 +74,4 @@ pnpm verify
 
 `pnpm install` 会通过 [lefthook](lefthook.yml) 安装 Git hooks：pre-commit 对 staged 文件跑 Biome 并跑机械门禁，pre-push 跑 typecheck 与 test。hook 是本地快速反馈，`pnpm verify` 与 CI 仍是全量门禁。
 
-当前自动化测试覆盖 `packages/request` 的错误契约与 HTTP 客户端、`packages/tracing` 的 trace 契约不变量，以及 `apps/web` 的 analytics。`apps/server` 的集成测试尚未建立，计划见 [docs/future/server-integration-tests.md](docs/future/server-integration-tests.md)。CI 会启动 PostgreSQL 并执行 `pnpm db:migrate`，随后运行 `pnpm verify`；其完整步骤见根目录 `package.json`。
+当前自动化测试覆盖 `packages/request` 的错误契约与 HTTP 客户端、`packages/tracing` 的 trace 契约不变量、`packages/logger` 的日志脱敏、`packages/observability` 的 span 投影与 trace 查询、`apps/web` 的 analytics，以及 `apps/server` 的 HTTP 错误出口（需要 PostgreSQL，未提供 `DATABASE_URL` 时跳过）。device authorization 全流程、worker job execution 与其余成功响应分支尚未建立，计划见 [docs/future/server-integration-tests.md](docs/future/server-integration-tests.md)。CI 会启动 PostgreSQL 并执行 `pnpm db:migrate`，随后运行 `pnpm verify`；其完整步骤见根目录 `package.json`。

@@ -67,6 +67,8 @@ Schema 派生、固定 `code → status` 映射与 `traceId` 的暴露位置是�
 | `FORBIDDEN` | 凭据有效，但当前身份无权执行该操作 | 不重试；向用户说明权限不足 |
 | `NOT_FOUND` | 目标资源不存在，或对当前身份不可见 | 不重试；回到上一级列表或提示资源已删除 |
 | `CONFLICT` | 请求与当前资源状态冲突（如并发写入、唯一键冲突） | 重新拉取最新状态后由用户确认再重试 |
+| `TOO_MANY_REQUESTS` | 调用方在限流窗口内超过阈值 | 读 `Retry-After` 退避后重试；不立即重试 |
+| `SERVICE_UNAVAILABLE` | 依赖未配置或暂时不可用（如部署未提供 AI provider） | 读 `detail` 判断是配置问题还是暂时不可用；不重试到恢复为止 |
 | `INTERNAL_SERVER_ERROR` | 服务端未预期的失败 | 可退避重试；携带 `traceId` 反馈，用于日志关联 |
 
 ### 状态与 code 选择

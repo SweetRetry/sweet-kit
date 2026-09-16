@@ -19,7 +19,14 @@ export const cliEnv = {
     values.SWEET_KIT_CONFIG_DIR ??
     path.join(values.XDG_CONFIG_HOME ?? path.join(homedir(), ".config"), "sweet-kit"),
   serverUrl: values.SWEET_KIT_SERVER_URL,
-  traceFile: path.resolve(
-    values.SWEET_KIT_TRACE_FILE ?? path.join(initialCwd, "apps/server/data/traces.jsonl")
-  ),
+  /**
+   * 默认为 server 与 worker 各自写入的 trace 文件：两个进程默认不共享出口，
+   * 一次查询同时读两份才能在同一个 span tree 里看到 HTTP request 与它触发的 job。
+   */
+  traceFiles: values.SWEET_KIT_TRACE_FILE
+    ? [path.resolve(values.SWEET_KIT_TRACE_FILE)]
+    : [
+        path.join(initialCwd, "apps/server/data/traces.jsonl"),
+        path.join(initialCwd, "apps/worker/data/traces.jsonl"),
+      ],
 }

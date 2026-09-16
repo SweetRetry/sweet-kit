@@ -6,7 +6,7 @@ import { bearer, deviceAuthorization } from "better-auth/plugins"
 import type { Database } from "./database/client.ts"
 import * as schema from "./database/schema.ts"
 
-export interface SocialProviderOptions {
+interface SocialProviderOptions {
   clientId: string
   clientSecret: string
 }

@@ -1,10 +1,11 @@
+import { existsSync } from "node:fs"
 import path from "node:path"
 import { type AgentSpanRecord, readAgentTrace } from "@workspace/observability/agent-traces"
 
 import { cliEnv } from "./env.ts"
 
 export interface TraceCommandOptions {
-  file?: string
+  file?: string[]
   json?: boolean
 }
 
@@ -68,17 +69,31 @@ function formatTree(spans: AgentSpanRecord[]): string {
 }
 
 export async function showTrace(traceId: string, options: TraceCommandOptions) {
-  const filePath = path.resolve(options.file ?? cliEnv.traceFile)
-  const spans = await readAgentTrace(filePath, traceId)
+  const filePaths =
+    options.file && options.file.length > 0
+      ? options.file.map((file) => path.resolve(file))
+      : cliEnv.traceFiles
+
+  const spans: AgentSpanRecord[] = []
+
+  for (const filePath of filePaths) {
+    // 默认列表覆盖 server 与 worker，缺其中一个（例如没跑过 worker）不算错误
+    if (!existsSync(filePath)) continue
+    spans.push(...(await readAgentTrace(filePath, traceId)))
+  }
+
+  spans.sort((left, right) => left.startTime.localeCompare(right.startTime))
 
   if (spans.length === 0) {
-    throw new Error(`未在 ${filePath} 找到 trace ${traceId}`)
+    throw new Error(`未在 ${filePaths.join(", ")} 找到 trace ${traceId}`)
   }
 
   if (options.json) {
-    process.stdout.write(`${JSON.stringify({ traceId, spans }, null, 2)}\n`)
+    process.stdout.write(`${JSON.stringify({ traceId: traceId.toLowerCase(), spans }, null, 2)}\n`)
     return
   }
 
-  process.stdout.write(`trace ${traceId} (${spans.length} spans)\n${formatTree(spans)}\n`)
+  process.stdout.write(
+    `trace ${traceId.toLowerCase()} (${spans.length} spans)\n${formatTree(spans)}\n`
+  )
 }

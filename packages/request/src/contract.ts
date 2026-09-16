@@ -22,13 +22,15 @@ export const ErrorCode = {
   NOT_FOUND: "NOT_FOUND",
   VALIDATION_ERROR: "VALIDATION_ERROR",
   CONFLICT: "CONFLICT",
+  TOO_MANY_REQUESTS: "TOO_MANY_REQUESTS",
+  SERVICE_UNAVAILABLE: "SERVICE_UNAVAILABLE",
   INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",
 } as const
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]
 
 /** 本 API 会返回的 HTTP 状态码 */
-export type ApiErrorStatus = 400 | 401 | 403 | 404 | 409 | 500
+export type ApiErrorStatus = 400 | 401 | 403 | 404 | 409 | 429 | 500 | 503
 
 const errorStatusByCode = {
   [ErrorCode.VALIDATION_ERROR]: 400,
@@ -36,6 +38,8 @@ const errorStatusByCode = {
   [ErrorCode.FORBIDDEN]: 403,
   [ErrorCode.NOT_FOUND]: 404,
   [ErrorCode.CONFLICT]: 409,
+  [ErrorCode.TOO_MANY_REQUESTS]: 429,
+  [ErrorCode.SERVICE_UNAVAILABLE]: 503,
   [ErrorCode.INTERNAL_SERVER_ERROR]: 500,
 } as const satisfies Record<ErrorCode, ApiErrorStatus>
 
@@ -46,6 +50,8 @@ const problemTitleByCode = {
   [ErrorCode.FORBIDDEN]: "Forbidden",
   [ErrorCode.NOT_FOUND]: "Not Found",
   [ErrorCode.CONFLICT]: "Conflict",
+  [ErrorCode.TOO_MANY_REQUESTS]: "Too Many Requests",
+  [ErrorCode.SERVICE_UNAVAILABLE]: "Service Unavailable",
   [ErrorCode.INTERNAL_SERVER_ERROR]: "Internal Server Error",
 } as const satisfies Record<ErrorCode, string>
 
@@ -56,6 +62,8 @@ const problemSlugByCode = {
   [ErrorCode.FORBIDDEN]: "forbidden",
   [ErrorCode.NOT_FOUND]: "not-found",
   [ErrorCode.CONFLICT]: "conflict",
+  [ErrorCode.TOO_MANY_REQUESTS]: "too-many-requests",
+  [ErrorCode.SERVICE_UNAVAILABLE]: "service-unavailable",
   [ErrorCode.INTERNAL_SERVER_ERROR]: "internal-server-error",
 } as const satisfies Record<ErrorCode, string>
 

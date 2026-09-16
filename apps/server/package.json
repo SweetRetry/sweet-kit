@@ -12,7 +12,7 @@
     "db:migrate": "drizzle-kit migrate --config drizzle.config.ts",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json"
   },
   "dependencies": {
     "@ai-sdk/openai": "^4.0.51",
@@ -44,6 +44,7 @@
     "auth": "^1.7.2",
     "drizzle-kit": "^0.31.10",
     "tsx": "^4.23.12",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
   }
 }

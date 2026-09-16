@@ -8,6 +8,10 @@ peerDependencyRules:
     "@typescript-eslint/typescript-estree@8>typescript": "^7.0.0"
     "@typescript-eslint/tsconfig-utils@8>typescript": "^7.0.0"
     "@typescript-eslint/project-service@8>typescript": "^7.0.0"
+  # vitest 自身依赖 vite（^6 || ^7 || ^8），但部分 importer 未被记成已解析的 peer；
+  # 运行时由 vitest 自身的依赖满足，不需要每个 package 再声明一次 vite
+  ignoreMissing:
+    - vite
 allowBuilds:
   better-sqlite3: false
   cpu-features: false

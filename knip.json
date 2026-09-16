@@ -9,9 +9,8 @@
       "project": ["**/*.{ts,tsx}"]
     },
     "apps/server": {
-      "entry": ["src/auth.ts", "src/ai.ts"],
+      "entry": ["src/auth-config.ts"],
       "project": ["src/**/*.ts"],
-      "ignoreDependencies": ["ai"],
       "drizzle": false
     },
     "apps/cli": {

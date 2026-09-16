@@ -3,12 +3,14 @@
 import { usePathname } from "next/navigation"
 import Script from "next/script"
 import { useEffect } from "react"
+
 import {
   initializeGoogleAnalytics,
   initializeMetaPixel,
   initializeMicrosoftUet,
   trackMetaPageView,
 } from "@/lib/analytics"
+import { useConsentStore } from "@/lib/consent"
 
 interface AnalyticsProps {
   googleAnalyticsId?: string
@@ -16,26 +18,37 @@ interface AnalyticsProps {
   microsoftUetTagId?: string
 }
 
+/**
+ * 第三方统计装配。
+ *
+ * 未取得同意（`consent.status !== "granted"`）时不加载任何脚本，也不上报 pageview：
+ * 登录、注册与授权页同样适用。决定入口见 `components/consent-banner.tsx`。
+ */
 export function Analytics({ googleAnalyticsId, metaPixelId, microsoftUetTagId }: AnalyticsProps) {
   const pathname = usePathname()
+  const granted = useConsentStore((state) => state.status) === "granted"
 
   useEffect(() => {
-    if (googleAnalyticsId) {
+    if (granted && googleAnalyticsId) {
       initializeGoogleAnalytics(googleAnalyticsId)
     }
-  }, [googleAnalyticsId])
+  }, [granted, googleAnalyticsId])
 
   useEffect(() => {
-    if (metaPixelId) {
+    if (granted && metaPixelId) {
       initializeMetaPixel(metaPixelId)
     }
-  }, [metaPixelId])
+  }, [granted, metaPixelId])
 
   useEffect(() => {
-    if (metaPixelId) {
+    if (granted && metaPixelId) {
       trackMetaPageView(metaPixelId, pathname)
     }
-  }, [metaPixelId, pathname])
+  }, [granted, metaPixelId, pathname])
+
+  if (!granted) {
+    return null
+  }
 
   return (
     <>

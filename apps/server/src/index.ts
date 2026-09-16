@@ -2,14 +2,44 @@ import "dotenv/config"
 import { serverEnv } from "./env.ts"
 import { startObservability } from "./observability.ts"
 
+/**
+ * Server composition root：先起 telemetry（instrumentation 需要在被观测模块加载前就位），
+ * 再装配 database、auth、logger 与 app，最后注册关停流程。
+ * 装配归属见 [ADR 0007](../../../docs/adr/0007-runtime-assembly-and-app-ownership.md)。
+ */
 const observability = startObservability()
 
-const [{ serve }, { app, logger }, { db }, { closeDatabase }] = await Promise.all([
+const [
+  { serve },
+  { createServerApp },
+  { createLogger },
+  { createAuth },
+  { closeDatabase, createDatabase },
+] = await Promise.all([
   import("@hono/node-server"),
-  import("./app.js"),
-  import("./auth-config.js"),
-  import("./database/client.js"),
+  import("./create-app.ts"),
+  import("@workspace/logger"),
+  import("./auth.ts"),
+  import("./database/client.ts"),
 ])
+
+const logger = createLogger({ ...serverEnv.logger, service: "sweet-kit-server" })
+const db = createDatabase(serverEnv.databaseUrl)
+const auth = createAuth({
+  baseURL: serverEnv.serverUrl,
+  database: db,
+  google: serverEnv.google,
+  secret: serverEnv.authSecret,
+  trustedOrigins: [serverEnv.webUrl],
+  verificationUri: `${serverEnv.webUrl}/device`,
+})
+const app = createServerApp({
+  ai: serverEnv.ai,
+  auth,
+  logger,
+  trustProxy: serverEnv.trustProxy,
+  webUrl: serverEnv.webUrl,
+})
 
 const server = serve({
   fetch: app.fetch,

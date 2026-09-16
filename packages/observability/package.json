@@ -7,7 +7,7 @@
     "build": "tsc -p tsconfig.json",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",
@@ -17,7 +17,8 @@
   "devDependencies": {
     "@types/node": "^26.4.0",
     "@workspace/typescript-config": "workspace:*",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
   },
   "exports": {
     "./agent-traces": {

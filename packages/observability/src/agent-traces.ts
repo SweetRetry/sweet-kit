@@ -6,8 +6,23 @@ import type { Attributes, AttributeValue, HrTime } from "@opentelemetry/api"
 import { ExportResultCode } from "@opentelemetry/core"
 import type { ReadableSpan, SpanExporter } from "@opentelemetry/sdk-trace-base"
 
-const sensitiveKey = /authorization|cookie|password|secret|token/i
+/**
+ * 凭据类 key 的词表。命中即整值替换，不做无边界的子串匹配：
+ * `gen_ai.usage.input_tokens` 是计数指标，不是凭据。
+ */
+const credentialKey =
+  /authorization|cookie|passw(or)?d|secret|api[-_.]?key|credential|private[-_.]?key|bearer|jwt|session[-_.]?token|access[-_.]?token|refresh[-_.]?token|id[-_.]?token/i
+
+/** `token` 只有作为独立 key 段（`session.token`）才算凭据；`total_tokens`、`token_count` 是计数 */
+const bareTokenSegment = /(^|\.)tokens?(\.|$)/i
+
+/** URL query 本身可能携带凭据，整值剔除；完整 URL 只保留去掉 query 与 fragment 的形状 */
+const urlQueryKey = /(^|\.)query$/i
 const urlKey = /^(http\.url|url\.full)$/
+
+function isSensitiveKey(key: string): boolean {
+  return credentialKey.test(key) || bareTokenSegment.test(key) || urlQueryKey.test(key)
+}
 
 export interface AgentTraceEvent {
   name: string
@@ -57,7 +72,7 @@ function removeUrlQuery(value: string): string {
 }
 
 function sanitizeAttribute(key: string, value: AttributeValue): AttributeValue {
-  if (sensitiveKey.test(key)) {
+  if (isSensitiveKey(key)) {
     return "[Redacted]"
   }
   if (urlKey.test(key) && typeof value === "string") {
@@ -169,15 +184,18 @@ export async function readAgentTrace(
     throw new Error("traceId 必须是 32 位十六进制字符串")
   }
 
+  // 发送端固定小写、接收端接受大写，因此先归一再做逐行比较
+  const normalizedTraceId = traceId.toLowerCase()
+
   const input = createReadStream(filePath, { encoding: "utf8" })
   const lines = createInterface({ input, crlfDelay: Number.POSITIVE_INFINITY })
   const spans: AgentSpanRecord[] = []
 
   for await (const line of lines) {
-    if (!line.includes(traceId)) continue
+    if (!line.includes(normalizedTraceId)) continue
     try {
       const record: unknown = JSON.parse(line)
-      if (isAgentSpanRecord(record) && record.traceId === traceId) {
+      if (isAgentSpanRecord(record) && record.traceId === normalizedTraceId) {
         spans.push(record)
       }
     } catch {}

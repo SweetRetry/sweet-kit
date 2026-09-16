@@ -90,6 +90,10 @@ async function logout() {
   console.log("本地凭据已清除")
 }
 
+function collectFile(value: string, previous: string[]): string[] {
+  return [...previous, value]
+}
+
 async function main() {
   const program = new Command().name("sweet").description("Sweet Kit CLI").showHelpAfterError()
 
@@ -100,7 +104,12 @@ async function main() {
     .command("trace")
     .description("按 trace id 读取本地 span tree")
     .argument("<trace-id>", "response 的 traceparent 或 500 body 中的 traceId")
-    .option("-f, --file <path>", "Agent trace JSONL 文件")
+    .option(
+      "-f, --file <path>",
+      "trace JSONL 文件，可重复；默认同时读 server 与 worker 的默认位置",
+      collectFile,
+      []
+    )
     .option("--json", "输出完整结构化 span 数据")
     .action((traceId: string, options: TraceCommandOptions) => showTrace(traceId, options))
 

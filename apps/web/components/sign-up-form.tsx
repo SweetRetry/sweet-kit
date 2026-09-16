@@ -1,31 +1,43 @@
 "use client"
 
 import { Button } from "@workspace/ui/components/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { type FormEvent, useState } from "react"
 
 import { authClient } from "@/lib/auth-client"
+import { useForm, z, zodResolver } from "@/lib/form"
+import { toast } from "@/lib/toast"
+
+const signUpSchema = z.object({
+  email: z.email({ error: "请输入有效邮箱" }),
+  name: z.string().min(1, "请输入名称").max(100, "名称过长"),
+  password: z.string().min(8, "密码至少 8 位"),
+})
+
+type SignUpValues = z.infer<typeof signUpSchema>
 
 export function SignUpForm({ redirectTo }: { redirectTo: string }) {
-  const [error, setError] = useState<string | null>(null)
-  const [pending, setPending] = useState(false)
+  const form = useForm<SignUpValues>({
+    defaultValues: { email: "", name: "", password: "" },
+    resolver: zodResolver(signUpSchema),
+  })
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setError(null)
-    setPending(true)
-
-    const form = new FormData(event.currentTarget)
-    const name = String(form.get("name"))
-    const email = String(form.get("email"))
-    const password = String(form.get("password"))
-
-    const result = await authClient.signUp.email({ email, name, password })
+  async function onSubmit(values: SignUpValues) {
+    const result = await authClient.signUp.email({
+      email: values.email,
+      name: values.name,
+      password: values.password,
+    })
 
     if (result.error) {
-      setError(result.error.message ?? "注册失败")
-      setPending(false)
+      toast.error(result.error.message ?? "注册失败")
       return
     }
 
@@ -33,38 +45,67 @@ export function SignUpForm({ redirectTo }: { redirectTo: string }) {
   }
 
   return (
-    <form className="space-y-4" onSubmit={submit}>
-      <div className="space-y-2">
-        <Label htmlFor="name">名称</Label>
-        <Input id="name" name="name" placeholder="输入名称" autoComplete="name" required />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="email">邮箱</Label>
-        <Input
-          id="email"
+    <Form {...form}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>名称</FormLabel>
+              <FormControl>
+                <Input placeholder="输入名称" autoComplete="name" {...field} />
+              </FormControl>
+              <div className="min-h-5">
+                <FormMessage />
+              </div>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="email"
-          type="email"
-          placeholder="name@example.com"
-          autoComplete="email"
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>邮箱</FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder="name@example.com"
+                  autoComplete="email"
+                  {...field}
+                />
+              </FormControl>
+              <div className="min-h-5">
+                <FormMessage />
+              </div>
+            </FormItem>
+          )}
         />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="password">密码</Label>
-        <Input
-          id="password"
+        <FormField
+          control={form.control}
           name="password"
-          type="password"
-          placeholder="至少 8 位"
-          autoComplete="new-password"
-          minLength={8}
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>密码</FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  placeholder="至少 8 位"
+                  autoComplete="new-password"
+                  {...field}
+                />
+              </FormControl>
+              <div className="min-h-5">
+                <FormMessage />
+              </div>
+            </FormItem>
+          )}
         />
-      </div>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-      <Button className="w-full" type="submit" disabled={pending}>
-        {pending ? "创建中…" : "创建账号"}
-      </Button>
-    </form>
+        <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>
+          {form.formState.isSubmitting ? "创建中…" : "创建账号"}
+        </Button>
+      </form>
+    </Form>
   )
 }

@@ -36,7 +36,7 @@ pnpm cli trace <traceId>
 pnpm cli trace <traceId> --json
 ```
 
-`--json` 输出完整 span projection，供 Coding Agent 读取；`--file <path>` 指定其他 JSONL 文件。HTTP request、job enqueue 与 worker execution 共享同一 trace id，因此一次请求与其触发的任务可以在同一棵 span tree 中查看。
+`trace` 默认**同时读 server 与 worker 两份文件**，因此 HTTP request 与它触发的 job 会在同一棵 span tree 里；`--file <path>` 指定其他 JSONL 文件（可重复，给出后取代默认列表）。trace id 大小写不敏感：发送端固定小写，查询时大写输入会归一后再匹配。`--json` 输出完整 span projection，供 Coding Agent 读取。
 
 ## 导出到 backend
 
@@ -55,7 +55,8 @@ pnpm --filter server start
 
 ## Redaction
 
-- log 的敏感字段排除列表在 `packages/logger`（`password`、`token`、`authorization`、`cookie` 等）。
-- span 投影会剔除 URL query 与敏感 key 的属性值。
+- log 的敏感字段排除列表在 `packages/logger`：按字段名逐层匹配（顶层、`*.password`、`*.*.accessToken` 等），`apiKey`、`credential`、`authorization`、`cookie` 与各类 token 都在表内；`gen_ai.usage.input_tokens` 这类计数指标不受影响。
+- span 投影在 `packages/observability` 上先按 key 语义判定：凭据类 key 整值替换，`token` 只有作为独立 key 段（`session.token`）才算凭据；`input_tokens`、`token_count` 是指标，保留原值。URL 的 query 与 fragment 被剔除，`url.query` 整值替换。
+- 两处都有回归测试：`packages/logger/test/redaction.test.ts` 与 `packages/observability/test/agent-traces.test.ts`。
 
-URL query、认证信息、cookie、password、secret 和 token 类数据不得进入持久化的 log 或 trace projection。
+URL query、认证信息、cookie、password、secret 与 api key 类数据不得进入持久化的 log 或 trace projection。新增字段若命中上述语义，先补测试再合入。

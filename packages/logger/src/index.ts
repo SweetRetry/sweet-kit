@@ -1,24 +1,33 @@
 import { traceLogFields } from "@workspace/tracing"
-import pino, { type Logger, type LoggerOptions } from "pino"
+import pino, { type DestinationStream, type Logger, type LoggerOptions } from "pino"
+
+/**
+ * 凭据类字段名。`*` 只匹配一级，因此逐层展开：
+ * 只写顶层路径会漏掉 `payload.accessToken`、`job.credential` 这类嵌套形状。
+ */
+const sensitiveKeys = [
+  "accessToken",
+  "apiKey",
+  "authorization",
+  "cookie",
+  "credential",
+  "idToken",
+  "password",
+  "privateKey",
+  "refreshToken",
+  "secret",
+  "token",
+]
 
 const redactedPaths = [
-  "password",
-  "token",
-  "accessToken",
-  "refreshToken",
-  "body.password",
-  "body.token",
-  "body.accessToken",
-  "body.refreshToken",
-  "headers.authorization",
-  "headers.cookie",
-  "req.headers.authorization",
-  "req.headers.cookie",
-  "request.headers.authorization",
-  "request.headers.cookie",
+  ...sensitiveKeys,
+  ...sensitiveKeys.map((key) => `*.${key}`),
+  ...sensitiveKeys.map((key) => `*.*.${key}`),
 ]
 
 export interface CreateLoggerOptions {
+  /** 注入日志出口（测试与宿主集成都用得到）；`pretty` 为 true 时忽略 */
+  destination?: DestinationStream
   environment: string
   level: string
   pretty: boolean
@@ -45,7 +54,7 @@ export function createLogger(options: CreateLoggerOptions): Logger {
   }
 
   if (!options.pretty) {
-    return pino(loggerOptions)
+    return options.destination ? pino(loggerOptions, options.destination) : pino(loggerOptions)
   }
 
   return pino({
