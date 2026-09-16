@@ -10,7 +10,7 @@
 | **亲密性** | 间距、外边距、网格秩序、分组归属 | [UI Layout & Grid](rules/web-design/layout-and-loading.md) | 组间距 ≥ 2× 组内间距，间隔由父容器统一给 |
 | **移植测试** | 构图、信息密度、去模板化、列表与指标呈现 | [UI Design Quality](rules/web-design/design-quality.md) | 换掉文案就失去意义的构图才算通过 |
 | **职责** | 主题色、表面抬升、状态与语义色 | [UI Color & Surface](rules/web-design/color-and-surface.md) | 每个非中性色说得出来职责；暗色递亮、亮色只做分隔 |
-| **阶梯** | 字号、排版层级 | [Font System](rules/web-design/font-system/README.md) | 字号只取标准阶梯，正文下限 `text-xs` |
+| **阶梯** | 字号、排版层级 | [Font System](rules/web-design/font-system.md) | 字号只取标准阶梯，正文下限 `text-xs` |
 | **频率** | 交互动效、手势、转场、进出场 | [UI Animation](rules/web-design/animation.md) | 高频即时呈现，中低频强 ease-out，随时可打断 |
 
-数据校验规则见 [Zod v4](rules/zod-v4/README.md)。静态门禁与引入标准见 [rules/README.md](rules/README.md)，一次执行 `pnpm rules:check`。
+数据校验规则见 [Zod v4](rules/zod-v4/README.md)。静态门禁与引入标准见 [rules/README.md](rules/README.md)，一次执行 `pnpm rules:check`。UI 的 className 层约束由 `.oxlintrc.json`（`@shadcn/lint`）执法，改设计规则时同步该配置。

@@ -65,9 +65,9 @@ export function Analytics({ googleAnalyticsId, metaPixelId, microsoftUetTagId }:
             {/* biome-ignore lint/performance/noImgElement: Pixel requires a direct noscript request. */}
             <img
               alt=""
+              className="hidden"
               height="1"
               src={`https://www.facebook.com/tr?id=${encodeURIComponent(metaPixelId)}&ev=PageView&noscript=1`}
-              style={{ display: "none" }}
               width="1"
             />
           </noscript>

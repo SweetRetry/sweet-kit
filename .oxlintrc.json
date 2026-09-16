@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "jsPlugins": ["@shadcn/lint"],
+  "settings": {
+    "shadcn": {
+      "note": "外观归属与变体落点见 AGENTS.md › 架构约定；设计规则按 DESIGN.md 路由。",
+      "componentImports": ["^@workspace/ui/components"]
+    }
+  },
+  "rules": {
+    "shadcn/no-restyle": [
+      "error",
+      {
+        "allow": ["layout"]
+      }
+    ],
+    "shadcn/no-raw-colors": "error",
+    "shadcn/no-unknown-classes": "error",
+    "shadcn/require-static-classes": "error",
+    "shadcn/no-inline-styles": "error",
+    "shadcn/no-arbitrary-values": [
+      "error",
+      {
+        "allow": ["layout"]
+      }
+    ]
+  },
+  "ignorePatterns": ["packages/ui/src/components/**"]
+}

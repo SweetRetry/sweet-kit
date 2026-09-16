@@ -10,7 +10,9 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 
 - `apps/*` 拥有应用入口、composition root 和应用专属业务模块。
 - `packages/*` 只承载已经被多个应用或进程共同使用的能力与契约，不以潜在复用性作为拆包依据。
-- `packages/ui` 负责 Tailwind CSS、shadcn/ui 组件和全局设计 token。
+- `packages/ui` 负责 Tailwind CSS、shadcn/ui 组件和全局设计 token，并拥有组件**自身的外观**：高度、padding、圆角、颜色与字体由变体（`variant` / `size`）决定。调用方只用布局类（`margin`、宽度、flex/grid 位置）和 props 控制，不在调用点用 `className` 覆盖。
+- `packages/ui/src/components/**` 是上游 shadcn/ui 实现，**字节冻结（F1）**：文件内容不得偏离基线，基线见 `packages/ui/frozen.manifest.json`，`pnpm ui:freeze` 检入 `rules:check`。基线的含义是「上次被显式接受的状态」，不等于上游最新版本——上游是否已变由升级时的 `shadcn diff` 回答，两件事不要混。改动必须经 `pnpm ui:freeze:update` 显式接受并单独提交，说明是上游升级还是记录在案的解冻。主题与 token（`src/styles/globals.css`）不在冻结范围，它本就是本地设计决策的载体。
+- 新形态的落点按复用面划：`packages/*` 只承载已被多个应用共同使用的能力，变体与 recipe 同理——多个应用共同需要的形态进组件变体（一次显式解冻），单一应用的方言进 recipe（`packages/ui/src/recipes`）或应用内组件。
 - 应用通过 package 的公开 exports 访问切面，不跨 package 导入内部文件。
 - 优先使用维护活跃、经过生产验证的第三方成熟库；自行实现前先检查现有依赖的文档、类型定义和扩展能力。
 - 环境变量：新增或修改应用 runtime 环境变量时，先读 `docs/adr/0001-architecture-runtime-boundaries.md`，由所属应用校验并通过 composition root 显式传入 package。
@@ -28,6 +30,7 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 
 - **数据校验**：使用 Zod 时先读 `rules/zod-v4/README.md`，使用 v4 推荐 API，避免已废弃的 v3 模式；完成变更后运行 `pnpm zod:check` 验证。
 - **UI 设计与组件编码**：涉及前端 UI（界面、布局、动效、组件）时，先读 [DESIGN.md](DESIGN.md) 按 Leading Word 路由到 `rules/web-design/` 下的专项规则。
+- **设计契约执法**：className 层的约束由 `.oxlintrc.json`（`@shadcn/lint`）机械执法，`pnpm design:check` 已检入 `rules:check`。其中 `no-restyle` 只约束从 `@workspace/ui/components` 导入的组件，其余五条作用于全部 className；`packages/ui/src/components/**` 整体排除（上游冻结，见上条）。新增这一层约束时扩展该配置，不再另写正则扫描。
 - **API 契约**：新增或修改 HTTP 错误响应、`ErrorCode` 或 OpenAPI 描述时，先读 `rules/api-contract.md`；错误层遵循 RFC 9457，契约不变量由 `packages/request` 的测试守护。
 
 ## 技术选型
