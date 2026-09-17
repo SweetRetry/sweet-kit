@@ -1,16 +1,18 @@
-# Design 规范路由器
+# 设计规则入口
 
-本文件是 Sweet Kit 的设计工程与 UI 规范唯一入口。编写、修改或审查前端组件与页面时，按 **Leading Word** 定位分支，再读对应专项规则：
+编写、修改或评审 UI 时，只读当前任务涉及的专项规则。
 
-| Leading Word | 触发（何时查阅） | 专项规则 | 契约（正向目标） |
-| :--- | :--- | :--- | :--- |
-| **尺寸守恒** | 异步加载、骨架占位、空值或超长数据、按钮提交中 | [UI Stability](rules/web-design/stability.md) | 体量在 Loading → Ready → Empty → Error 全程不变 |
-| **隔离** | 层叠遮挡、浮层挂载、局部重叠（Tab / Focus 环 / 头像堆叠） | [Z-Index System](rules/web-design/z-index.md) | 局部重叠关在自己的层叠上下文里，全局浮层走 Portal |
-| **同心** | 圆角取值、嵌套边角、胶囊与矩形形态决断 | [UI Radius](rules/web-design/radius.md) | 内外圆角共享一个圆心，间隙含 border |
-| **亲密性** | 间距、外边距、网格秩序、分组归属 | [UI Layout & Grid](rules/web-design/layout-and-loading.md) | 组间距 ≥ 2× 组内间距，间隔由父容器统一给 |
-| **移植测试** | 构图、信息密度、去模板化、列表与指标呈现 | [UI Design Quality](rules/web-design/design-quality.md) | 换掉文案就失去意义的构图才算通过 |
-| **职责** | 主题色、表面抬升、状态与语义色 | [UI Color & Surface](rules/web-design/color-and-surface.md) | 每个非中性色说得出来职责；暗色递亮、亮色只做分隔 |
-| **阶梯** | 字号、排版层级 | [Font System](rules/web-design/font-system.md) | 字号只取标准阶梯，正文下限 `text-xs` |
-| **频率** | 交互动效、手势、转场、进出场 | [UI Animation](rules/web-design/animation.md) | 高频即时呈现，中低频强 ease-out，随时可打断 |
+| 任务 | 规则 |
+| --- | --- |
+| 构图、信息层级与密度 | [构图与信息层级](rules/web-design/design-quality.md) |
+| 间距、分组与响应式布局 | [布局与间距](rules/web-design/layout-and-loading.md) |
+| 异步加载、空状态与内容溢出 | [尺寸稳定](rules/web-design/stability.md) |
+| 色彩、主题与表面层级 | [色彩与表面](rules/web-design/color-and-surface.md) |
+| 字号与字体 | [字体与字号](rules/web-design/font-system.md) |
+| 圆角与嵌套容器 | [圆角](rules/web-design/radius.md) |
+| 浮层与遮挡 | [层叠](rules/web-design/z-index.md) |
+| 交互反馈与转场 | [动效](rules/web-design/animation.md) |
+| 字段取舍、文案与操作提示 | [信息呈现与文案](rules/web-design/information-clarity.md) |
 
-数据校验规则见 [Zod v4](rules/zod-v4/README.md)。静态门禁与引入标准见 [rules/README.md](rules/README.md)，一次执行 `pnpm rules:check`。UI 的 className 层约束由 `.oxlintrc.json`（`@shadcn/lint`）执法，改设计规则时同步该配置。
+规则适用于应用与新增业务组件；组件外观归属和上游冻结边界遵循 [AGENTS.md](AGENTS.md)。`packages/ui` 与 `globals.css` 的改动必须 **HITL（人工在环确认）**，避免不知不觉修改元组件或污染全局。
+静态门禁与规则维护原则见 [rules/README.md](rules/README.md)；UI 检查配置在 `.oxlintrc.json`。

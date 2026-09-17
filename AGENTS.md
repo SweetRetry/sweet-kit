@@ -6,12 +6,21 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 
 按内容路由：长期架构取舍 → `docs/adr/`；外部资料调研 → `docs/research/`；未定型的计划 → `docs/future/`；系统与使用知识 → `docs/`；强制工程约束 → `rules/`；Local Loop、构建、database seed 与 Agent 自定义工具 → `scripts/`。新增或修改 `rules/` 下的规则前先读 `rules/README.md`。
 
+## 术语共识
+
+- 讨论需求、设计方案或进行代码命名前，先读 [CONTEXT.md](CONTEXT.md)，沿用其中的规范术语。
+- 讨论中新增术语、明确歧义或修正含义后，及时更新 `CONTEXT.md`；此项维护属于持续授权，纯讨论也适用，用户明确要求不改文件时除外。
+- 仅记录用户已确认或现有文档与代码可核实的项目特定含义。发现用法与词表冲突且影响当前判断时，先指出差异并澄清，再更新定义；未确认的推测不写入词表。
+- 每个条目用一至两句说明含义与必要边界；有别名时标明，有易混用词时用 `_Avoid_` 列出。`CONTEXT.md` 只保存当前有效的术语定义，方案、实现细节与讨论记录按资料落点归档。
+
 ## 架构约定
 
 - `apps/*` 拥有应用入口、composition root 和应用专属业务模块；`packages/*` 只承载已被多个应用或进程共同使用的能力与契约，不以潜在复用性作为拆包依据。跨 package 只走公开 exports，不导入内部文件。
 - `packages/ui` 拥有组件**自身的外观**：高度、padding、圆角、颜色与字体由变体（`variant` / `size`）决定；调用方只用布局类（`margin`、宽度、flex/grid 位置）与 props 控制。
 - 新形态按复用面落点：多个应用共同需要的进组件变体（一次显式解冻），单一应用的方言进 recipe（`packages/ui/src/recipes`）或应用内组件。
-- `packages/ui/src/components/**` 是上游 shadcn/ui 实现，**字节冻结（F1）**：基线见 `packages/ui/frozen.manifest.json`，`pnpm ui:freeze` 已检入 `rules:check`。基线是「上次被显式接受的状态」，不等于上游最新——上游是否已变由升级时的 `shadcn diff` 回答。改动经 `pnpm ui:freeze:update` 显式接受并单独提交，说明是上游升级还是记录在案的解冻；`src/styles/globals.css` 的主题与 token 是本地设计决策，不在冻结范围。
+- `packages/ui` 与 `globals.css` 的更改必须 **HITL（Human-in-the-Loop，人工在环确认）**，避免不知不觉修改元组件或污染全局：
+  - `packages/ui/src/components/**` 是上游 shadcn/ui 实现的元组件，**字节冻结（F1）**：基线见 `packages/ui/frozen.manifest.json`，`pnpm ui:freeze` 已检入 `rules:check`。基线是「上次被显式接受的状态」，不等于上游最新——上游是否已变由升级时的 `shadcn diff` 回答。改动经 `pnpm ui:freeze:update` 显式接受并单独提交，说明是上游升级还是记录在案的解冻。
+  - `src/styles/globals.css` 的主题与 token 是本地设计决策，不在冻结范围；但因涉及全站通用语义与基础样式，同样禁止 Agent 静默修改，必须 Proposal First 经人工显式确认。
 - 自行实现前先查现有依赖的文档、类型定义与扩展能力，优先维护活跃、经过生产验证的成熟库。
 - 测试不得自行启动或依赖开发机的 container runtime；需要外部资源的集成验证由显式 integration environment 提供。
 - 目录名承担分组与语义前缀；目录已表达领域或职责时，文件名只表达目录内的具体职责：`canvas-commands/generation-handlers.ts`，而非 `canvas-commands/canvas-command-generation-handlers.ts`。
