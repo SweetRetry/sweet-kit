@@ -1,7 +1,5 @@
-import { createReadStream } from "node:fs"
 import { appendFile, mkdir } from "node:fs/promises"
 import path from "node:path"
-import { createInterface } from "node:readline"
 import type { Attributes, AttributeValue, HrTime } from "@opentelemetry/api"
 import { ExportResultCode } from "@opentelemetry/core"
 import type { ReadableSpan, SpanExporter } from "@opentelemetry/sdk-trace-base"
@@ -163,43 +161,4 @@ export class AgentTraceFileExporter implements SpanExporter {
   shutdown(): Promise<void> {
     return this.pendingWrite
   }
-}
-
-function isAgentSpanRecord(value: unknown): value is AgentSpanRecord {
-  if (!value || typeof value !== "object") return false
-  const record = value as Record<string, unknown>
-  return (
-    record.schemaVersion === 1 &&
-    typeof record.traceId === "string" &&
-    typeof record.spanId === "string" &&
-    typeof record.name === "string"
-  )
-}
-
-export async function readAgentTrace(
-  filePath: string,
-  traceId: string
-): Promise<AgentSpanRecord[]> {
-  if (!/^[0-9a-f]{32}$/i.test(traceId)) {
-    throw new Error("traceId 必须是 32 位十六进制字符串")
-  }
-
-  // 发送端固定小写、接收端接受大写，因此先归一再做逐行比较
-  const normalizedTraceId = traceId.toLowerCase()
-
-  const input = createReadStream(filePath, { encoding: "utf8" })
-  const lines = createInterface({ input, crlfDelay: Number.POSITIVE_INFINITY })
-  const spans: AgentSpanRecord[] = []
-
-  for await (const line of lines) {
-    if (!line.includes(normalizedTraceId)) continue
-    try {
-      const record: unknown = JSON.parse(line)
-      if (isAgentSpanRecord(record) && record.traceId === normalizedTraceId) {
-        spans.push(record)
-      }
-    } catch {}
-  }
-
-  return spans.sort((left, right) => left.startTime.localeCompare(right.startTime))
 }

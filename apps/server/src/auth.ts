@@ -1,7 +1,6 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter"
-import { CLI_CLIENT_ID } from "@workspace/request/contract"
 import { betterAuth } from "better-auth/minimal"
-import { bearer, deviceAuthorization } from "better-auth/plugins"
+import { bearer } from "better-auth/plugins"
 
 import type { Database } from "./database/client.ts"
 import * as schema from "./database/schema.ts"
@@ -17,7 +16,6 @@ export interface AuthOptions {
   google?: SocialProviderOptions
   secret: string
   trustedOrigins: string[]
-  verificationUri: string
 }
 
 export function createAuth(options: AuthOptions) {
@@ -41,13 +39,7 @@ export function createAuth(options: AuthOptions) {
       }),
     },
     trustedOrigins: options.trustedOrigins,
-    plugins: [
-      bearer(),
-      deviceAuthorization({
-        verificationUri: options.verificationUri,
-        validateClient: (clientId) => clientId === CLI_CLIENT_ID,
-      }),
-    ],
+    plugins: [bearer()],
   })
 }
 

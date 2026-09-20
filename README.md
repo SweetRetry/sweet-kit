@@ -1,6 +1,6 @@
 # Sweet Kit
 
-基于 TypeScript 的全栈开发套件，使用 Turborepo 按架构切面组织 Web、server、worker 和 CLI。
+基于 TypeScript 的全栈开发套件，使用 Turborepo 按架构切面组织 Web 与 server。
 
 ## 技术基线
 
@@ -8,12 +8,10 @@
 - Request：ky、TanStack Query
 - Server：Hono、OpenAPI 3.1、Scalar
 - AI：Vercel AI SDK（provider 与模型名由部署环境提供，见 `apps/server/src/ai.ts`）
-- Auth：Better Auth、device authorization、Bearer session
+- Auth：Better Auth、Bearer session
 - Database：PostgreSQL、Drizzle ORM、node-postgres
-- Jobs：Graphile Worker、transactional enqueue、独立 worker process
 - Logging：Pino、hono-pino、request ID、敏感字段 redaction
-- Observability：OpenTelemetry、trace/log correlation、Agent trace lookup
-- CLI：Commander
+- Observability：OpenTelemetry、trace/log correlation、本地 JSONL 投影
 - Env：各应用独立拥有的 Zod 环境变量配置
 - Test：Vitest
 
@@ -28,7 +26,7 @@
 | [`rules/`](./rules/) | How | 编码规范、架构边界和 Agent 必须遵守的约束 |
 | [`scripts/`](./scripts/) | Tools | Local Loop、构建、database seed 与 Agent 自定义工具 |
 
-根目录 `AGENTS.md` 是 Agent 规则入口；专项规则由它引用 `rules/` 中的文档。系统文档见 [architecture](docs/architecture.md)、[observability](docs/observability.md)、[database](docs/database.md)。
+根目录 `AGENTS.md` 是 Agent 规则入口；专项规则由它引用 `rules/` 中的文档。系统文档见 [architecture](docs/architecture.md) 与 [observability](docs/observability.md)。
 
 ## 开始
 
@@ -48,22 +46,11 @@ pnpm dev
 
 `POST /api/assistant/reply`（需登录）在部署提供 `OPENAI_API_KEY` 后返回模型输出，未配置时返回 `503 SERVICE_UNAVAILABLE`；provider 调用参与 trace 关联。
 
-`pnpm dev` 同时启动 Web、Hono server 和 Graphile Worker；PostgreSQL 由 `compose.yaml` 提供。
+`pnpm dev` 同时启动 Web 与 Hono server；PostgreSQL 由 `compose.yaml` 提供。
 
 各应用的本地配置存放在对应目录的 `.env.local`，生产环境变量参考相邻的 `.env.example`；生产环境必须提供高熵 `BETTER_AUTH_SECRET`。
 
-日志与 tracing 的使用说明（trace 契约、本地 trace 查询、OTLP 导出、redaction）见 [docs/observability.md](docs/observability.md)；数据库与后台任务见 [docs/database.md](docs/database.md)。
-
-## CLI
-
-```bash
-pnpm cli login
-pnpm cli whoami
-pnpm cli logout
-pnpm cli trace <traceId> [--json]
-```
-
-`login` 会启动 Better Auth device authorization，在浏览器中完成登录和明确授权后，将 session token 写入 `$XDG_CONFIG_HOME/sweet-kit/credentials.json`（默认 `~/.config/sweet-kit/`），文件权限 `0600`。`SWEET_KIT_SERVER_URL` 必填，`SWEET_KIT_CONFIG_DIR` 与 `SWEET_KIT_TRACE_FILE` 可覆盖默认位置。信任边界见 [docs/adr/0004](docs/adr/0004-cli-authentication-boundary.md)。
+日志与 tracing 的使用说明（trace 契约、本地 trace 查看、OTLP 导出、redaction）见 [docs/observability.md](docs/observability.md)。
 
 ## 检查
 
@@ -74,4 +61,4 @@ pnpm verify
 
 `pnpm install` 会通过 [lefthook](lefthook.yml) 安装 Git hooks：pre-commit 对 staged 文件跑 Biome 并跑机械门禁，pre-push 跑 typecheck 与 test。hook 是本地快速反馈，`pnpm verify` 与 CI 仍是全量门禁。
 
-当前自动化测试覆盖 `packages/request` 的错误契约与 HTTP 客户端、`packages/tracing` 的 trace 契约不变量、`packages/logger` 的日志脱敏、`packages/observability` 的 span 投影与 trace 查询、`apps/web` 的 analytics，以及 `apps/server` 的 HTTP 错误出口（需要 PostgreSQL，未提供 `DATABASE_URL` 时跳过）。device authorization 全流程、worker job execution 与其余成功响应分支尚未建立，计划见 [docs/future/server-integration-tests.md](docs/future/server-integration-tests.md)。CI 会启动 PostgreSQL 并执行 `pnpm db:migrate`，随后运行 `pnpm verify`；其完整步骤见根目录 `package.json`。
+当前自动化测试覆盖 `packages/request` 的错误契约与 HTTP 客户端、`packages/tracing` 的 trace 契约不变量、`packages/logger` 的日志脱敏、`packages/observability` 的 span 投影、`apps/web` 的 analytics，以及 `apps/server` 的 HTTP 错误出口（需要 PostgreSQL，未提供 `DATABASE_URL` 时跳过）。其余成功响应分支与真实登录流程尚未建立。CI 会启动 PostgreSQL 并执行 `pnpm db:migrate`，随后运行 `pnpm verify`；其完整步骤见根目录 `package.json`。

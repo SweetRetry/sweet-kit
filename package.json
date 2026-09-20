@@ -5,9 +5,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev --filter=server --filter=web --filter=worker",
-    "cli": "pnpm --filter cli sweet",
-    "worker": "pnpm --filter worker dev",
+    "dev": "turbo dev --filter=server --filter=web",
     "zod:check": "node rules/zod-v4/check.js",
     "ui:check": "node scripts/ui-guardrails.js",
     "ui:freeze": "node scripts/ui-freeze.js",

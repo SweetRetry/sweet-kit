@@ -21,7 +21,7 @@ export function createAiModel(options: AiProviderOptions): LanguageModel {
  * 生成一次回复。
  *
  * `telemetry` 打开后 provider 调用会产出 span，本地开发时进入 trace projection，
- * 由 `pnpm cli trace <traceId>` 查看，见 [docs/observability.md](../../../docs/observability.md)。
+ * 由 `data/traces.jsonl` 查看，见 [docs/observability.md](../../../docs/observability.md)。
  */
 export async function generateAssistantReply(
   model: LanguageModel,

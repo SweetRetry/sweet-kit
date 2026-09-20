@@ -10,7 +10,7 @@
 ## 决策
 
 - 业务代码只依赖 OpenTelemetry API；SDK、exporter 和 runtime 适配在各 process 的 composition root 初始化。
-- 使用 W3C Trace Context 贯穿 HTTP request、job enqueue 和 worker execution。
+- 使用 W3C Trace Context 贯穿 HTTP request 与其下游调用。
 - Pino JSON stdout 是 application log 的事实来源，日志从 active span 注入 `traceId` 和 `spanId`，不启用 OpenTelemetry logs pipeline。
 - HTTP response 在存在 active span 时返回 `x-trace-id`；未处理异常的响应同时在结构化 body 中返回 `traceId`。
 - Telemetry export 保持 vendor-neutral。trace 查询由独立 adapter 对接本地存储或具体 backend API。
@@ -20,6 +20,6 @@
 
 ## 结果
 
-- HTTP response、application log 和异步 job span 可以通过同一 trace 关联。
+- HTTP response 与 application log 可以通过同一 trace 关联。
 - Export backend 可以替换，但查询能力需要显式实现对应 adapter。
 - 各 runtime 独立管理 SDK lifecycle，避免全局初始化和关闭行为相互影响。

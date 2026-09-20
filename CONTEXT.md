@@ -5,7 +5,7 @@
 ## Language
 
 **Sweet Kit**：
-本仓库提供的全栈 TypeScript 开发套件，涵盖 Web、服务端、后台任务与命令行应用。
+本仓库提供的全栈 TypeScript 开发套件，涵盖 Web 与服务端。
 
 **Coding Agent（编码代理）**：
 参与本仓库开发、读取项目指引并执行开发任务的 AI 代理；项目工程文档中的 Agent 指此角色。

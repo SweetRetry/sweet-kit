@@ -4,7 +4,7 @@
 
 ## 信号
 
-- **Traces**：OpenTelemetry。业务代码只依赖 API；SDK 由 `apps/server/src/observability.ts` 与 `apps/worker/src/observability.ts` 各自装配和关停。
+- **Traces**：OpenTelemetry。业务代码只依赖 API；SDK 由 `apps/server/src/observability.ts` 装配和关停。
 - **Logs**：Pino JSON stdout 是 application log 的事实来源，不启用 OpenTelemetry logs pipeline（`OTEL_LOGS_EXPORTER=none`）。
 - **Metrics**：未启用（`OTEL_METRICS_EXPORTER=none`）。
 
@@ -27,16 +27,15 @@
 
 ## 本地查看 trace
 
-未设置 `OTEL_TRACES_EXPORTER` 的非生产环境下，span 以 JSONL 投影落盘：server 写 `apps/server/data/traces.jsonl`，worker 写 `apps/worker/data/traces.jsonl`（可用 `SWEET_KIT_TRACE_FILE`、`SWEET_KIT_WORKER_TRACE_FILE` 覆盖）。
+未设置 `OTEL_TRACES_EXPORTER` 的非生产环境下，span 以 JSONL 投影落盘到 `apps/server/data/traces.jsonl`（可用 `SWEET_KIT_TRACE_FILE` 覆盖）。
 
-从 HTTP response 的 `traceparent` 或 500 响应体的 `traceId` 取得 trace id 后查询：
+从 HTTP response 的 `traceparent` 或 500 响应体的 `traceId` 取得 trace id 后按行检索：
 
 ```bash
-pnpm cli trace <traceId>
-pnpm cli trace <traceId> --json
+jq -c --arg id <traceId> 'select(.traceId == $id)' apps/server/data/traces.jsonl
 ```
 
-`trace` 默认**同时读 server 与 worker 两份文件**，因此 HTTP request 与它触发的 job 会在同一棵 span tree 里；`--file <path>` 指定其他 JSONL 文件（可重复，给出后取代默认列表）。trace id 大小写不敏感：发送端固定小写，查询时大写输入会归一后再匹配。`--json` 输出完整 span projection，供 Coding Agent 读取。
+每行一个 span projection，字段形状见 `AgentSpanRecord`（`packages/observability/src/agent-traces.ts`），camelCase 对齐 OTLP/JSON。trace id 全小写：发送端固定小写，检索前把输入归一成小写。
 
 ## 导出到 backend
 

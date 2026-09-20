@@ -8,8 +8,6 @@
  */
 import { isTraceId } from "@workspace/tracing"
 
-export const CLI_CLIENT_ID = "sweet-kit-cli"
-
 /** RFC 9457 §3 的媒体类型 */
 export const PROBLEM_MEDIA_TYPE = "application/problem+json"
 

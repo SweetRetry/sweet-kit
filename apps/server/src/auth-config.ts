@@ -14,5 +14,4 @@ export const auth = createAuth({
   google: serverEnv.google,
   secret: serverEnv.authSecret,
   trustedOrigins: [serverEnv.webUrl],
-  verificationUri: `${serverEnv.webUrl}/device`,
 })

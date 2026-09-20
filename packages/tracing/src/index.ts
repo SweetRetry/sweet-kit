@@ -3,7 +3,7 @@
  *
  * 校验与序列化委托给 OpenTelemetry（W3C Trace Context 的参考实现），
  * 本包只固定项目自己的暴露出口与关联字段命名，因此可以同时供浏览器侧的
- * `@workspace/request` 与 server / worker / jobs / logger 使用。
+ * `@workspace/request` 与 server / logger 使用。
  *
  * 进程内的 SDK 装配、exporter 与 span 投影属于 `@workspace/observability`。
  */
@@ -73,7 +73,7 @@ export function createTracePropagator(): TextMapPropagator {
   })
 }
 
-/** 传播出口：把当前 trace 上下文写入 carrier（HTTP response header 与 job payload metadata 共用） */
+/** 传播出口：把当前 trace 上下文写入 carrier（进程内 HTTP response header 与跨进程 carrier 共用） */
 export function injectTraceContext(carrier: Record<string, string> = {}): Record<string, string> {
   propagation.inject(context.active(), carrier, defaultTextMapSetter)
   return carrier

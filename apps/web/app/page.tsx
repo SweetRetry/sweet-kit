@@ -19,9 +19,6 @@ export default function Page() {
           <Button asChild>
             <Link href="/sign-in">登录</Link>
           </Button>
-          <Button variant="outline" asChild>
-            <Link href="/device">授权 CLI</Link>
-          </Button>
         </div>
       </section>
     </main>

@@ -13,7 +13,7 @@ export interface Observability {
 
 /**
  * Server 进程的 telemetry 装配（composition root）。
- * 本地开发把 span 投影到 JSONL 供 `pnpm cli trace` 查询，生产由 OTel 环境变量选择 OTLP；
+ * 本地开发把 span 投影到 JSONL 供按行检索，生产由 OTel 环境变量选择 OTLP；
  * 这里只固定 service name 与项目采用的 W3C propagator。
  *
  * 本地用 SimpleSpanProcessor 而非默认的 BatchSpanProcessor：批处理是为了摊薄 OTLP 的网络开销，

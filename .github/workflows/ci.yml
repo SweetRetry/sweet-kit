@@ -38,7 +38,6 @@ jobs:
       NEXT_PUBLIC_SERVER_URL: http://localhost:43111
       LOG_LEVEL: silent
       LOG_PRETTY: "false"
-      JOB_CONCURRENCY: 5
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
 

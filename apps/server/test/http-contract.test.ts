@@ -30,7 +30,6 @@ function createApp(database: Database, options?: { ai?: boolean }) {
       database,
       secret: "integration-test-secret-at-least-32-characters",
       trustedOrigins: [webUrl],
-      verificationUri: `${webUrl}/device`,
     }),
     logger: createLogger({
       destination: new Writable({ write: (_chunk, _encoding, callback) => callback() }),
@@ -59,7 +58,6 @@ describe.skipIf(!databaseUrl)("HTTP 错误出口", () => {
       database: db,
       secret: "integration-test-secret-at-least-32-characters",
       trustedOrigins: [webUrl],
-      verificationUri: `${webUrl}/device`,
     })
     app = createApp(db)
   })

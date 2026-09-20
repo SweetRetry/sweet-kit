@@ -8,6 +8,13 @@
       "when": 1787326507047,
       "tag": "0000_great_silver_centurion",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789876446629,
+      "tag": "0001_natural_puff_adder",
+      "breakpoints": true
     }
   ]
 }

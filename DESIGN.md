@@ -13,7 +13,6 @@
 | 加载、空结果、失败、内容溢出 | [尺寸稳定](rules/web-design/stability.md) |
 | 颜色、表面、主题 | [色彩与表面](rules/web-design/color-and-surface.md) |
 | 过渡、动画、交互反馈 | [动效](rules/web-design/animation.md) |
-| 字段、文案、操作提示 | [信息呈现与文案](rules/web-design/information-clarity.md) |
 
 规则适用于应用与新增业务组件；组件外观归属和上游冻结边界遵循 [AGENTS.md](AGENTS.md)。`packages/ui` 与 `globals.css` 的改动必须 **HITL（人工在环确认）**，避免不知不觉修改元组件或污染全局。
 静态门禁与规则维护原则见 [rules/README.md](rules/README.md)；UI 检查配置在 `.oxlintrc.json`。

@@ -12,9 +12,8 @@
 
 ```text
 docs/
-  architecture.md   # 系统结构：应用与 package 的职责、边界与 composition root
+  architecture.md   # 系统结构：应用与 package 的职责、数据与 migration、边界与 composition root
   observability.md  # 日志、trace 契约、本地 trace 查询、OTLP 导出与 redaction
-  database.md       # schema 所有权、migration 与后台任务边界
   adr/              # 长期架构决策：背景、取舍与风险
   research/         # 外部资料调研存档：升级指南、上游设计与规范参考
   future/           # 尚未决定或时机未到的计划：候选方案与触发条件

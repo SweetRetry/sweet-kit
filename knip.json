@@ -13,12 +13,6 @@
       "project": ["src/**/*.ts"],
       "drizzle": false
     },
-    "apps/cli": {
-      "project": ["src/**/*.ts"]
-    },
-    "apps/worker": {
-      "project": ["src/**/*.ts"]
-    },
     "packages/request": {
       "project": ["src/**/*.ts"]
     },

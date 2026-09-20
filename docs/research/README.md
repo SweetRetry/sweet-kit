@@ -5,7 +5,7 @@
 适合记录：
 
 - 版本升级指南与迁移要点（如 [typescript-7-upgrade.md](./typescript-7-upgrade.md)）
-- 上游设计、品牌与产品参考（如 [vercel-design.md](./vercel-design.md)）
+- 上游设计、品牌与产品参考
 - 外部规范摘要、选型对比与实测数据
 
 约定：

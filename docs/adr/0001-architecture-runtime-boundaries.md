@@ -5,7 +5,7 @@
 
 ## 背景
 
-Sweet Kit 同时包含 browser、server、worker 和 CLI。它们共享部分能力，但具有不同的部署周期、secret 可见性和进程生命周期。如果按潜在复用性拆包，业务装配、runtime 初始化和跨环境配置容易混入公共 package，边界会随功能增长而失效。
+Sweet Kit 同时包含 browser 与 server。它们共享部分能力，但具有不同的部署周期、secret 可见性和进程生命周期。如果按潜在复用性拆包，业务装配、runtime 初始化和跨环境配置容易混入公共 package，边界会随功能增长而失效。
 
 ## 决策
 

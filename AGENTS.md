@@ -33,8 +33,7 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 | :--- | :--- |
 | 应用 runtime 环境变量 | [0001 架构与 runtime 边界](docs/adr/0001-architecture-runtime-boundaries.md) |
 | tracing、日志关联与 Agent trace 查询 | [0002 OpenTelemetry 可观测性](docs/adr/0002-opentelemetry-observability.md)、[0006 trace 契约与暴露出口](docs/adr/0006-trace-context-contract.md) |
-| job handler、worker lifecycle、运行时装配归属 | [0003 PostgreSQL 与 Graphile Worker](docs/adr/0003-postgresql-and-graphile-worker.md)、[0007 运行时装配与应用业务模块的归属](docs/adr/0007-runtime-assembly-and-app-ownership.md) |
-| CLI auth、token、device authorization | [0004 CLI 认证边界](docs/adr/0004-cli-authentication-boundary.md) |
+| 运行时装配与应用业务模块的归属 | [0007 运行时装配与应用业务模块的归属](docs/adr/0007-runtime-assembly-and-app-ownership.md) |
 | API 版本前缀、REST 严格度、不兼容的 API 变更 | [0005 HTTP API 形态](docs/adr/0005-http-api-shape.md) |
 
 ## 专项规则
@@ -44,7 +43,7 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 | 使用 Zod、改动数据校验 | `rules/zod-v4/README.md` |
 | 前端 UI：界面、布局、动效、组件 | [DESIGN.md](DESIGN.md) |
 | HTTP 错误响应、`ErrorCode`、OpenAPI 描述 | `rules/api-contract.md`（RFC 9457，不变量由 `packages/request` 测试守护） |
-| 排查运行期行为：某次请求或 job 实际做了什么、需要跨进程关联 | [docs/observability.md](docs/observability.md) |
+| 排查运行期行为：某次请求实际做了什么、需要 trace 关联 | [docs/observability.md](docs/observability.md) |
 
 ## 技术选型
 

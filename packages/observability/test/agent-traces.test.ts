@@ -5,7 +5,7 @@ import { ExportResultCode } from "@opentelemetry/core"
 import type { ReadableSpan } from "@opentelemetry/sdk-trace-base"
 import { afterAll, beforeEach, describe, expect, it } from "vitest"
 
-import { AgentTraceFileExporter, readAgentTrace } from "../src/agent-traces.ts"
+import { type AgentSpanRecord, AgentTraceFileExporter } from "../src/agent-traces.ts"
 
 const traceId = "4bf92f3577b34da6a3ce929d0e0e4736"
 const spanId = "00f067aa0ba902b7"
@@ -52,6 +52,15 @@ async function exportSpans(spans: ReadableSpan[]): Promise<string> {
   return filePath
 }
 
+/** exporter 是纯写入方，落盘格式即 JSONL 一行一个 span；测试直接按行解析断言语义 */
+async function readSpans(filePath: string): Promise<AgentSpanRecord[]> {
+  const raw = await readFile(filePath, "utf8")
+  return raw
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line) as AgentSpanRecord)
+}
+
 beforeEach(async () => {
   workDir = await mkdtemp(path.join(tmpdir(), "sweet-kit-observability-"))
 })
@@ -77,7 +86,7 @@ describe("agent span 投影的脱敏", () => {
       }),
     ])
 
-    const [span] = await readAgentTrace(filePath, traceId)
+    const [span] = await readSpans(filePath)
 
     expect(span?.attributes).toMatchObject({
       "db.password": "[Redacted]",
@@ -101,7 +110,7 @@ describe("agent span 投影的脱敏", () => {
       }),
     ])
 
-    const [span] = await readAgentTrace(filePath, traceId)
+    const [span] = await readSpans(filePath)
 
     expect(span?.attributes["http.url"]).toBe("https://api.example.com/v1/chat")
     expect(span?.attributes["url.query"]).toBe("[Redacted]")
@@ -114,36 +123,21 @@ describe("agent span 投影的脱敏", () => {
   it("只投影 resource 的 service 归属字段", async () => {
     const filePath = await exportSpans([fakeSpan({})])
 
-    const [span] = await readAgentTrace(filePath, traceId)
+    const [span] = await readSpans(filePath)
 
     expect(span?.resource).toEqual({ "service.name": "sweet-kit-server" })
   })
 })
 
-describe("agent trace 查询", () => {
-  it("大写 trace-id 与落盘的小写 id 等价", async () => {
-    const filePath = await exportSpans([fakeSpan({})])
-    const spans = await readAgentTrace(filePath, traceId.toUpperCase())
-
-    expect(spans).toHaveLength(1)
-    expect(spans[0]?.traceId).toBe(traceId)
-  })
-
-  it("拒绝非 32 位十六进制的 trace-id，且不读取文件", async () => {
-    await expect(readAgentTrace("/nonexistent.jsonl", "not-a-trace-id")).rejects.toThrow(
-      "traceId 必须是 32 位十六进制字符串"
-    )
-  })
-
-  it("按 startTime 升序返回同一 trace 的 span", async () => {
+describe("agent span 落盘", () => {
+  it("每个 span 一行，保留各自的名字与时间", async () => {
     const filePath = await exportSpans([
       { ...fakeSpan({}), name: "second", startTime: [2, 0] } as unknown as ReadableSpan,
       { ...fakeSpan({}), name: "first", startTime: [1, 0] } as unknown as ReadableSpan,
     ])
-    const spans = await readAgentTrace(filePath, traceId)
-    const raw = await readFile(filePath, "utf8")
+    const spans = await readSpans(filePath)
 
-    expect(spans.map((span) => span.name)).toEqual(["first", "second"])
-    expect(raw.trim().split("\n")).toHaveLength(2)
+    expect(spans.map((span) => span.name)).toEqual(["second", "first"])
+    expect(spans.map((span) => span.traceId)).toEqual([traceId, traceId])
   })
 })
