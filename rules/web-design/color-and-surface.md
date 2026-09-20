@@ -49,4 +49,6 @@
 - 系统强制颜色使用系统颜色与边界，不追踪主题明度；表面色阶也不直接对应 z-index 数值。
 - 色值、状态叠加与边界统一由主题管理，组件不自行计算高度色。
 
-颜色 Token 对齐 [shadcn 官方 Neutral](https://ui.shadcn.com/docs/theming#default-theme-css)：暗色 `card` 与 `popover` 比 `background` 亮，但两者同值，层级还由组件的边框、阴影与遮罩表达。高度模型用于选择语义 Token，不要求额外建立独立 Elevation 色阶。
+Token 取值对齐 [shadcn 官方 Neutral](https://ui.shadcn.com/docs/theming#default-theme-css)：暗色 `card` 与 `popover` 比 `background` 亮但两者同值，层级由组件的边框、阴影与遮罩表达。
+
+高度模型只用于选择语义 Token，不要求额外建立独立的 Elevation 色阶。

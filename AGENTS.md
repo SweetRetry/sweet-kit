@@ -44,6 +44,7 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 | 使用 Zod、改动数据校验 | `rules/zod-v4/README.md` |
 | 前端 UI：界面、布局、动效、组件 | [DESIGN.md](DESIGN.md) |
 | HTTP 错误响应、`ErrorCode`、OpenAPI 描述 | `rules/api-contract.md`（RFC 9457，不变量由 `packages/request` 测试守护） |
+| 排查运行期行为：某次请求或 job 实际做了什么、需要跨进程关联 | [docs/observability.md](docs/observability.md) |
 
 ## 技术选型
 

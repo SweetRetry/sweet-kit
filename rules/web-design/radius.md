@@ -1,6 +1,8 @@
 # 圆角
 
-圆角取值由 `packages/ui/src/styles/globals.css` 的 Token 管理；组件形态由变体提供，调用方不覆盖高度、padding 或圆角。
+圆角随容器体量递增，嵌套时内外同心。
+
+取值由 `packages/ui/src/styles/globals.css` 的 Token 管理；组件形态由变体提供，调用方不覆盖高度、padding 或圆角。
 
 ## 形态与阶梯
 
