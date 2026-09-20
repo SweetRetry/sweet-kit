@@ -6,15 +6,15 @@
 
 ## 形态与阶梯
 
-| 语义 | Class |
-| --- | --- |
-| 微角、把手与小角标 | `rounded-xs` |
+| 语义               | Class                       |
+| ------------------ | --------------------------- |
+| 微角、把手与小角标 | `rounded-xs`                |
 | 通用控件与菜单面板 | `rounded-sm` / `rounded-md` |
-| Dialog 等浮层窗口 | `rounded-lg` |
-| 普通容器 | `rounded-xl` |
-| 强调容器、嵌套视口 | `rounded-2xl` |
-| 大模块外框 | `rounded-3xl` |
-| Avatar、药丸控件 | `rounded-full` |
+| Dialog 等浮层窗口  | `rounded-lg`                |
+| 普通容器           | `rounded-xl`                |
+| 强调容器、嵌套视口 | `rounded-2xl`               |
+| 大模块外框         | `rounded-3xl`               |
+| Avatar、药丸控件   | `rounded-full`              |
 
 - 固定高度控件明确选择圆角矩形（`R ≤ H/4`）或胶囊（`R ≥ H/2`），避免处于两者之间。
 - 复用组件的实际形态以现有变体为准；新形态按 `AGENTS.md` 的复用边界进入变体、recipe 或应用组件，不为对齐表格改动冻结组件。
