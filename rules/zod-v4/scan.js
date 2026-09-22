@@ -1,6 +1,7 @@
 const DEPRECATED_PATTERNS = [
   {
-    pattern: /z\.string\(\)\.(email|url|uuid|ip|emoji|nanoid|cuid|cuid2|ulid|base64|datetime|date|time)\(/g,
+    pattern:
+      /z\.string\(\)\.(email|url|uuid|ip|emoji|nanoid|cuid|cuid2|ulid|base64|datetime|date|time)\(/g,
     fix: (_match, method) => {
       const mapping = {
         email: "z.email(",
@@ -19,7 +20,8 @@ const DEPRECATED_PATTERNS = [
       }
       return mapping[method] ?? _match
     },
-    message: (method) => `z.string().${method}() → use standalone z.${method}() or z.iso.${method}()`,
+    message: (method) =>
+      `z.string().${method}() → use standalone z.${method}() or z.iso.${method}()`,
   },
   {
     pattern: /z\.nativeEnum\(/g,
@@ -51,9 +53,13 @@ export function scanContent(content, filePath = "inline.ts") {
     const line = lines[lineIndex]
 
     for (const rule of DEPRECATED_PATTERNS) {
+      // 手动 exec 循环依赖 /g 推进 lastIndex；缺少 /g 会零长度匹配并死循环。
+      if (!rule.pattern.global) {
+        throw new Error(`Zod deprecation pattern must be global: ${rule.pattern}`)
+      }
       rule.pattern.lastIndex = 0
-      let match
-      while ((match = rule.pattern.exec(line)) !== null) {
+      let match = rule.pattern.exec(line)
+      while (match !== null) {
         findings.push({
           file: filePath,
           line: lineIndex + 1,
@@ -62,6 +68,7 @@ export function scanContent(content, filePath = "inline.ts") {
           message: rule.message(match[1]),
           fix: rule.fix(match[0], match[1]),
         })
+        match = rule.pattern.exec(line)
       }
     }
   }
