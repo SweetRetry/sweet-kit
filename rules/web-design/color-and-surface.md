@@ -45,7 +45,7 @@
 
 ## 主题表现与 Token 维护
 
-- 纯暗色体系，Token 取值对齐 shadcn Neutral；暗色 `card` 与 `popover` 略亮于 `background`，层级通过边框、阴影与遮罩表达。
+- 亮暗双主题（`:root` 与 `.dark`），Token 取值对齐 shadcn Neutral；暗色下 `card` 与 `popover` 略亮于 `background`，层级通过边框、阴影与遮罩表达。
 - `forced-colors` 生效时使用系统颜色，不追踪明度关系。
 - 色值集中在 [globals.css](../../packages/ui/src/styles/globals.css) 维护，业务组件消费语义 Token，严禁硬编码 Hex/OKLCH。
 

@@ -11,10 +11,10 @@
 | **Elevated** | `z-10` | 1–10 | 局部微层级（**配合 `isolate`**）：Focus 环、头像堆叠、Tab 激活态 |
 | **Sticky** | `z-20` | 20 | 吸顶表头、拖拽把手 |
 | **Navigation** | `z-30` | 30 | 固定导航栏、固定侧边栏 |
-| **Backdrop** | `z-40` | 40 | 全屏遮罩蒙层 |
+| **Backdrop** | `z-40` | 40 | 业务自建的非模态遮罩；Dialog / Sheet 自带遮罩随浮层使用 `z-50` |
 | **Overlay** | `z-50` | 50 | 全部顶层浮层（Dialog、Sheet、Popover、Tooltip 等） |
 
-> `z-50` 是业务层上限。浮层组件通过 Portal 挂载至 `<body>` 并使用 `z-50`，同层顺序由挂载先后决定。两个浮层互相遮挡时修挂载顺序，不比拼数值。
+> `z-50` 是业务层上限；sonner 的 Toaster 使用库内置层级，属于第三方例外，不在业务代码中覆盖。浮层组件通过 Portal 挂载至 `<body>` 并使用 `z-50`，同层顺序由挂载先后决定。两个浮层互相遮挡时修挂载顺序，不比拼数值。
 
 ## `isolate` 隔离
 
@@ -32,7 +32,8 @@
 | :--- | :--- | :--- |
 | Dialog / AlertDialog / Sheet / Drawer | **强制** | 穿透所有局部容器 |
 | DropdownMenu / Popover / Select / ContextMenu | **强制** | 避免 `overflow-hidden` 截断 |
-| Tooltip / Toast | **强制** | 全屏可完整显示 |
+| Tooltip | **强制** | 全屏可完整显示 |
+| Toast | 根部挂载 | `<Toaster />` 挂在应用根部，不放入局部容器 |
 | Accordion / Collapsible / Tabs | **禁止** | 内容流的一部分 |
 | Sticky Header / Table Sticky Columns | **禁止** | 依附滚动视口 |
 

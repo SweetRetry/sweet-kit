@@ -5,6 +5,7 @@
 | 改动中出现                            | 规则                                                                                                       |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | 新增容器、分组、注意力与权重（6:3:1） | [构图与信息层级](rules/web-design/design-quality.md)                                                       |
+| 新增字段、操作、设置项，折叠与浮层选型 | [收纳与渐进披露](rules/web-design/disclosure.md)                                                           |
 | 间距、内边距、栅格、对齐              | [布局与间距](rules/web-design/layout-and-loading.md)、[构图与信息层级](rules/web-design/design-quality.md) |
 | 数字、时间、金额、计数                | [字体与字号](rules/web-design/font-system.md)、[布局与间距](rules/web-design/layout-and-loading.md)        |
 | 字号、字体族、字重、排版字阶比重      | [字体与字号](rules/web-design/font-system.md)、[构图与信息层级](rules/web-design/design-quality.md)        |
