@@ -4,15 +4,15 @@
 
 | 改动中出现                            | 规则                                                                                                       |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 新增容器、分组、注意力与权重（6:3:1） | [构图与信息层级](rules/web-design/design-quality.md)                                                       |
+| 新增容器、分组、注意力与权重（6:3:1） | [构图与信息层级](rules/web-design/composition.md)                                                       |
 | 新增字段、操作、设置项，折叠与浮层选型 | [收纳与渐进披露](rules/web-design/disclosure.md)                                                           |
-| 留白、间距、内边距、内容宽度、栅格、对齐 | [布局与间距](rules/web-design/layout.md)、[构图与信息层级](rules/web-design/design-quality.md) |
-| 数字、时间、金额、计数                | [字体与字号](rules/web-design/font-system.md)、[布局与间距](rules/web-design/layout.md)        |
-| 字号、字体族、字重、排版字阶比重      | [字体与字号](rules/web-design/font-system.md)、[构图与信息层级](rules/web-design/design-quality.md)        |
+| 留白、间距、内边距、内容宽度、栅格、对齐 | [布局与间距](rules/web-design/layout.md)、[构图与信息层级](rules/web-design/composition.md) |
+| 数字、时间、金额、计数                | [字体与字号](rules/web-design/typography.md)、[布局与间距](rules/web-design/layout.md)        |
+| 字号、字体族、字重、排版字阶比重      | [字体与字号](rules/web-design/typography.md)、[构图与信息层级](rules/web-design/composition.md)        |
 | 圆角、嵌套容器                        | [圆角](rules/web-design/radius.md)                                                                         |
 | 层级、浮层、Portal、遮挡              | [层叠](rules/web-design/z-index.md)                                                                        |
 | 加载、空结果、失败、内容溢出          | [尺寸稳定](rules/web-design/stability.md)                                                                  |
-| 颜色、表面、主题、色彩配比（6:3:1）   | [色彩与表面](rules/web-design/color-and-surface.md)、[构图与信息层级](rules/web-design/design-quality.md)  |
+| 颜色、表面、主题、色彩配比（6:3:1）   | [色彩与表面](rules/web-design/color-and-surface.md)、[构图与信息层级](rules/web-design/composition.md)  |
 | 过渡、动画、交互反馈                  | [动效](rules/web-design/animation.md)                                                                      |
 | 操作反馈形态、toast、inline 错误      | [反馈与通知](rules/web-design/feedback-and-notification.md)                                                |
 
